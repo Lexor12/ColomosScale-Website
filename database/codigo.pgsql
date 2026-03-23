@@ -1,5 +1,10 @@
+DROP TABLE "Reporte" CASCADE;
+DROP TABLE "Balanza" CASCADE;
+DROP TABLE "Usuario" CASCADE;
+DROP TABLE "Laboratorio" CASCADE;
+DROP TABLE "Rol" CASCADE;
 -- Tipo ENUM
-CREATE TYPE estado_equipo AS ENUM ('ADECUADA', 'INTERMEDIA', 'MALA');
+--CREATE TYPE estado_equipo AS ENUM ('ADECUADA', 'INTERMEDIA', 'MALA');
 
 -- Tabla Rol (Aquí no lleva serial pq los IDs son fijos: 1, 2, 3, 4)
 CREATE TABLE "Rol" (
@@ -10,9 +15,9 @@ CREATE TABLE "Rol" (
 -- Tabla Usuario
 CREATE TABLE "Usuario" (
   "id_usuario" SERIAL PRIMARY KEY, -- Auto-incremental
-  "username" VARCHAR,
-  "password" VARCHAR,
-  "correo" VARCHAR,
+  "username" VARCHAR(60) NOT NULL UNIQUE,
+  "password" TEXT NOT NULL,
+  "correo" VARCHAR(255) NOT NULL UNIQUE,
   "fecha_creacion" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "img_url" TEXT,
   "rol" INT REFERENCES "Rol"("id_rol")
@@ -21,7 +26,7 @@ CREATE TABLE "Usuario" (
 -- Tabla Laboratorio
 CREATE TABLE "Laboratorio" (
   "id_laboratorio" SERIAL PRIMARY KEY, -- Auto-incremental
-  "nombre" VARCHAR,
+  "nombre" VARCHAR NOT NULL,
   "ubicacion" TEXT
 );
 
@@ -29,13 +34,13 @@ CREATE TABLE "Laboratorio" (
 CREATE TABLE "Balanza" (
   "id_balanza" SERIAL PRIMARY KEY, -- Auto-incremental
   "id_laboratorio" INT REFERENCES "Laboratorio"("id_laboratorio"),
-  "nombre" VARCHAR,
-  "marca" VARCHAR,
-  "modelo" TEXT,
-  "serie" VARCHAR,
-  "img_url" TEXT,
-  "estado_calibracion" estado_equipo,
-  "ultima_medicion" TIMESTAMPTZ
+  "nombre" VARCHAR NOT NULL,
+  "marca" VARCHAR NOT NULL,
+  "modelo" TEXT NOT NULL,
+  "serie" VARCHAR NOT NULL,
+  "img_url" TEXT NOT NULL,
+  "estado_calibracion" estado_equipo NOT NULL,
+  "ultima_medicion" TIMESTAMPTZ NOT NULL
 );
 
 -- Tabla Reporte
@@ -49,6 +54,7 @@ CREATE TABLE "Reporte" (
   "repetibilidad_100" NUMERIC(12, 8),
   "linealidad_promedio" NUMERIC(12, 8),
   "cumple_emt" BOOL,
-  "observations" TEXT,
-  "estado_final" estado_equipo
+  "observaciones" TEXT,
+  "estado_final" estado_equipo 
 );
+INSERT INTO "Rol" VALUES (1, 'ADMIN'),(2, 'SUPERVISOR'),(3, 'TECNICO');
