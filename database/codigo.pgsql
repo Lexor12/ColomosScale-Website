@@ -13,7 +13,7 @@ CREATE TABLE "Rol" (
   "nombre" VARCHAR
 );
 
--- Tabla Usuario
+-- Tabla "Usuario"
 CREATE TABLE "Usuario" (
   "id_usuario" SERIAL PRIMARY KEY, -- Auto-incremental
   "username" TEXT NOT NULL UNIQUE,
@@ -31,7 +31,7 @@ CREATE TABLE "Laboratorio" (
   "ubicacion" TEXT
 );
 
--- Tabla Balanza
+-- Tabla "Balanza"
 CREATE TABLE "Balanza" (
   "id_balanza" SERIAL PRIMARY KEY, -- Auto-incremental
   "id_laboratorio" INT REFERENCES "Laboratorio"("id_laboratorio"),
@@ -62,39 +62,43 @@ CREATE TABLE "Reporte" (
 INSERT INTO "Rol" VALUES (1, 'ADMIN'),(2, 'SUPERVISOR'),(3, 'TECNICO');
 
 --------- FUNCIONES Y PROCEDURES
------------------------ USUARIOS ---------------------------
+----------------------- "Usuario"S ---------------------------
 -- INSERTA UN USUSARIO EN LA BASE DE DATOS
 CREATE OR REPLACE FUNCTION registrar_usuario(p_username TEXT,p_nombre_completo TEXT, p_correo TEXT,p_password TEXT,p_rol INT) RETURNS TEXT AS $$
 BEGIN
-  IF EXISTS (SELECT 1 FROM Usuario WHERE correo = p_correo OR username =p_username) THEN
+  IF EXISTS (SELECT 1 FROM "Usuario" WHERE correo = p_correo OR username =p_username) THEN
     RETURN 'El correo y/o el username ya existe';
   END IF;
   --Caso contrario el else
-  INSERT INTO Usuario(username,nombre_completo,correo,password,fecha_creacion,rol) VALUES(p_username,p_nombre_completo,p_correo,p_password,NOW(),p_rol);
+  INSERT INTO "Usuario"(username,nombre_completo,correo,password,fecha_creacion,rol) VALUES(p_username,p_nombre_completo,p_correo,p_password,NOW(),p_rol);
   RETURN 'Usuario registrado correctamente.';
 END;
 $$ LANGUAGE plpgsql;
 -- REGRESA TODOS LOS CAMPOS INCLUYENDO LA CONTRASEÑA PARA REALIZAR EL ANALISIS EN NODE
-CREATE OR REPLACE  FUNCTION obtener_usuarios_por_correo(p_correo TEXT) 
-RETURNS TABLE(username TEXT,nombre_completo TEXT, correo TEXT,password TEXT,fecha_creacion TIMESTAMPTZ,rol INT) AS $$
-BEGIN
-  RETURN QUERY SELECT username,nombre_completo,correo,password,fecha_creacion,rol FROM "Usuario" WHERE correo=p_correo;
-END;
-$$ language plpgsql;
+-- Función corregida por CORREO
+CREATE OR REPLACE FUNCTION obtener_usuarios_por_correo(p_correo TEXT)  
+RETURNS TABLE(username TEXT, nombre_completo TEXT, correo TEXT, password TEXT, fecha_creacion TIMESTAMPTZ, rol INT) AS $$BEGIN
+  RETURN QUERY 
+  SELECT u.username, u.nombre_completo, u.correo, u.password, u.fecha_creacion, u.rol 
+  FROM "Usuario" AS u 
+  WHERE u.correo = p_correo;
+END;$$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE  FUNCTION obtener_usuarios_por_username(p_username TEXT) 
-RETURNS TABLE(username TEXT,nombre_completo TEXT, correo TEXT,password TEXT,fecha_creacion TIMESTAMPTZ,rol INT) AS $$
-BEGIN
-  RETURN QUERY SELECT username,nombre_completo,correo,password,fecha_creacion,rol FROM "Usuario" WHERE username=p_username;
-END;
-$$ language plpgsql;
--- OBTIENE TODOS LOS USUARIOS CON SUS ROLES (nombre del rol)
+-- Función corregida por USERNAME
+CREATE OR REPLACE FUNCTION obtener_usuarios_por_username(p_username TEXT)  
+RETURNS TABLE(username TEXT, nombre_completo TEXT, correo TEXT, password TEXT, fecha_creacion TIMESTAMPTZ, rol INT) AS $$BEGIN
+  RETURN QUERY 
+  SELECT u.username, u.nombre_completo, u.correo, u.password, u.fecha_creacion, u.rol 
+  FROM "Usuario" AS u 
+  WHERE u.username = p_username;
+END;$$ LANGUAGE plpgsql;
+-- OBTIENE TODOS LOS "Usuario"S CON SUS ROLES (nombre del rol)
 CREATE OR REPLACE FUNCTION obtener_usuarios() 
 RETURNS TABLE (username TEXT, nombre_completo TEXT, correo TEXT, fecha_creacion TIMESTAMPTZ, rol_nombre TEXT) AS $$BEGIN
   RETURN QUERY 
-  SELECT u.username, u.nombre_completo, u.correo, u.fecha_creacion, r.nombre 
-  FROM "Usuario" as u 
-  JOIN "Rol" r ON r.id_rol = u.rol;
+  SELECT u."username", u."nombre_completo", u."correo", u."fecha_creacion", r."nombre"::TEXT 
+  FROM "Usuario" AS u 
+  JOIN "Rol" AS r ON r."id_rol" = u."rol";
 END;$$ LANGUAGE plpgsql;
 --ACTUALIZAR LOS DATOS DE USUSARIO
 
@@ -119,7 +123,7 @@ CREATE OR REPLACE FUNCTION actualizar_usuario(
   RETURN 'Usuario actualizado';
 END;$$ LANGUAGE plpgsql;
 
--- Eliminar Usuario
+-- Eliminar "Usuario"
 CREATE OR REPLACE  FUNCTION eliminar_usuario(p_id INT) RETURNS TEXT AS $$
 BEGIN
   IF(SELECT 1 FROM "Usuario" WHERE id_usuario=p_id)THEN
@@ -130,17 +134,17 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
------------------------ BALANZAS ---------------------------
+----------------------- "Balanza"S ---------------------------
 
--- CREAR O AGREGAR UNA BALANZA
+-- CREAR O AGREGAR UNA "Balanza"
 
 CREATE OR REPLACE FUNCTION registrar_balanza(p_nombre TEXT, p_marca TEXT, p_modelo TEXT, p_serie TEXT, p_img_url TEXT, p_id_laboratorio INT,p_codigo TEXT) RETURNS TEXT AS $$
 BEGIN 
-  INSERT INTO Balanza(nombre,marca,modelo,serie,img_url,estado_calibracion,ultima_medicion,id_laboratorio,codigo) VALUES (p_nombre, p_marca, p_modelo, p_serie, p_img_url,'MALA',NOW(), p_id_laboratorio,p_codigo);
+  INSERT INTO "Balanza"(nombre,marca,modelo,serie,img_url,estado_calibracion,ultima_medicion,id_laboratorio,codigo) VALUES (p_nombre, p_marca, p_modelo, p_serie, p_img_url,'MALA',NOW(), p_id_laboratorio,p_codigo);
   RETURN 'Balanza registrada correctamente.';
 END;
 $$ LANGUAGE plpgsql;
--- ACTUALIZAR BALANZA
+-- ACTUALIZAR "Balanza"
 CREATE OR REPLACE FUNCTION actualizar_balanza(
   p_id INT,
   p_nombre TEXT DEFAULT NULL, 
@@ -150,7 +154,7 @@ CREATE OR REPLACE FUNCTION actualizar_balanza(
   p_img_url TEXT DEFAULT NULL, 
   p_id_laboratorio INT DEFAULT NULL
 ) RETURNS TEXT AS $$BEGIN 
-  UPDATE Balanza
+  UPDATE "Balanza"
   SET
     nombre = COALESCE(p_nombre, nombre),
     marca = COALESCE(p_marca, marca),
@@ -180,36 +184,21 @@ $$ LANGUAGE plpgsql;
 
 -- Obtener una balanza especifica
 CREATE OR REPLACE FUNCTION obtener_balanza_por_id(p_id INT) 
-RETURNS TABLE(
-    nombre TEXT, 
-    marca TEXT, 
-    modelo TEXT, 
-    serie TEXT, 
-    img_url TEXT, 
-    estado estado_equipo,
-    ultima TIMESTAMPTZ, 
-    id_lab INT, 
-    codigo_balanza TEXT
-) AS $$BEGIN
+RETURNS TABLE(nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, estado estado_equipo, ultima TIMESTAMPTZ, id_lab INT, codigo_balanza TEXT) AS $$BEGIN
   RETURN QUERY 
-  SELECT b.nombre, b.marca, b.modelo, b.serie, b.img_url, b.estado_calibracion, b.ultima_medicion, b.id_laboratorio, b.codigo 
-  FROM "Balanza" as b 
-  WHERE b.id_balanza = p_id;
-END;$$ language plpgsql;
+  SELECT b."nombre", b."marca", b."modelo", b."serie", b."img_url", b."estado_calibracion", b."ultima_medicion", b."id_laboratorio", b."codigo" 
+  FROM "Balanza" AS b 
+  WHERE b."id_balanza" = p_id;
+END;$$ LANGUAGE plpgsql;
 
 -- Obtener todas las balanzas
 
 CREATE OR REPLACE FUNCTION obtener_balanzas() 
-RETURNS TABLE (
-  nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, 
-  estado_calibracion estado_equipo, ultima_medicion TIMESTAMPTZ, 
-  codigo TEXT, id_laboratorio INT, nombre_laboratorio TEXT
-) AS $$BEGIN
+RETURNS TABLE (nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, estado_calibracion estado_equipo, ultima_medicion TIMESTAMPTZ, codigo TEXT, id_laboratorio INT, nombre_laboratorio TEXT) AS $$BEGIN
   RETURN QUERY 
-  SELECT b.nombre, b.marca, b.modelo, b.serie, b.img_url, b.estado_calibracion, 
-  b.ultima_medicion, b.codigo, l.id_laboratorio, l.nombre 
-  FROM "Balanza" as b 
-  JOIN "Laboratorio" as l ON l.id_laboratorio = b.id_laboratorio;
+  SELECT b."nombre", b."marca", b."modelo", b."serie", b."img_url", b."estado_calibracion", b."ultima_medicion", b."codigo", l."id_laboratorio", l."nombre" 
+  FROM "Balanza" AS b 
+  JOIN "Laboratorio" AS l ON l."id_laboratorio" = b."id_laboratorio";
 END;$$ LANGUAGE plpgsql;
 
 -- Obtener balanzas por laboratorio
@@ -229,12 +218,13 @@ RETURNS TABLE(
 END;$$ language plpgsql;
 
 -- Funcion para el buscador de balanza de la pagina de inicio, solo devuelve el estado y la ultima_medicion
-CREATE OR REPLACE FUNCTION buscador_balanza_por_codigo(p_codigo TEXT) 
-RETURNS TABLE(estado_calibracion estado_equipo, ultima_medicion TIMESTAMPTZ) AS $$
-BEGIN
-  RETURN QUERY SELECT estado_calibracion,ultima_medicion FROM "Balanza" WHERE codigo =p_codigo;
-END;
-$$ language plpgsql;
+CREATE OR REPLACE FUNCTION buscador_balanza_por_codigo(p_codigo TEXT)  
+RETURNS TABLE(estado_calibracion estado_equipo, ultima_medicion TIMESTAMPTZ) AS $$BEGIN
+  RETURN QUERY 
+  SELECT b."estado_calibracion", b."ultima_medicion" 
+  FROM "Balanza" AS b 
+  WHERE b."codigo" = p_codigo;
+END;$$ LANGUAGE plpgsql;
 
 ------ LABORATORIOS -------
 
@@ -243,7 +233,7 @@ $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION registrar_laboratorio(p_nombre TEXT, p_ubicacion TEXT) RETURNS TEXT AS $$
 BEGIN 
-  INSERT INTO Laboratorio(nombre,ubicacion) VALUES (p_nombre, p_ubicacion);
+  INSERT INTO "Laboratorio"(nombre,ubicacion) VALUES (p_nombre, p_ubicacion);
   RETURN 'Laboratorio registrado correctamente.';
 END;
 $$ LANGUAGE plpgsql;
@@ -288,10 +278,10 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION obtener_laboratorios() 
 RETURNS TABLE (id_laboratorio INT, nombre TEXT, ubicacion TEXT, total_balanzas BIGINT) AS $$BEGIN
   RETURN QUERY 
-  SELECT l.id_laboratorio, l.nombre, l.ubicacion, COUNT(b.id_balanza) AS total_balanzas 
-  FROM "Laboratorio" l 
-  LEFT JOIN "Balanza" b ON l.id_laboratorio = b.id_laboratorio 
-  GROUP BY l.id_laboratorio, l.nombre, l.ubicacion;
+  SELECT l."id_laboratorio", l."nombre", l."ubicacion", COUNT(b."id_balanza") 
+  FROM "Laboratorio" AS l 
+  LEFT JOIN "Balanza" AS b ON l."id_laboratorio" = b."id_laboratorio" 
+  GROUP BY l."id_laboratorio", l."nombre", l."ubicacion";
 END;$$ LANGUAGE plpgsql;
 
 --Obtener un "Laboratorio" en especifico
@@ -312,14 +302,14 @@ END;$$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION agregar_reporte(p_id_usuario INT, p_id_balanza INT, p_excentricidad_promedio NUMERIC, p_repetibilidad_50 NUMERIC, p_repetibilidad_100 NUMERIC, p_linealidad_promedio NUMERIC, p_cumple_emt BOOLEAN, p_observaciones TEXT, p_estado_final estado_equipo) RETURNS TEXT AS $$
 DECLARE nuevo_id INT;
 BEGIN
-  IF NOT EXISTS (SELECT 1 FROM Usuario WHERE id_usuario = p_id_usuario) THEN
-    RETURN 'El usuario no existe';
+  IF NOT EXISTS (SELECT 1 FROM "Usuario" WHERE id_usuario = p_id_usuario) THEN
+    RETURN 'El "Usuario" no existe';
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM "Balanza" WHERE id_balanza = p_id_balanza) THEN
     RETURN 'La balanza no existe';
   END IF;
-  INSERT INTO REPORTE(id_usuario,id_balanza,fecha_analisis,excentricidad_promedio, repetibilidad_50, repetibilidad_100, linealidad_promedio, cumple_emt, observaciones, estado_final) VALUES (p_id_usuario,p_id_balanza,NOW(),p_excentricidad_promedio,p_repetibilidad_50,p_repetibilidad_100,p_linealidad_promedio,p_cumple_emt,p_observaciones,p_estado_final) RETURNING id_reporte INTO nuevo_id;
+  INSERT INTO "Reporte"(id_usuario,id_balanza,fecha_analisis,excentricidad_promedio, repetibilidad_50, repetibilidad_100, linealidad_promedio, cumple_emt, observaciones, estado_final) VALUES (p_id_usuario,p_id_balanza,NOW(),p_excentricidad_promedio,p_repetibilidad_50,p_repetibilidad_100,p_linealidad_promedio,p_cumple_emt,p_observaciones,p_estado_final) RETURNING id_reporte INTO nuevo_id;
 
   UPDATE "Balanza"
   SET
@@ -348,7 +338,7 @@ CREATE OR REPLACE FUNCTION obtener_reportes_balanza(p_id_balanza INT) RETURNS TA
   WHERE r.id_balanza = p_id_balanza;
 END;$$ LANGUAGE plpgsql;
 
--- OBTENER TODOS LOS REPORTES de un usuario
+-- OBTENER TODOS LOS REPORTES de un "Usuario"
 
 CREATE OR REPLACE FUNCTION obtener_reportes_usuario(p_id_usuario INT) RETURNS TABLE 
 (
@@ -372,22 +362,17 @@ $$ LANGUAGE plpgsql;
 
 -- obtener datos reporte completo
 
-CREATE OR REPLACE FUNCTION obtener_reporte(p_id_reporte INT) RETURNS TABLE (id_reporte INT,
-  id_usuario INT,
-  id_balanza INT,
-  fecha_analisis TIMESTAMPTZ,
-  excentricidad_promedio NUMERIC, 
-  repetibilidad_50 NUMERIC, 
-  repetibilidad_100 NUMERIC, 
-  linealidad_promedio NUMERIC, 
-  cumple_emt BOOLEAN, 
-  observaciones TEXT, 
-  estado_final estado_equipo,
-  nombre_balanza TEXT,
-  nombre_usuario TEXT,
-  nombre_laboratorio TEXT
-) AS $$
-BEGIN
-  RETURN QUERY SELECT r.id_reporte,r.id_usuario,r.id_balanza,r.fecha_analisis,r.excentricidad_promedio, r.repetibilidad_50, r.repetibilidad_100, r.linealidad_promedio, r.cumple_emt, r.observaciones, r.estado_final,b.nombre,u.nombre_completo,l.nombre FROM "Reporte" as r JOIN "Balanza" as b ON r.id_balanza=b.id_balanza  JOIN "Usuario" as u ON r.id_usuario=u.id_usuario JOIN "Laboratorio" as l ON b.id_laboratorio=l.id_laboratorio WHERE r.id_reporte = p_id_reporte;
-END;
-$$ LANGUAGE plpgsql;
+CREATE OR REPLACE FUNCTION obtener_reporte(p_id_reporte INT) RETURNS TABLE (
+  id_reporte INT, id_usuario INT, id_balanza INT, fecha_analisis TIMESTAMPTZ,
+  excentricidad_promedio NUMERIC, repetibilidad_50 NUMERIC, repetibilidad_100 NUMERIC, 
+  linealidad_promedio NUMERIC, cumple_emt BOOLEAN, observaciones TEXT, 
+  estado_final estado_equipo, nombre_balanza TEXT, nombre_usuario TEXT, nombre_laboratorio TEXT
+) AS $$BEGIN
+  RETURN QUERY 
+  SELECT r."id_reporte", r."id_usuario", r."id_balanza", r."fecha_analisis", r."excentricidad_promedio", r."repetibilidad_50", r."repetibilidad_100", r."linealidad_promedio", r."cumple_emt", r."observaciones", r."estado_final", b."nombre", u."nombre_completo", l."nombre" 
+  FROM "Reporte" AS r 
+  JOIN "Balanza" AS b ON r."id_balanza" = b."id_balanza"  
+  JOIN "Usuario" AS u ON r."id_usuario" = u."id_usuario" 
+  JOIN "Laboratorio" AS l ON b."id_laboratorio" = l."id_laboratorio" 
+  WHERE r."id_reporte" = p_id_reporte;
+END;$$ LANGUAGE plpgsql;
