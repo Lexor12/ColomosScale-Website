@@ -10,7 +10,7 @@ CREATE TYPE estado_equipo AS ENUM ('ADECUADA', 'INTERMEDIA', 'MALA');
 -- Tabla Rol (Aquí no lleva serial pq los IDs son fijos: 1, 2, 3, 4)
 CREATE TABLE "Rol" (
   "id_rol" INT PRIMARY KEY,
-  "nombre" VARCHAR
+  "nombre" TEXT
 );
 
 -- Tabla "Usuario"
@@ -51,10 +51,10 @@ CREATE TABLE "Reporte" (
   "id_usuario" INT REFERENCES "Usuario"("id_usuario"),
   "id_balanza" INT REFERENCES "Balanza"("id_balanza"),
   "fecha_analisis" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-  "excentricidad_promedio" NUMERIC(12, 8),
-  "repetibilidad_50" NUMERIC(12, 8),
-  "repetibilidad_100" NUMERIC(12, 8),
-  "linealidad_promedio" NUMERIC(12, 8),
+  "excentricidad_promedio" NUMERIC,
+  "repetibilidad_50" NUMERIC,
+  "repetibilidad_100" NUMERIC,
+  "linealidad_promedio" NUMERIC,
   "cumple_emt" BOOL,
   "observaciones" TEXT,
   "estado_final" estado_equipo 
@@ -299,26 +299,31 @@ END;$$ LANGUAGE plpgsql;
 ------ REPORTES -------
 
 -- AGREGAR UN NUEVO REPORTE A LA BASE DE DATOS
-CREATE OR REPLACE FUNCTION agregar_reporte(p_id_usuario INT, p_id_balanza INT, p_excentricidad_promedio NUMERIC, p_repetibilidad_50 NUMERIC, p_repetibilidad_100 NUMERIC, p_linealidad_promedio NUMERIC, p_cumple_emt BOOLEAN, p_observaciones TEXT, p_estado_final estado_equipo) RETURNS TEXT AS $$
+CREATE OR REPLACE FUNCTION agregar_reporte(p_id_usuario INT, p_codigo_balanza TEXT, p_excentricidad_promedio NUMERIC, p_repetibilidad_50 NUMERIC, p_repetibilidad_100 NUMERIC, p_linealidad_promedio NUMERIC, p_cumple_emt BOOLEAN, p_observaciones TEXT, p_estado_final estado_equipo) RETURNS TEXT
+SECURITY DEFINER
+SET search_path = public
+AS $$
 DECLARE nuevo_id INT;
+DECLARE v_id_balanza INT;
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM "Usuario" WHERE id_usuario = p_id_usuario) THEN
-    RETURN 'El "Usuario" no existe';
+    RETURN 'Error: Su usuario no existe.';
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM "Balanza" WHERE codigo = p_codigo_balanza) THEN
+    RETURN 'El codigo de la balanza no existe.';
   END IF;
 
-  IF NOT EXISTS (SELECT 1 FROM "Balanza" WHERE id_balanza = p_id_balanza) THEN
-    RETURN 'La balanza no existe';
-  END IF;
-  INSERT INTO "Reporte"(id_usuario,id_balanza,fecha_analisis,excentricidad_promedio, repetibilidad_50, repetibilidad_100, linealidad_promedio, cumple_emt, observaciones, estado_final) VALUES (p_id_usuario,p_id_balanza,NOW(),p_excentricidad_promedio,p_repetibilidad_50,p_repetibilidad_100,p_linealidad_promedio,p_cumple_emt,p_observaciones,p_estado_final) RETURNING id_reporte INTO nuevo_id;
+  SELECT id_balanza INTO v_id_balanza FROM "Balanza" WHERE codigo=p_codigo_balanza;
 
+  INSERT INTO "Reporte"(id_usuario,id_balanza,fecha_analisis,excentricidad_promedio, repetibilidad_50, repetibilidad_100, linealidad_promedio, cumple_emt, observaciones, estado_final) VALUES (p_id_usuario,v_id_balanza,NOW(),p_excentricidad_promedio,p_repetibilidad_50,p_repetibilidad_100,p_linealidad_promedio,p_cumple_emt,p_observaciones,p_estado_final) RETURNING id_reporte INTO nuevo_id;
   UPDATE "Balanza"
   SET
     ultima_medicion = NOW(),
     estado_calibracion = p_estado_final
-  WHERE id_balanza = p_id_balanza;
+  WHERE codigo = p_codigo_balanza;
   RETURN 'Reporte #' || nuevo_id || ' guardado y balanza actualizada correctamente.';
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql; 
 
 -- OBTENER TODOS LOS REPORTES de una balanza
 
@@ -376,3 +381,35 @@ CREATE OR REPLACE FUNCTION obtener_reporte(p_id_reporte INT) RETURNS TABLE (
   JOIN "Laboratorio" AS l ON b."id_laboratorio" = l."id_laboratorio" 
   WHERE r."id_reporte" = p_id_reporte;
 END;$$ LANGUAGE plpgsql;
+
+------- ESPECIFICAS
+DROP FUNCTION iniciar_sesion(text,text);
+CREATE OR REPLACE FUNCTION iniciar_sesion(p_username TEXT, p_password TEXT) 
+RETURNS TABLE(id_res INT, rol_res INT)
+SECURITY DEFINER
+SET search_path = public
+AS $$BEGIN    
+    SELECT u.id_usuario, r.id_rol 
+    INTO id_res, rol_res
+    FROM "Usuario" u 
+    JOIN "Rol" r ON r.id_rol = u.rol
+    WHERE u.username = p_username AND u.password = p_password;
+
+    IF id_res IS NULL THEN
+        id_res := -1;
+        rol_res := -1;
+    END IF;
+
+    RETURN NEXT;
+END;$$ LANGUAGE plpgsql;
+
+
+GRANT EXECUTE ON FUNCTION iniciar_sesion(TEXT, TEXT) TO anon;
+GRANT EXECUTE ON FUNCTION iniciar_sesion(TEXT, TEXT) TO authenticated;
+GRANT EXECUTE ON FUNCTION agregar_reporte(INT, TEXT,NUMERIC,NUMERIC,NUMERIC,NUMERIC,BOOLEAN,TEXT,estado_equipo) TO anon;
+GRANT EXECUTE ON FUNCTION agregar_reporte(INT, TEXT,NUMERIC,NUMERIC,NUMERIC,NUMERIC,BOOLEAN,TEXT,estado_equipo) TO authenticated;
+
+ALTER TABLE "Reporte" ALTER COLUMN excentricidad_promedio TYPE NUMERIC;
+ALTER TABLE "Reporte" ALTER COLUMN repetibilidad_50 TYPE NUMERIC;
+ALTER TABLE "Reporte" ALTER COLUMN repetibilidad_100 TYPE NUMERIC;
+ALTER TABLE "Reporte" ALTER COLUMN linealidad_promedio TYPE NUMERIC;

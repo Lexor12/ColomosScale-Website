@@ -1,0 +1,11 @@
+# Node
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Entorno
+.env
+
+# Sistema
+.DS_Store
+Thumbs.db
