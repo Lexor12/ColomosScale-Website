@@ -24,8 +24,13 @@
 </header>
 <div class="hero">
 <div class="search-box">
-    <input type="text" name="q" placeholder="Buscar una balanza" autofocus>
-    <button type="submit">Buscar</button>
+    <input id="txtbalanza" type="text" name="q" placeholder="Buscar una balanza" autofocus>
+    <button id="buscar" type="submit">Buscar</button>
+    <div id="result">
+        <p class="result__label"><b>Estado Actual:</b> <span id="estado-valor">ADECUADO</span></p>
+        <p class="result__label"><b>Ultima medición:</b> <span id="fecha-valor">01/01/2001</span></p>
+        <p id="mensaje-error" style="color: red; text-align: center; display: none;"></p>
+    </div>
 </div>
 </div>
 <main id="about" class="about">
@@ -38,4 +43,8 @@
         <li><strong>Reportes detallados:</strong> Genera informes sobre el uso y el rendimiento de las balanzas para tomar decisiones informadas.</li><br>
     </ul>
 </main>
+<footer id="pie">
+    <p id="copy">&copy; Todos los derechos reservados.</p>
+</footer>
+<script src="js/buscador.js"></script>
 </body>

@@ -8,7 +8,7 @@ body{
     padding-top:70px;
     display:grid;
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(400px, auto) minmax(400px, auto) minmax(400px, auto);
+    grid-template-rows: minmax(400px, auto) minmax(400px, auto) minmax(400px, auto) 15vh;
     min-height: 100vh;
     justify-items: center; 
     align-items: center;
@@ -34,15 +34,20 @@ body{
 }
 
 .about{
+    margin: 5%;
     grid-row: 3;
     width: 80%;
     max-width: 800px;
     text-align: justify;
+    background-color: #f9f9f9;
+    padding: 40px;
+    border-radius: 6px;
+    border: 1px solid #eeeeee;
 }
 h2{
     font-size: 120%;
     text-align: center;
-    }
+}
 
 .search-box input {
     padding: 12px;
@@ -102,4 +107,29 @@ button:active {
 
 a:hover {
     color: red;
+}
+#pie{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100%;
+    background-color: #000;
+}
+#copy{
+    color: white;
+}
+#result{
+    display: none;
+    background-color: rgba(0, 0, 0, 0.7); /* Negro con transparencia */
+    border-radius: 0px 0px 10px 10px;
+    padding: 15px;
+    color: #ffffff;
+}
+#result>p{
+    margin-top: 10px;
+}
+#estado-valor,#fecha-valor{
+    color: #cacacacc;
+    font-weight: bold;
 }
