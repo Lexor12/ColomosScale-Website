@@ -92,6 +92,14 @@ RETURNS TABLE(username TEXT, nombre_completo TEXT, correo TEXT, password TEXT, f
   FROM "Usuario" AS u 
   WHERE u.username = p_username;
 END;$$ LANGUAGE plpgsql;
+
+-- Obtener ususario por su id
+CREATE OR REPLACE FUNCTION obtener_usuario_por_id(p_id INT)RETURNS TABLE(username TEXT, nombre_completo TEXT, correo TEXT, fecha_creacion TIMESTAMPTZ, rol TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
+RETURN QUERY SELECT u.username, u.nombre_completo, u.correO, u.fecha_creacion, r.nombre 
+  FROM "Usuario" AS u JOIN "Rol" AS r ON r.id_rol = u.rol
+  WHERE u.id_usuario = p_id;
+END;$$ LANGUAGE plpgsql;
+
 -- OBTIENE TODOS LOS "Usuario"S CON SUS ROLES (nombre del rol)
 CREATE OR REPLACE FUNCTION obtener_usuarios() 
 RETURNS TABLE (username TEXT, nombre_completo TEXT, correo TEXT, fecha_creacion TIMESTAMPTZ, rol_nombre TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN

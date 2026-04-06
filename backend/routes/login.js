@@ -1,4 +1,5 @@
 import sql from '../db.js'
+import jwt from 'jsonwebtoken'
 
 
 export async function iniciarSesion(username,password){
@@ -23,4 +24,15 @@ async function generarHash(mensaje) {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     return hashHex;
+}
+
+
+export function verificarToken(token){
+    if(!token)return {status:0}
+    try {
+        const usuario = jwt.verify(token, process.env.TOKEN_FIRMA_PASS);
+        return { status: 1, usuario }; 
+    } catch (error) {
+        return { status: 0 };
+    }
 }

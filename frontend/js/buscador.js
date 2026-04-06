@@ -25,9 +25,9 @@ botonBuscar.addEventListener('click',async(e)=>{
             msgNoEncontrado.style.display ='block';
         }
         else{
+            const fecha = new Date(datos[0].ultima_medicion);
             document.getElementById('estado-valor').textContent = datos[0].estado_calibracion;
-            document.getElementById('fecha-valor').textContent = datos[0].ultima_medicion;
-            
+            document.getElementById('fecha-valor').textContent = fecha.toLocaleDateString('es-MX');
         }
         cuadroResult.style.display = 'block';
     }
