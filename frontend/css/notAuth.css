@@ -8,7 +8,7 @@ body{
     padding-top:70px;
     display:grid;
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(400px, auto) minmax(400px, auto) minmax(400px, auto) 15vh;
+    grid-template-rows: minmax(400px, auto) 15vh;
     min-height: 100vh;
     justify-items: center; 
     align-items: center;
@@ -18,57 +18,6 @@ body{
     grid-row:1;
     font-size: 150%;
     text-align: center;
-}
-
-.hero{
-    grid-row: 2;
-    width: 100%;  
-    height: 100%; 
-    background-image: url(https://file.garden/abZDVP9uwwfHTHzQ/balanza);
-    background-repeat: no-repeat;
-    background-size: cover;   
-    background-position: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.about{
-    margin: 5%;
-    grid-row: 3;
-    width: 80%;
-    max-width: 800px;
-    text-align: justify;
-    background-color: #f9f9f9;
-    padding: 40px;
-    border-radius: 6px;
-    border: 1px solid #eeeeee;
-}
-h2{
-    font-size: 120%;
-    text-align: center;
-}
-
-.search-box input {
-    padding: 12px;
-    outline: none;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    width: 400px;
-}
-
-.search-box button {
-    padding: 12px 20px;
-    background: #000;
-    color: #fff;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:active {
-    transform: scale(0.98);
 }
 
 .top-bar {

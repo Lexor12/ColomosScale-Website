@@ -64,7 +64,7 @@ INSERT INTO "Rol" VALUES (1, 'ADMIN'),(2, 'SUPERVISOR'),(3, 'TECNICO');
 --------- FUNCIONES Y PROCEDURES
 ----------------------- "Usuario"S ---------------------------
 -- INSERTA UN USUSARIO EN LA BASE DE DATOS
-CREATE OR REPLACE FUNCTION registrar_usuario(p_username TEXT,p_nombre_completo TEXT, p_correo TEXT,p_password TEXT,p_rol INT) RETURNS TEXT AS $$
+CREATE OR REPLACE FUNCTION registrar_usuario(p_username TEXT,p_nombre_completo TEXT, p_correo TEXT,p_password TEXT,p_rol INT) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$
 BEGIN
   IF EXISTS (SELECT 1 FROM "Usuario" WHERE correo = p_correo OR username =p_username) THEN
     RETURN 'El correo y/o el username ya existe';
@@ -77,7 +77,7 @@ $$ LANGUAGE plpgsql;
 -- REGRESA TODOS LOS CAMPOS INCLUYENDO LA CONTRASEÑA PARA REALIZAR EL ANALISIS EN NODE
 -- Función corregida por CORREO
 CREATE OR REPLACE FUNCTION obtener_usuarios_por_correo(p_correo TEXT)  
-RETURNS TABLE(username TEXT, nombre_completo TEXT, correo TEXT, password TEXT, fecha_creacion TIMESTAMPTZ, rol INT) AS $$BEGIN
+RETURNS TABLE(username TEXT, nombre_completo TEXT, correo TEXT, password TEXT, fecha_creacion TIMESTAMPTZ, rol INT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
   SELECT u.username, u.nombre_completo, u.correo, u.password, u.fecha_creacion, u.rol 
   FROM "Usuario" AS u 
@@ -86,7 +86,7 @@ END;$$ LANGUAGE plpgsql;
 
 -- Función corregida por USERNAME
 CREATE OR REPLACE FUNCTION obtener_usuarios_por_username(p_username TEXT)  
-RETURNS TABLE(username TEXT, nombre_completo TEXT, correo TEXT, password TEXT, fecha_creacion TIMESTAMPTZ, rol INT) AS $$BEGIN
+RETURNS TABLE(username TEXT, nombre_completo TEXT, correo TEXT, password TEXT, fecha_creacion TIMESTAMPTZ, rol INT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
   SELECT u.username, u.nombre_completo, u.correo, u.password, u.fecha_creacion, u.rol 
   FROM "Usuario" AS u 
@@ -94,7 +94,7 @@ RETURNS TABLE(username TEXT, nombre_completo TEXT, correo TEXT, password TEXT, f
 END;$$ LANGUAGE plpgsql;
 -- OBTIENE TODOS LOS "Usuario"S CON SUS ROLES (nombre del rol)
 CREATE OR REPLACE FUNCTION obtener_usuarios() 
-RETURNS TABLE (username TEXT, nombre_completo TEXT, correo TEXT, fecha_creacion TIMESTAMPTZ, rol_nombre TEXT) AS $$BEGIN
+RETURNS TABLE (username TEXT, nombre_completo TEXT, correo TEXT, fecha_creacion TIMESTAMPTZ, rol_nombre TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
   SELECT u."username", u."nombre_completo", u."correo", u."fecha_creacion", r."nombre"::TEXT 
   FROM "Usuario" AS u 
@@ -109,7 +109,7 @@ CREATE OR REPLACE FUNCTION actualizar_usuario(
   p_correo TEXT DEFAULT NULL,
   p_password TEXT DEFAULT NULL,
   p_rol INT DEFAULT NULL
-) RETURNS TEXT AS $$BEGIN
+) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ BEGIN
   UPDATE "Usuario"
   SET
     username = COALESCE(p_username, username),
@@ -124,7 +124,7 @@ CREATE OR REPLACE FUNCTION actualizar_usuario(
 END;$$ LANGUAGE plpgsql;
 
 -- Eliminar "Usuario"
-CREATE OR REPLACE  FUNCTION eliminar_usuario(p_id INT) RETURNS TEXT AS $$
+CREATE OR REPLACE  FUNCTION eliminar_usuario(p_id INT) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ 
 BEGIN
   IF(SELECT 1 FROM "Usuario" WHERE id_usuario=p_id)THEN
     DELETE FROM "Usuario" WHERE id_usuario=p_id;
@@ -138,7 +138,7 @@ $$ LANGUAGE plpgsql;
 
 -- CREAR O AGREGAR UNA "Balanza"
 
-CREATE OR REPLACE FUNCTION registrar_balanza(p_nombre TEXT, p_marca TEXT, p_modelo TEXT, p_serie TEXT, p_img_url TEXT, p_id_laboratorio INT,p_codigo TEXT) RETURNS TEXT AS $$
+CREATE OR REPLACE FUNCTION registrar_balanza(p_nombre TEXT, p_marca TEXT, p_modelo TEXT, p_serie TEXT, p_img_url TEXT, p_id_laboratorio INT,p_codigo TEXT) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ 
 BEGIN 
   INSERT INTO "Balanza"(nombre,marca,modelo,serie,img_url,estado_calibracion,ultima_medicion,id_laboratorio,codigo) VALUES (p_nombre, p_marca, p_modelo, p_serie, p_img_url,'MALA',NOW(), p_id_laboratorio,p_codigo);
   RETURN 'Balanza registrada correctamente.';
@@ -153,7 +153,7 @@ CREATE OR REPLACE FUNCTION actualizar_balanza(
   p_serie TEXT DEFAULT NULL, 
   p_img_url TEXT DEFAULT NULL, 
   p_id_laboratorio INT DEFAULT NULL
-) RETURNS TEXT AS $$BEGIN 
+) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ BEGIN 
   UPDATE "Balanza"
   SET
     nombre = COALESCE(p_nombre, nombre),
@@ -172,7 +172,7 @@ CREATE OR REPLACE FUNCTION actualizar_balanza(
 END;$$ LANGUAGE plpgsql;
 
 -- Eliminar balanza
-CREATE OR REPLACE FUNCTION eliminar_balanza(p_id INT) RETURNS TEXT AS $$
+CREATE OR REPLACE FUNCTION eliminar_balanza(p_id INT) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ 
 BEGIN
   IF(SELECT 1 FROM "Balanza" WHERE id_balanza=p_id)THEN
     DELETE FROM "Balanza" WHERE id_balanza=p_id;
@@ -184,7 +184,7 @@ $$ LANGUAGE plpgsql;
 
 -- Obtener una balanza especifica
 CREATE OR REPLACE FUNCTION obtener_balanza_por_id(p_id INT) 
-RETURNS TABLE(nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, estado estado_equipo, ultima TIMESTAMPTZ, id_lab INT, codigo_balanza TEXT) AS $$BEGIN
+RETURNS TABLE(nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, estado estado_equipo, ultima TIMESTAMPTZ, id_lab INT, codigo_balanza TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
   SELECT b."nombre", b."marca", b."modelo", b."serie", b."img_url", b."estado_calibracion", b."ultima_medicion", b."id_laboratorio", b."codigo" 
   FROM "Balanza" AS b 
@@ -194,7 +194,7 @@ END;$$ LANGUAGE plpgsql;
 -- Obtener todas las balanzas
 
 CREATE OR REPLACE FUNCTION obtener_balanzas() 
-RETURNS TABLE (nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, estado_calibracion estado_equipo, ultima_medicion TIMESTAMPTZ, codigo TEXT, id_laboratorio INT, nombre_laboratorio TEXT) AS $$BEGIN
+RETURNS TABLE (nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, estado_calibracion estado_equipo, ultima_medicion TIMESTAMPTZ, codigo TEXT, id_laboratorio INT, nombre_laboratorio TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
   SELECT b."nombre", b."marca", b."modelo", b."serie", b."img_url", b."estado_calibracion", b."ultima_medicion", b."codigo", l."id_laboratorio", l."nombre" 
   FROM "Balanza" AS b 
@@ -208,7 +208,7 @@ RETURNS TABLE(
     nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, 
     estado_calibracion estado_equipo, ultima_medicion TIMESTAMPTZ,
     codigo TEXT, id_laboratorio INT, nombre_laboratorio TEXT
-) AS $$BEGIN
+) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
   SELECT b.nombre, b.marca, b.modelo, b.serie, b.img_url, b.estado_calibracion, 
   b.ultima_medicion, b.codigo, l.id_laboratorio, l.nombre 
@@ -219,7 +219,7 @@ END;$$ language plpgsql;
 
 -- Funcion para el buscador de balanza de la pagina de inicio, solo devuelve el estado y la ultima_medicion
 CREATE OR REPLACE FUNCTION buscador_balanza_por_codigo(p_codigo TEXT)  
-RETURNS TABLE(estado_calibracion estado_equipo, ultima_medicion TIMESTAMPTZ) AS $$BEGIN
+RETURNS TABLE(estado_calibracion estado_equipo, ultima_medicion TIMESTAMPTZ) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
   SELECT b."estado_calibracion", b."ultima_medicion" 
   FROM "Balanza" AS b 
@@ -231,7 +231,7 @@ END;$$ LANGUAGE plpgsql;
 -- Para insertar nuevos laboratorios
 
 
-CREATE OR REPLACE FUNCTION registrar_laboratorio(p_nombre TEXT, p_ubicacion TEXT) RETURNS TEXT AS $$
+CREATE OR REPLACE FUNCTION registrar_laboratorio(p_nombre TEXT, p_ubicacion TEXT) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ 
 BEGIN 
   INSERT INTO "Laboratorio"(nombre,ubicacion) VALUES (p_nombre, p_ubicacion);
   RETURN 'Laboratorio registrado correctamente.';
@@ -240,7 +240,7 @@ $$ LANGUAGE plpgsql;
 
 --Para actualizar la informacion de un "Laboratorio"
 
-CREATE OR REPLACE FUNCTION actualizar_laboratorio(p_id INT,p_nombre TEXT DEFAULT NULL, p_ubicacion TEXT DEFAULT NULL) RETURNS TEXT AS $$
+CREATE OR REPLACE FUNCTION actualizar_laboratorio(p_id INT,p_nombre TEXT DEFAULT NULL, p_ubicacion TEXT DEFAULT NULL) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ 
 BEGIN 
   UPDATE "Laboratorio"
   SET
@@ -256,7 +256,7 @@ BEGIN
 END;$$ LANGUAGE plpgsql;
 
 -- Eliminar Laboratorio
-CREATE OR REPLACE FUNCTION eliminar_laboratorio(p_id INT) RETURNS TEXT AS $$
+CREATE OR REPLACE FUNCTION eliminar_laboratorio(p_id INT) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ 
 DECLARE v_cant_balanzas INT;
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM "Laboratorio" WHERE id_laboratorio = p_id) THEN
@@ -276,7 +276,7 @@ $$ LANGUAGE plpgsql;
 -- Obtener todos los laboratorios
 
 CREATE OR REPLACE FUNCTION obtener_laboratorios() 
-RETURNS TABLE (id_laboratorio INT, nombre TEXT, ubicacion TEXT, total_balanzas BIGINT) AS $$BEGIN
+RETURNS TABLE (id_laboratorio INT, nombre TEXT, ubicacion TEXT, total_balanzas BIGINT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
   SELECT l."id_laboratorio", l."nombre", l."ubicacion", COUNT(b."id_balanza") 
   FROM "Laboratorio" AS l 
@@ -286,7 +286,7 @@ END;$$ LANGUAGE plpgsql;
 
 --Obtener un "Laboratorio" en especifico
 CREATE OR REPLACE FUNCTION obtener_laboratorio(p_id INT) 
-RETURNS TABLE (id_laboratorio INT, nombre TEXT, ubicacion TEXT, total_balanzas BIGINT) AS $$BEGIN
+RETURNS TABLE (id_laboratorio INT, nombre TEXT, ubicacion TEXT, total_balanzas BIGINT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
   SELECT l.id_laboratorio, l.nombre, l.ubicacion, COUNT(b.id_balanza) 
   FROM "Laboratorio" l 
@@ -332,7 +332,7 @@ CREATE OR REPLACE FUNCTION obtener_reportes_balanza(p_id_balanza INT) RETURNS TA
   excentricidad_promedio NUMERIC, repetibilidad_50 NUMERIC, repetibilidad_100 NUMERIC, 
   linealidad_promedio NUMERIC, cumple_emt BOOLEAN, observaciones TEXT, 
   estado_final estado_equipo, nombre_tecnico TEXT
-) AS $$BEGIN
+) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
   SELECT r.id_reporte, r.id_usuario, r.id_balanza, r.fecha_analisis,
   r.excentricidad_promedio, r.repetibilidad_50, r.repetibilidad_100, 
@@ -359,7 +359,7 @@ CREATE OR REPLACE FUNCTION obtener_reportes_usuario(p_id_usuario INT) RETURNS TA
   observaciones TEXT, 
   estado_final estado_equipo,
   nombre_balanza TEXT
-) AS $$
+) SECURITY DEFINER SET search_path = public AS $$ 
 BEGIN
   RETURN QUERY SELECT r.id_reporte,r.id_usuario,r.id_balanza,r.fecha_analisis,r.excentricidad_promedio, r.repetibilidad_50, r.repetibilidad_100, r.linealidad_promedio, r.cumple_emt, r.observaciones, r.estado_final,b.nombre FROM "Reporte" as r JOIN "Balanza" as b ON r.id_balanza=b.id_balanza WHERE r.id_usuario = p_id_usuario ;
 END;
@@ -372,7 +372,7 @@ CREATE OR REPLACE FUNCTION obtener_reporte(p_id_reporte INT) RETURNS TABLE (
   excentricidad_promedio NUMERIC, repetibilidad_50 NUMERIC, repetibilidad_100 NUMERIC, 
   linealidad_promedio NUMERIC, cumple_emt BOOLEAN, observaciones TEXT, 
   estado_final estado_equipo, nombre_balanza TEXT, nombre_usuario TEXT, nombre_laboratorio TEXT
-) AS $$BEGIN
+) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
   SELECT r."id_reporte", r."id_usuario", r."id_balanza", r."fecha_analisis", r."excentricidad_promedio", r."repetibilidad_50", r."repetibilidad_100", r."linealidad_promedio", r."cumple_emt", r."observaciones", r."estado_final", b."nombre", u."nombre_completo", l."nombre" 
   FROM "Reporte" AS r 
@@ -413,3 +413,39 @@ ALTER TABLE "Reporte" ALTER COLUMN excentricidad_promedio TYPE NUMERIC;
 ALTER TABLE "Reporte" ALTER COLUMN repetibilidad_50 TYPE NUMERIC;
 ALTER TABLE "Reporte" ALTER COLUMN repetibilidad_100 TYPE NUMERIC;
 ALTER TABLE "Reporte" ALTER COLUMN linealidad_promedio TYPE NUMERIC;
+
+
+
+-- (Obligatorio para que funcione todo lo demás)
+GRANT CONNECT ON DATABASE postgres TO colomosback;
+GRANT USAGE ON SCHEMA public TO colomosback;
+
+-- CATEGORÍA: USUARIOS
+GRANT EXECUTE ON FUNCTION registrar_usuario(TEXT, TEXT, TEXT, TEXT, INT) TO colomosback;
+GRANT EXECUTE ON FUNCTION obtener_usuarios_por_correo(TEXT) TO colomosback;
+GRANT EXECUTE ON FUNCTION obtener_usuarios_por_username(TEXT) TO colomosback;
+GRANT EXECUTE ON FUNCTION obtener_usuarios() TO colomosback;
+GRANT EXECUTE ON FUNCTION actualizar_usuario(INT, TEXT, TEXT, TEXT, TEXT, INT) TO colomosback;
+GRANT EXECUTE ON FUNCTION eliminar_usuario(INT) TO colomosback;
+GRANT EXECUTE ON FUNCTION iniciar_sesion(TEXT, TEXT) TO colomosback;
+
+-- CATEGORÍA: BALANZAS
+GRANT EXECUTE ON FUNCTION registrar_balanza(TEXT, TEXT, TEXT, TEXT, TEXT, INT, TEXT) TO colomosback;
+GRANT EXECUTE ON FUNCTION actualizar_balanza(INT, TEXT, TEXT, TEXT, TEXT, TEXT, INT) TO colomosback;
+GRANT EXECUTE ON FUNCTION eliminar_balanza(INT) TO colomosback;
+GRANT EXECUTE ON FUNCTION obtener_balanza_por_id(INT) TO colomosback;
+GRANT EXECUTE ON FUNCTION obtener_balanzas() TO colomosback;
+GRANT EXECUTE ON FUNCTION obtener_balanzas_por_laboratorio(INT) TO colomosback;
+GRANT EXECUTE ON FUNCTION buscador_balanza_por_codigo(TEXT) TO colomosback;
+
+-- CATEGORÍA: LABORATORIOS
+GRANT EXECUTE ON FUNCTION registrar_laboratorio(TEXT, TEXT) TO colomosback;
+GRANT EXECUTE ON FUNCTION actualizar_laboratorio(INT, TEXT, TEXT) TO colomosback;
+GRANT EXECUTE ON FUNCTION eliminar_laboratorio(INT) TO colomosback;
+GRANT EXECUTE ON FUNCTION obtener_laboratorios() TO colomosback;
+GRANT EXECUTE ON FUNCTION obtener_laboratorio(INT) TO colomosback;
+
+-- CATEGORÍA: REPORTES (Solo lectura, como pediste)
+GRANT EXECUTE ON FUNCTION obtener_reportes_balanza(INT) TO colomosback;
+GRANT EXECUTE ON FUNCTION obtener_reportes_usuario(INT) TO colomosback;
+GRANT EXECUTE ON FUNCTION obtener_reporte(INT) TO colomosback;
