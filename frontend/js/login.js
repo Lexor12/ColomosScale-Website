@@ -1,15 +1,18 @@
 const username = document.getElementById('inputUsername');
 const contra = document.getElementById('inputPass');
 const boton = document.getElementById('btn');
+const error = document.getElementById('mensaje-error');
 
 username.addEventListener('input',()=>{
     if(username.value.trim()!=""){
         username.style.borderColor = "#e0e0e0";
+        error.style.display='none';
     }
 })
 contra.addEventListener('input',()=>{
     if(contra.value.trim()!=""){
         contra.style.borderColor = "#e0e0e0";
+        error.style.display='none';
     }
 })
 
@@ -19,6 +22,7 @@ boton.addEventListener('click',async(e)=>{
     const pass = contra.value.trim();
     username.style.borderColor = "#e0e0e0";
     contra.style.borderColor = "#e0e0e0";
+    error.style.display='none';
     if(name==""){
         username.style.borderColor = "red";
     } 
@@ -42,6 +46,9 @@ boton.addEventListener('click',async(e)=>{
             if(datos.status===1){
                 localStorage.setItem('token_colomos_scale',datos.token);
                 window.location.href='../pages/dashboard.html'
+            }
+            else{
+                error.style.display='block';
             }
         }
         catch(e){

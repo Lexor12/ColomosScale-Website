@@ -11,7 +11,7 @@ body{
     height: 100vh;
 }
 .navbar__icon__img{
-    width: 150px;
+    width: 190px;
 }
 .bar{
     grid-column: 1;
@@ -79,4 +79,118 @@ body{
     font-weight: 100;
     font-style: oblique;
     text-transform: uppercase; 
+}
+main{
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;;
+    height: 100vh;
+    width: 100%;
+    overflow-y: auto; /* Permite scroll si hay muchas balanzas */
+    background-color: #f0f2f5;
+}
+.selector{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background: white;
+    padding: 25px 20px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+.selector__filtro{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+.selector input, 
+.selector select {
+    padding: 10px;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    color: #374151;
+    font-size: .9rem;
+    transition: all 0.2s ease;
+    min-width: 15vw;
+}
+.selector input{
+    min-width: 10vw;
+    width: 25vw;
+}
+.selector input:focus, 
+.selector select:focus {
+    border-color: #3b82f6; 
+}
+.selector__agregar__boton {
+    background-color: #3b82f6;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.selector__agregar__boton:hover {
+    background-color: #1b59df;
+}
+.elements{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, auto));
+    width: 90%;
+    border-radius: 5px;
+    margin: 3vh;
+    gap: 20px;
+    
+}
+.elemento__balanza{
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    align-items: center;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px;
+    gap: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+.elemento__balanza:hover{
+    transform: scale(1.02);
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,.1);
+}
+.elemento__balanza__content{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.elemento__balanza__img__element{
+    width: 100px;
+}
+.elemento__balanza p {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    color: #555;
+}
+
+.elemento__balanza b {
+    color: #222;
+    font-weight: 600;
+}
+
+.elemento__balanza span {
+    margin-left: 5px;
+}
+.navbar__list__element a, 
+.navbar__list__element a:visited, 
+.navbar__list__element a:hover, 
+.navbar__list__element a:active {
+    color: #222;
+    text-decoration: none;
 }

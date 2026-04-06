@@ -15,15 +15,15 @@
             <ul class="navbar__list">
                 <li class="navbar__list__element">
                     <img src="../assets/icons/dashboard.svg" class="navbar__list__element__icon navbar__list__element__dashboard">
-                    <a>Dashboard</a>
+                    <a href="dashboard.html">Dashboard</a>
                 </li>
                 <li class="navbar__list__element">
                     <img src="../assets/icons/tecnicos.svg" class="navbar__list__element__icon navbar__list__element__tecnicos">
-                    <a>tecnicos</a>
+                    <a href="#">tecnicos</a>
                 </li>
                 <li class="navbar__list__element">
                     <img src="../assets/icons/admin.svg" class="navbar__list__element__icon navbar__list__element__admin">
-                    <a>Admin</a>
+                    <a href="#">Admin</a>
                 </li>
             </ul>
             <div class="navbar__about">
@@ -46,7 +46,87 @@
         </nav>
     </aside>
     <main>
-        <h1>Main</h1>
+        <section class="selector">
+            <div class="selector__filtro">
+                <input class="selector__filtro__buscador" type="text" placeholder="🔍 Buscar balanza...">
+        
+                <select class="selector__filtro__laboratorio" name="laboratorio">
+                    <option value="">Todos los laboratorios</option>
+                </select>
+
+                <select class="selector__filtro__estado" name="estado">
+                    <option value="">Todos los estados</option>
+                    <option value="Adecuado">Adecuada</option>
+                    <option value="Intermedio">Intermedio</option>
+                    <option value="Malo">Mala</option>
+                </select>
+            </div>
+            <div class="selector__agregar">
+                <button class="selector__agregar__boton"> + Nueva Balanza</button>
+            </div>
+        </section>
+        <section class="elements">
+            <article class="elemento__balanza">
+                <div class="elemento__balanza__img">
+                    <img class="elemento__balanza__img__element" src="../assets/examples/balanza.jpg" >
+                </div>
+                <div class="elemento__balanza__content">
+                    <p><b>Nombre de balanza:</b><span class="elemento__balanza__content__name"> Balanza analitica 1</span></p>
+                    <p><b>Laboratorio:</b><span class="elemento__balanza__content__lab"> Laboratorio Principal LKE</span></p>
+                    <p><b>Código:</b><span class="elemento__balanza__content__code"> HkgktoMForie_</span></p>
+                    <p><b>Numero de reportes:</b><span class="elemento__balanza__content__numofreports"> 8</span></p>
+                    <p><b>Ultima medicion:</b><span class="elemento__balanza__content__name__last"> 30/03/2026</span></p>
+                </div>
+            </article>
+            <article class="elemento__balanza">
+                <div class="elemento__balanza__img">
+                    <img class="elemento__balanza__img__element" src="../assets/examples/balanza.jpg" >
+                </div>
+                <div class="elemento__balanza__content">
+                    <p><b>Nombre de balanza:</b><span class="elemento__balanza__content__name"> Balanza analitica 1</span></p>
+                    <p><b>Laboratorio:</b><span class="elemento__balanza__content__lab"> Laboratorio Principal LKE</span></p>
+                    <p><b>Código:</b><span class="elemento__balanza__content__code"> HkgktoMForie_</span></p>
+                    <p><b>Numero de reportes:</b><span class="elemento__balanza__content__numofreports"> 8</span></p>
+                    <p><b>Ultima medicion:</b><span class="elemento__balanza__content__name__last"> 30/03/2026</span></p>
+                </div>
+            </article>
+            <article class="elemento__balanza">
+                <div class="elemento__balanza__img">
+                    <img class="elemento__balanza__img__element" src="../assets/examples/balanza.jpg" >
+                </div>
+                <div class="elemento__balanza__content">
+                    <p><b>Nombre de balanza:</b><span class="elemento__balanza__content__name"> Balanza analitica 1</span></p>
+                    <p><b>Laboratorio:</b><span class="elemento__balanza__content__lab"> Laboratorio Principal LKE</span></p>
+                    <p><b>Código:</b><span class="elemento__balanza__content__code"> HkgktoMForie_</span></p>
+                    <p><b>Numero de reportes:</b><span class="elemento__balanza__content__numofreports"> 8</span></p>
+                    <p><b>Ultima medicion:</b><span class="elemento__balanza__content__name__last"> 30/03/2026</span></p>
+                </div>
+            </article>
+            <article class="elemento__balanza">
+                <div class="elemento__balanza__img">
+                    <img class="elemento__balanza__img__element" src="../assets/examples/balanza.jpg" >
+                </div>
+                <div class="elemento__balanza__content">
+                    <p><b>Nombre de balanza:</b><span class="elemento__balanza__content__name"> Balanza analitica 1</span></p>
+                    <p><b>Laboratorio:</b><span class="elemento__balanza__content__lab"> Laboratorio Principal LKE</span></p>
+                    <p><b>Código:</b><span class="elemento__balanza__content__code"> HkgktoMForie_</span></p>
+                    <p><b>Numero de reportes:</b><span class="elemento__balanza__content__numofreports"> 8</span></p>
+                    <p><b>Ultima medicion:</b><span class="elemento__balanza__content__name__last"> 30/03/2026</span></p>
+                </div>
+            </article>
+            <article class="elemento__balanza">
+                <div class="elemento__balanza__img">
+                    <img class="elemento__balanza__img__element" src="../assets/examples/balanza.jpg" >
+                </div>
+                <div class="elemento__balanza__content">
+                    <p><b>Nombre de balanza:</b><span class="elemento__balanza__content__name"> Balanza analitica 1</span></p>
+                    <p><b>Laboratorio:</b><span class="elemento__balanza__content__lab"> Laboratorio Principal LKE</span></p>
+                    <p><b>Código:</b><span class="elemento__balanza__content__code"> HkgktoMForie_</span></p>
+                    <p><b>Numero de reportes:</b><span class="elemento__balanza__content__numofreports"> 8</span></p>
+                    <p><b>Ultima medicion:</b><span class="elemento__balanza__content__name__last"> 30/03/2026</span></p>
+                </div>
+            </article>
+        </section>
     </main>
 </body>
 <script src="../js/dashboard.js"></script>
