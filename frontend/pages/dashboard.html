@@ -37,7 +37,7 @@
             </div>
             <div class="navbar__footer">
                 <ul class="footer__list">
-                    <li class="navbar__list__element">
+                    <li class="navbar__list__element" id="btnSalir">
                         <img src="../assets/icons/salir.svg" class="navbar__list__element__icon navbar__list__element__salir">
                         <a>Salir</a>
                     </li>
@@ -56,12 +56,9 @@
 
                 <select class="selector__filtro__estado" name="estado">
                     <option value="">Todos los estados</option>
-                    <option value="Adecuado">Adecuada</option>
-                    <option value="Intermedio">Intermedio</option>
-                    <option value="Malo">Mala</option>
                 </select>
             </div>
-            <div class="selector__agregar">
+            <div class="selector__agregar" id="agregarBalanza" style="display: none;">
                 <button class="selector__agregar__boton"> + Nueva Balanza</button>
             </div>
         </section>

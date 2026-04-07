@@ -4,6 +4,21 @@ let format = {headers:{'token':token}};
 const nombre = document.getElementById('nombreUsuario') 
 const rol = document.getElementById('rolUsuario') 
 const elements = document.querySelector('.elements')//Hacemos referencia a todo nuestro contenedor de balanzas
+const selectorLabs = document.querySelector('.selector__filtro__laboratorio')
+const selectorEstado = document.querySelector('.selector__filtro__estado')
+const buscador = document.querySelector('.selector__filtro__buscador')
+let estados = ['ADECUADA','INTERMEDIA','MALA']
+let balanzasOriginal = []
+
+const botonSalir = document.getElementById('btnSalir')
+const botonAgregarBalanza = document.getElementById('agregarBalanza')
+
+async function configurarNavBar(){
+    botonSalir.addEventListener('click',()=>{
+        localStorage.removeItem('token_colomos_scale');
+        window.location.href='../index.html'
+    })
+}
 
 async function verificarToken() {
     if(!token)window.location.href='../pages/notAuth.html';
@@ -14,6 +29,12 @@ async function verificarToken() {
             if(result.status===0){
                 localStorage.removeItem('token_colomos_scale');
                 window.location.href='../pages/notAuth.html'
+            }
+            console.log(result.usuario.rol)
+            if(result.usuario.rol>=2){
+                console.log('simon')
+                botonAgregarBalanza.style.display='block';
+                //Aqui vamos a meter la logica para redigirlo a otra pagina solo si es mayor que supervisor
             }
         }catch(e){
             localStorage.removeItem('token_colomos_scale');
@@ -33,14 +54,9 @@ async function obtenerValores(valor){
         return {}
     }
 }
-
-async function cargarBalanzas(){
-    const datosUsuario = await obtenerValores('usuario')
-    const balanzas = await obtenerValores('obtenerBalanzas')
-    console.log(balanzas)
-    nombre.textContent = datosUsuario.nombre_completo;
-    rol.textContent = datosUsuario.rol;
-    balanzas.forEach(element => {
+function crearBalanzas(listaBalanzas){
+    elements.replaceChildren();
+    listaBalanzas.forEach(element => {
         const nuevoArticle = document.createElement('article');
         nuevoArticle.classList.add('elemento__balanza');
 
@@ -100,16 +116,60 @@ async function cargarBalanzas(){
         divContenido.appendChild(ultimaMedParrafo)
         elements.appendChild(nuevoArticle);
 
-        nuevoArticle.addEventListener('click',()=>{
+        nuevoArticle.addEventListener('dblclick',()=>{
             window.location.href=`../pages/balanza.html?id=${element.codigo}`
         })
     });
 }
+async function cargarBalanzas(){
+    const datosUsuario = await obtenerValores('usuario')
+    balanzasOriginal = await obtenerValores('obtenerBalanzas')
+    nombre.textContent = datosUsuario.nombre_completo;
+    rol.textContent = datosUsuario.rol;
+    crearBalanzas(balanzasOriginal)
+}
+function manejarFiltros(){
+    const lab = selectorLabs.value;
+    const estado = selectorEstado.value;
+    const texto = buscador.value.toLowerCase().trim();
+    let resultado = balanzasOriginal;
+    if (lab !== '') {
+        resultado = resultado.filter(a => a.nombre_laboratorio === lab);
+    }
+    if (estado !== '') {
+        resultado = resultado.filter(a => a.estado_calibracion === estado);
+    }
+    if (texto !== '') {
+        resultado = resultado.filter(a => 
+            a.nombre.toLowerCase().includes(texto) || 
+            a.codigo.toLowerCase().includes(texto)
+        );
+    }
+    crearBalanzas(resultado);
+}
+async function configurarSelector(){
+    const laboratorios = await obtenerValores('obtenerLaboratorios');
+    laboratorios.forEach(item =>{
+        const option = document.createElement('option');
+        option.value = item.nombre
+        option.textContent = item.nombre
+        selectorLabs.appendChild(option)
+    })  
+    estados.forEach(a=>{
+        const option = document.createElement('option')
+        option.value = a
+        option.textContent = a
+        selectorEstado.appendChild(option)
+    })
+    selectorLabs.addEventListener('change', manejarFiltros);
+    selectorEstado.addEventListener('change', manejarFiltros);
+    buscador.addEventListener('input',manejarFiltros)
+}
 async function iniciarApp() {
-    // 1. Esperamos a ver si el token es válido
     await verificarToken(); 
-
     await cargarBalanzas(); 
+    await configurarSelector();
+    await configurarNavBar()
 }
 
 iniciarApp();

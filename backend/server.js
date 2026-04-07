@@ -64,6 +64,20 @@ app.get('/api/obtenerBalanzas',async (req,res)=>{
     }
 })
 
+app.get('/api/obtenerLaboratorios',async(req,res)=>
+{
+    const token = req.header('token');
+    const tokenStatus = verificarToken(token);
+    if(tokenStatus.status===0) return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
+    try{
+        const data = await sql`SELECT * FROM obtener_laboratorios()`;
+        res.json({status:1,data:data});
+    }
+    catch(e){
+        return res.status(401).json({status:0,error:"Error al conectar a la base de datos."})
+    }
+})
+
 app.get('/api/usuario',async(req,res)=>{
     const token = req.header('token');
     const tokenresult = verificarToken(token)
