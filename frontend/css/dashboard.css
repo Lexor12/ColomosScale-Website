@@ -16,9 +16,9 @@ body{
 .bar{
     grid-column: 1;
     background-color: #ffffff;
-    border: none;
     padding: 10px;
     z-index: 10;
+    border:solid #eee 1px;
 }
 .navbar{
     display: flex;
@@ -95,7 +95,7 @@ main{
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
-    background: white;
+    background: #ffffff;
     padding: 25px 20px;
     border: none;
     border-radius: 0px;
@@ -128,7 +128,7 @@ main{
 }
 .selector__agregar__boton {
     background-color: #3b82f6;
-    color: white;
+    color: #ffffff;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -152,7 +152,7 @@ main{
 .elemento__balanza{
     display: flex;
     justify-content: center;
-    background-color: white;
+    background-color: #ffffff;
     align-items: center;
     border-radius: 5px;
     padding: 15px;

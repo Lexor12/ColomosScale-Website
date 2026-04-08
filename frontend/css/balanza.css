@@ -16,7 +16,7 @@ body{
 .bar{
     grid-column: 1;
     background-color: #ffffff;
-    border: none;
+    border:solid #eee 1px;
     padding: 10px;
     z-index: 10;
 }
@@ -95,12 +95,11 @@ main{
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
-    background: white;
+    background: #ffffff;
     padding: 25px 20px;
     border: none;
     border-radius: 0px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
 }
 .selector__filtro{
     display: flex;
@@ -126,9 +125,9 @@ main{
 .selector select:focus {
     border-color: #3b82f6; 
 }
-.selector__agregar__boton {
-    background-color: #3b82f6;
-    color: white;
+.selector__volver__boton {
+    background-color: red;
+    color: #ffffff;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -137,61 +136,78 @@ main{
     transition: background 0.5s;
 }
 
-.selector__agregar__boton:hover {
-    background-color: #1b59df;
-}
-.elements{
+.InfoBalanza{
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, auto));
-    width: 90%;
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: 300px 1fr;
+    gap: 10px;
+    background-color: #ffffff;
+    margin:20px;
+    padding: 20px;
     border-radius: 5px;
-    margin: 3vh;
-    gap: 20px;
-    
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    overflow-y: auto;
+    height:100%;
 }
-.elemento__balanza{
+
+.ImagenBalanza {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    height: 100%; 
+    width: 100%;
     display: flex;
-    justify-content: center;
-    background-color: white;
-    align-items: center;
-    border-radius: 5px;
-    padding: 15px;
-    margin: 10px;
-    gap: 30px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    transition: transform 0.5s;
 }
-.elemento__balanza:hover{
-    transform: scale(1.02);
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,.1);
+
+.ImagenBalanza img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    display: block;
+    border: #333 solid 1px; 
 }
-.elemento__balanza__content{
+
+.InfoBalanza__datos{
     display: flex;
     flex-direction: column;
-    gap: 5px;
-}
-.elemento__balanza__img__element{
-    width: 100px;
-}
-.elemento__balanza p {
-    font-size: 0.9rem;
-    margin-bottom: 4px;
-    color: #555;
+    gap: 15px;
+    padding: 20px;
+    border:#222 solid 1px;
+    border-radius: 5px;
 }
 
-.elemento__balanza b {
-    color: #222;
-    font-weight: 600;
+.selector__volver__boton:hover {
+    background-color: rgb(196, 95, 95);
 }
 
-.elemento__balanza span {
-    margin-left: 5px;
-}
 .navbar__list__element a, 
 .navbar__list__element a:visited, 
 .navbar__list__element a:hover, 
 .navbar__list__element a:active {
     color: #222;
     text-decoration: none;
+}
+
+.InfoBalanza__BotonEditar{
+    display:flex;
+    justify-content: center;
+    /*place-self: center;*/
+}
+
+.selector__editar__boton{
+    background-color: #9b9898;
+    color: #ffffff;
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 5px;
+    width:100%;
+    height:50%;
+}
+
+.HistorialReportes__lista{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
 }

@@ -7,6 +7,7 @@
     <title>Informacion de balanza</title>
 </head>
 <body>
+
     <aside class="bar">
         <nav class="navbar">
             <div class="navbar__icon">
@@ -45,26 +46,42 @@
             </div>
         </nav>
     </aside>
+
     <main>
         <section class="selector">
             <div class="selector__filtro">
-                <input class="selector__filtro__buscador" type="text" placeholder="🔍 Buscar balanza...">
-        
-                <select class="selector__filtro__laboratorio" name="laboratorio">
-                    <option value="">Todos los laboratorios</option>
-                </select>
+            </div>
+            <div class="selector__volver" id="volver">
+                <button class="selector__volver__boton"> > Volver</button>
+            </div>
+        </section>
+        <section class="InfoBalanza">
+            <div class="ImagenBalanza">
+                <img src="https://files.catbox.moe/mhx3ck.png" alt="Imagen de la balanza de ejemplo">
+            </div>
+                <div class="InfoBalanza__datos">
+                    <h2 class="InfoBalanza__datos__titulo">Información de la balanza</h2>
+                    <p class="InfoBalanza__datos__elemento"><strong>Nombre:</strong> Balanza 1</p>
+                    <p class="InfoBalanza__datos__elemento"><strong>Laboratorio:</strong> Laboratorio A</p>
+                    <p class="InfoBalanza__datos__elemento"><strong>Estado:</strong> Estado</p>
+                    <p class="InfoBalanza__datos__elemento"><strong>Último mantenimiento:</strong> 2024-05-15</p>
+                </div>
+                <div class="InfoBalanza__BotonEditar">
+                    <button class="selector__editar__boton">Editar Información</button>
+                </div>
 
-                <select class="selector__filtro__estado" name="estado">
-                    <option value="">Todos los estados</option>
-                </select>
-            </div>
-            <div class="selector__agregar" id="agregarBalanza" style="display: none;">
-                <button class="selector__agregar__boton"> + Nueva Balanza</button>
-            </div>
+                <div class="InfoBalanza__datos">
+                    <h2 class="HistorialReportes__titulo">Historial de reportes</h2>
+                    <ul class="HistorialReportes__lista">
+                        <li class="HistorialReportes__lista__elemento">Reporte 1 - 2024-05-10</li>
+                        <li class="HistorialReportes__lista__elemento">Reporte 2 - 2024-04-20</li>
+                        <li class="HistorialReportes__lista__elemento">Reporte 3 - 2024-03-15</li>
+                        
+                    </ul>
+                </div>
         </section>
-        <section class="elements">
-        </section>
+
     </main>
 </body>
-<script src="../js/dashboard.js"></script>
+<!-- <script src="../js/dashboard.js"></script> -->
 </html>
