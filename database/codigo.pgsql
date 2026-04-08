@@ -199,6 +199,15 @@ RETURNS TABLE(nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, es
   WHERE b."id_balanza" = p_id;
 END;$$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION obtener_balanza_por_codigo(p_codigo TEXT) 
+RETURNS TABLE(id INT, nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, estado estado_equipo, ultima TIMESTAMPTZ, id_lab INT, codigo_balanza TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
+  RETURN QUERY 
+  SELECT b."id_balanza", b."nombre", b."marca", b."modelo", b."serie", b."img_url", b."estado_calibracion", b."ultima_medicion", b."id_laboratorio", b."codigo" 
+  FROM "Balanza" AS b 
+  WHERE b."codigo" = p_codigo;
+END;$$ LANGUAGE plpgsql;
+
+
 -- Obtener todas las balanzas
 
 CREATE OR REPLACE FUNCTION obtener_balanzas() 
@@ -442,6 +451,7 @@ GRANT EXECUTE ON FUNCTION registrar_balanza(TEXT, TEXT, TEXT, TEXT, TEXT, INT, T
 GRANT EXECUTE ON FUNCTION actualizar_balanza(INT, TEXT, TEXT, TEXT, TEXT, TEXT, INT) TO colomosback;
 GRANT EXECUTE ON FUNCTION eliminar_balanza(INT) TO colomosback;
 GRANT EXECUTE ON FUNCTION obtener_balanza_por_id(INT) TO colomosback;
+GRANT EXECUTE ON FUNCTION obtener_balanza_por_codigo(TEXT) TO colomosback;
 GRANT EXECUTE ON FUNCTION obtener_balanzas() TO colomosback;
 GRANT EXECUTE ON FUNCTION obtener_balanzas_por_laboratorio(INT) TO colomosback;
 GRANT EXECUTE ON FUNCTION buscador_balanza_por_codigo(TEXT) TO colomosback;

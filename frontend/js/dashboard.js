@@ -10,13 +10,19 @@ const buscador = document.querySelector('.selector__filtro__buscador')
 let estados = ['ADECUADA','INTERMEDIA','MALA']
 let balanzasOriginal = []
 
-const botonSalir = document.getElementById('btnSalir')
-const botonAgregarBalanza = document.getElementById('agregarBalanza')
-
 async function configurarNavBar(){
+    const botonSalir = document.getElementById('btnSalir')
     botonSalir.addEventListener('click',()=>{
         localStorage.removeItem('token_colomos_scale');
         window.location.href='../index.html'
+    })
+    const btnDashboard = document.getElementById('btnDashboard');
+    btnDashboard.addEventListener('click',()=>{
+        window.location.href='../pages/dashboard.html'
+    })
+    const btnTecnicos = document.getElementById('btnTecnicos');
+    btnTecnicos.addEventListener('click',()=>{
+        window.location.href='../pages/tecnico.html'
     })
 }
 
@@ -30,11 +36,17 @@ async function verificarToken() {
                 localStorage.removeItem('token_colomos_scale');
                 window.location.href='../pages/notAuth.html'
             }
-            console.log(result.usuario.rol)
             if(result.usuario.rol>=2){
-                console.log('simon')
+                const botonAgregarBalanza = document.getElementById('agregarBalanza')
                 botonAgregarBalanza.style.display='block';
                 //Aqui vamos a meter la logica para redigirlo a otra pagina solo si es mayor que supervisor
+            }
+            if(result.usuario.rol>=3){
+                const adminBtn = document.getElementById('btnAdmin');
+                adminBtn.style.display="";
+                adminBtn.addEventListener('click',()=>{
+                    window.location.href='../pages/admin.html';
+                })
             }
         }catch(e){
             localStorage.removeItem('token_colomos_scale');
@@ -50,7 +62,6 @@ async function obtenerValores(valor){
         return result.status===0? {}:result.data
     }
     catch(e)   {
-        console.log(e);
         return {}
     }
 }
@@ -124,6 +135,7 @@ function crearBalanzas(listaBalanzas){
 async function cargarBalanzas(){
     const datosUsuario = await obtenerValores('usuario')
     balanzasOriginal = await obtenerValores('obtenerBalanzas')
+    console.log(balanzasOriginal)
     nombre.textContent = datosUsuario.nombre_completo;
     rol.textContent = datosUsuario.rol;
     crearBalanzas(balanzasOriginal)

@@ -7,24 +7,23 @@
     <title>Informacion de balanza</title>
 </head>
 <body>
-
     <aside class="bar">
         <nav class="navbar">
             <div class="navbar__icon">
                 <img src="../assets/logo/logo_sinfondo.png" class="navbar__icon__img">
             </div>
             <ul class="navbar__list">
-                <li class="navbar__list__element">
+                <li class="navbar__list__element" id="btnDashboard">
                     <img src="../assets/icons/dashboard.svg" class="navbar__list__element__icon navbar__list__element__dashboard">
                     <a href="dashboard.html">Dashboard</a>
                 </li>
-                <li class="navbar__list__element">
+                <li class="navbar__list__element" id="btnTecnicos">
                     <img src="../assets/icons/tecnicos.svg" class="navbar__list__element__icon navbar__list__element__tecnicos">
-                    <a href="#">Técnicos</a>
+                    <a href="tecnico.html">Técnicos</a>
                 </li>
-                <li class="navbar__list__element">
+                <li class="navbar__list__element" id="btnAdmin" style="display: none;">
                     <img src="../assets/icons/admin.svg" class="navbar__list__element__icon navbar__list__element__admin">
-                    <a href="#">Admin</a>
+                    <a href="admin.html">Admin</a>
                 </li>
             </ul>
             <div class="navbar__about">
@@ -32,7 +31,7 @@
                     <img src="../assets/icons/user.svg" class="navbar__about__img__element">
                 </div>
                 <div class="navbar__about__content">
-                    <p class="navbar__about__content__name" id="nombreUsuario">Juan Roberto Perez Jimenez</p>
+                    <p class="navbar__about__content__name" id="nombreUsuario">Usuario</p>
                     <p class="navbar__about__content__rol" id="rolUsuario">Tecnico</p>
                 </div>
             </div>
@@ -46,42 +45,39 @@
             </div>
         </nav>
     </aside>
-
     <main>
         <section class="selector">
             <div class="selector__filtro">
             </div>
-            <div class="selector__volver" id="volver">
+            <div class="selector__volver" id="btnVolver">
                 <button class="selector__volver__boton"> > Volver</button>
             </div>
         </section>
         <section class="InfoBalanza">
             <div class="ImagenBalanza">
-                <img src="https://files.catbox.moe/mhx3ck.png" alt="Imagen de la balanza de ejemplo">
+                <img src="https://files.catbox.moe/mhx3ck.png" alt="Imagen de la balanza de ejemplo" id="ImagenBalanzaContenido">
             </div>
                 <div class="InfoBalanza__datos">
                     <h2 class="InfoBalanza__datos__titulo">Información de la balanza</h2>
-                    <p class="InfoBalanza__datos__elemento"><strong>Nombre:</strong> Balanza 1</p>
-                    <p class="InfoBalanza__datos__elemento"><strong>Laboratorio:</strong> Laboratorio A</p>
-                    <p class="InfoBalanza__datos__elemento"><strong>Estado:</strong> Estado</p>
-                    <p class="InfoBalanza__datos__elemento"><strong>Último mantenimiento:</strong> 2024-05-15</p>
+                    <p class="InfoBalanza__datos__elemento"><strong>Nombre: </strong><span id="balanzaNombre"></span></p>
+                    <p class="InfoBalanza__datos__elemento"><strong>Marca: </strong><span id="balanzaMarca"></span></p>
+                    <p class="InfoBalanza__datos__elemento"><strong>Modelo: </strong><span id="balanzaModelo"></span></p>
+                    <p class="InfoBalanza__datos__elemento"><strong>Serie: </strong><span id="balanzaSerie"></span></p>
+                    <p class="InfoBalanza__datos__elemento"><strong>Laboratorio: </strong><span id="balanzaLaboratorio"></span></p>
+                    <p class="InfoBalanza__datos__elemento"><strong>Estado: </strong><span id="balanzaEstado"></span></p>
+                    <p class="InfoBalanza__datos__elemento"><strong>Último medición: </strong><span id="balanzaUltimaMedición"></span></p>
                 </div>
                 <div class="InfoBalanza__BotonEditar">
-                    <button class="selector__editar__boton">Editar Información</button>
+                    <button class="selector__editar__boton" style="display: none;">Editar Información</button>
                 </div>
-
                 <div class="InfoBalanza__datos">
                     <h2 class="HistorialReportes__titulo">Historial de reportes</h2>
-                    <ul class="HistorialReportes__lista">
-                        <li class="HistorialReportes__lista__elemento">Reporte 1 - 2024-05-10</li>
-                        <li class="HistorialReportes__lista__elemento">Reporte 2 - 2024-04-20</li>
-                        <li class="HistorialReportes__lista__elemento">Reporte 3 - 2024-03-15</li>
-                        
-                    </ul>
+                    <div class="HistorialReportes__lista">
+                    </div>
                 </div>
         </section>
 
     </main>
 </body>
-<!-- <script src="../js/dashboard.js"></script> -->
+<script src="../js/balanza.js"></script>
 </html>

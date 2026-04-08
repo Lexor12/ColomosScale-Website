@@ -139,7 +139,7 @@ main{
 .InfoBalanza{
     display: grid;
     grid-template-columns: 300px 1fr;
-    grid-template-rows: 300px 1fr;
+    grid-template-rows: 1fr 1fr;
     gap: 10px;
     background-color: #ffffff;
     margin:20px;
@@ -170,6 +170,7 @@ main{
 .InfoBalanza__datos{
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     gap: 15px;
     padding: 20px;
     border:#222 solid 1px;
@@ -191,18 +192,26 @@ main{
 .InfoBalanza__BotonEditar{
     display:flex;
     justify-content: center;
+    align-items: flex-start;
     /*place-self: center;*/
 }
 
 .selector__editar__boton{
-    background-color: #9b9898;
+    background-color: #0056b3;
     color: #ffffff;
     padding: 10px 20px;
     font-weight: 600;
     cursor: pointer;
     border-radius: 5px;
+    border: 1px solid #075e64;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     width:100%;
-    height:50%;
+    min-height:max-content;
+    justify-content: center;
+    align-items: flex-end;
+}
+.selector__editar__boton:hover{
+    background-color: #296bb1;
 }
 
 .HistorialReportes__lista{
@@ -210,4 +219,36 @@ main{
     flex-direction: column;
     gap: 10px;
     padding: 20px;
+    overflow-y: auto;
+    max-height: 300px;
+    padding-right: 20px;
+}
+.HistorialReportes__lista__elemento{
+    display: flex;
+    justify-content: space-evenly;
+    background: #ffffff; 
+    border: 1px solid #e0e4e8; 
+    border-left: 5px solid #0056b3;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0px 12px 15px rgba(0,0,0,0.05); 
+    transition: all ease .1s;
+}
+.HistorialReportes__lista__elemento:hover{
+    background: #b9d6f171; 
+    transform: scale(1.005);
+}
+.HistorialReportes__lista__elemento>strong{
+    color: #0056b3;
+    font-size: medium;
+}
+.HistorialReportes__lista__elemento>strong>span{
+    color: #666;
+    font-size: small
+}
+.InfoBalanza__datos__titulo,.HistorialReportes__titulo{
+    color: #273c5e;
+}
+strong{
+    color:#475e85 ;
 }
