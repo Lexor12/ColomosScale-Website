@@ -39,7 +39,9 @@ async function verificarToken() {
             if(result.usuario.rol>=2){
                 const botonAgregarBalanza = document.getElementById('agregarBalanza')
                 botonAgregarBalanza.style.display='block';
-                //Aqui vamos a meter la logica para redigirlo a otra pagina solo si es mayor que supervisor
+                botonAgregarBalanza.addEventListener('click',()=>{
+                    window.location.href='../pages/crearBalanza.html';
+                })
             }
             if(result.usuario.rol>=3){
                 const adminBtn = document.getElementById('btnAdmin');
@@ -181,7 +183,8 @@ async function iniciarApp() {
     await verificarToken(); 
     await cargarBalanzas(); 
     await configurarSelector();
-    await configurarNavBar()
+    await configurarNavBar();
+    document.querySelector('body').classList.add('is-loaded');
 }
 
 iniciarApp();

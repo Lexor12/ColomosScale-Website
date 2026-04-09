@@ -4,7 +4,7 @@ const codigoBalanza = urlParams.get('id')
 //De aqui en adelante son funciones basicas de todos los archivos
 const token = localStorage.getItem('token_colomos_scale');
 let format = {headers:{'token':token}};
-
+let datosBalanza;
 async function verificarToken() {
     if(!token)window.location.href='../pages/notAuth.html';
     else{
@@ -29,6 +29,10 @@ async function verificarToken() {
                 adminBtn.addEventListener('click',()=>{
                     window.location.href='../pages/admin.html';
                 })
+            }
+            datosBalanza = await obtenerValores(`obtenerBalanza/${codigoBalanza}`)
+            if(Object.keys(datosBalanza).length===0){
+                window.location.href='../pages/noEncontrada.html'
             }
         }catch(e){
             localStorage.removeItem('token_colomos_scale');
@@ -71,8 +75,6 @@ async function obtenerValores(valor){
 
 //De aqui para atras son funciones basicas de todos los archivos
 async function cargarDatosBalanza() {
-    const datosBalanza = await obtenerValores(`obtenerBalanza/${codigoBalanza}`)
-    console.log(datosBalanza)
     const imagenBalanza = document.getElementById('ImagenBalanzaContenido');
     const nombreBalanza = document.getElementById('balanzaNombre');
     const laboratorio = document.getElementById('balanzaLaboratorio');
@@ -89,7 +91,6 @@ async function cargarDatosBalanza() {
     marca.textContent=datosBalanza.balanza.marca
     modelo.textContent=datosBalanza.balanza.modelo
     serie.textContent=datosBalanza.balanza.serie
-
 
     let fecha = new Date(datosBalanza.balanza.ultima);
     ultimaMedicion.textContent=fecha.toLocaleDateString('es-MX');
@@ -134,7 +135,8 @@ async function cargarSelector() {
 async function iniciarPagina() {
     await verificarToken();
     await configurarNavBar();
-    await cargarDatosBalanza();
     await cargarSelector();
+    await cargarDatosBalanza();
+    document.querySelector('body').classList.add('is-loaded');
 }
 iniciarPagina();
