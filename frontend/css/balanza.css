@@ -156,7 +156,7 @@ main{
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     margin-bottom: 20px;
     overflow-y: auto;
-    height:100%;
+    height:max-content;
 }
 
 .ImagenBalanza {
@@ -183,6 +183,7 @@ main{
     padding: 20px;
     border:#222 solid 1px;
     border-radius: 5px;
+    
 }
 
 .selector__volver__boton:hover {
@@ -259,4 +260,64 @@ main{
 }
 strong{
     color:#475e85 ;
+}
+@media (max-width:990px){
+    body,.InfoBalanza{
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    height: auto;
+    }
+    .InfoBalanza__BotonEditar{
+        order: 2;
+    }
+    .bar{
+        grid-column: 1;
+        position: sticky;
+        top: 0;
+        width: 100%;
+    }
+    .navbar{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .navbar__list{
+        margin-top: 0;
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+    }
+    .navbar__icon__img{
+        width: 15vw;
+    }
+    .navbar__about{
+        margin: 0;
+        padding: 5px;
+        order: 2;
+    }
+    .navbar__about__content__rol{
+        display: none;
+    }
+    .navbar__about__img__element {
+        width: 2.5vw;
+        border-radius: 50%; 
+    }
+    .navbar__about__content {
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+    }
+}
+@media(max-width:720px) {
+    .navbar__about {
+        display: none;
+    }  
+    .navbar__icon{
+        display: none;
+    }
+    .navbar__list{
+        flex-wrap: wrap;
+    }
 }

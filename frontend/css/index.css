@@ -31,6 +31,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .about{
@@ -89,6 +90,7 @@ button:active {
     max-width: 1200px;
     display: flex;
     justify-content: space-between;
+    margin: 0 5vw;
     align-items: center;
 }
 
@@ -132,4 +134,9 @@ a:hover {
 #estado-valor,#fecha-valor{
     color: #cacacacc;
     font-weight: bold;
+}
+@media (max-width:508px){
+    #result{
+        width: 90vw;
+    }
 }
