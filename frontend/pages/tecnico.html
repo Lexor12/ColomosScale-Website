@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <title>Técnicos</title>
+</head>
+<body>
+    <aside class="bar">
+        <nav class="navbar">
+            <div class="navbar__icon">
+                <img src="../assets/logo/logo_sinfondo.png" class="navbar__icon__img">
+            </div>
+            <ul class="navbar__list">
+                <li class="navbar__list__element" id="btnDashboard">
+                    <img src="../assets/icons/dashboard.svg" class="navbar__list__element__icon navbar__list__element__dashboard">
+                    <a href="dashboard.html">Dashboard</a>
+                </li>
+                <li class="navbar__list__element" id="btnTecnicos">
+                    <img src="../assets/icons/tecnicos.svg" class="navbar__list__element__icon navbar__list__element__tecnicos">
+                    <a href="tecnico.html">Técnicos</a>
+                </li>
+                <li class="navbar__list__element" id="btnAdmin" style="display: none;">
+                    <img src="../assets/icons/admin.svg" class="navbar__list__element__icon navbar__list__element__admin">
+                    <a href="admin.html">Admin</a>
+                </li>
+            </ul>
+            <div class="navbar__about">
+                <div class="navbar__about__img">
+                    <img src="../assets/icons/user.svg" class="navbar__about__img__element">
+                </div>
+                <div class="navbar__about__content">
+                    <p class="navbar__about__content__name" id="nombreUsuario">Usuario</p>
+                    <p class="navbar__about__content__rol" id="rolUsuario">Tecnico</p>
+                </div>
+            </div>
+            <div class="navbar__footer">
+                <ul class="footer__list">
+                    <li class="navbar__list__element" id="btnSalir">
+                        <img src="../assets/icons/salir.svg" class="navbar__list__element__icon navbar__list__element__salir">
+                        <a>Salir</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+    <main>
+        <section class="selector">
+            <div class="selector__filtro">
+                <input class="selector__filtro__buscador" type="text" placeholder="🔍 Buscar balanza...">
+        
+                <select class="selector__filtro__laboratorio" name="laboratorio">
+                    <option value="">Todos los laboratorios</option>
+                </select>
+
+                <select class="selector__filtro__estado" name="estado">
+                    <option value="">Todos los estados</option>
+                </select>
+            </div>
+            <div class="selector__agregar" id="agregarBalanza" style="display: none;">
+                <button class="selector__agregar__boton"> + Nueva Balanza</button>
+            </div>
+        </section>
+        <section class="elements">
+        </section>
+    </main>
+</body>
+<script src="../js/tecnico.js"></script>
+</html>
