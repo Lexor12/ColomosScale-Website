@@ -1,0 +1,224 @@
+*{
+    box-sizing: border-box;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    padding: 0px;
+    margin: 0px;
+    
+}
+body{
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    height: 100vh;
+}
+.navbar__icon__img{
+    width: 190px;
+}
+.bar{
+    grid-column: 1;
+    background-color: #ffffff;
+    border:solid #eee 1px;
+    padding: 10px;
+    z-index: 10;
+}
+.navbar{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+    align-items: stretch;
+}
+.navbar__list{
+    margin-top: 2vh;
+    flex-direction: column;
+    list-style: none;
+    flex-grow: 1;
+}
+.navbar__list__element{
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    margin: 10px;
+    cursor: pointer;
+    gap: 15px;
+    color: #333;
+}
+.navbar__list__element:hover{
+    background-color:#c9d0dbd7 ;
+    border-radius: 5px;
+    
+}
+.navbar__list__element__icon{
+    width: 30px;
+}
+.navbar__about{
+    display: flex;
+    align-items: center;
+    justify-content: stretch;
+    gap: 12px;
+    background-color: #f8f9fa;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    border-radius: 5px;  
+    padding: 10px 1px 10px 2px;  
+    margin: 15px 0;
+}
+.navbar__about__img__element {
+    width: 30px;
+    border-radius: 50%; 
+}
+.navbar__about__content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.navbar__about__content__name{
+    font-size: .8rem;
+    font-weight: 600;
+}
+.navbar__about__content__rol{
+    font-size: .7rem;
+    font-weight: 100;
+    font-style: oblique;
+    text-transform: uppercase; 
+}
+main{
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;;
+    height: 100vh;
+    width: 100%;
+    overflow-y: auto;
+    background-color: #f0f2f5;
+}
+.selector{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background: #ffffff;
+    padding: 25px 20px;
+    border: none;
+    border-radius: 0px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.selector__filtro{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+.selector input, 
+.selector select {
+    padding: 10px;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    color: #374151;
+    font-size: .9rem;
+    transition: all 0.5s ease;
+    min-width: 15vw;
+}
+.selector input{
+    min-width: 10vw;
+    width: 25vw;
+}
+.selector input:focus, 
+.selector select:focus {
+    border-color: #3b82f6; 
+}
+.selector__volver__boton {
+    background-color: red;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.5s;
+}
+
+.InfoTecnico{
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px;
+    background-color: #ffffff;
+    margin:20px;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    overflow-y: auto;
+    height:100%;
+}
+
+.ImagenTecnico {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    height: 100%; 
+    width: 100%;
+    display: flex;
+}
+
+.ImagenTecnico img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    display: block;
+    border: #333 solid 1px; 
+}
+
+.InfoTecnico__datos{
+    grid-column: 2 / 3;
+    grid-row: 1 / 3;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    border:#222 solid 1px;
+    border-radius: 5px;
+    overflow-y: auto;
+}
+
+.selector__volver__boton:hover {
+    background-color: rgb(196, 95, 95);
+}
+
+.navbar__list__element a, 
+.navbar__list__element a:visited, 
+.navbar__list__element a:hover, 
+.navbar__list__element a:active {
+    color: #222;
+    text-decoration: none;
+}
+
+.InfoTecnico__General{
+    display:flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+    /*place-self: center;*/
+    padding: 10px;
+    border: #222 solid 1px;
+    border-radius: 5px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.HistorialReportes__lista{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+}
+
+.InfoTecnico__datos__elemento{
+    background-color: #f9fafb;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    border-left: 5px solid #0056b3;
+}
+
+.Ejemplo{
+    text-align: justify;
+}
