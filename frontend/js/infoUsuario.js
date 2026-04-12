@@ -115,7 +115,7 @@ function cargarPagina(){
         strongReporte.appendChild(spanReporte)
 
         const strongFecha = document.createElement('strong')
-        strongFecha.innerHTML='ID Reporte: ';
+        strongFecha.innerHTML='Fecha de reporte: ';
         nuevoDiv.appendChild(strongFecha)
         const spanFecha = document.createElement('span');
         let fecha = new Date(reporte.fecha_analisis)

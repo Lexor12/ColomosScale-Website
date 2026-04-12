@@ -273,6 +273,19 @@ main{
         flex-direction: row;
         overflow: hidden;
     }
+    .InfoTecnico{
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        grid-template-columns: 1fr;
+    }
+    .ImagenTecnico, .InfoTecnico__General,.InfoTecnico__reportes{
+        height: fit-content;
+    }
+    .ImagenTecnico> img{
+        height: 30vw;
+        object-fit: contain;
+    }
 }
 @media(max-width:720px) {
     .navbar__about {
@@ -283,5 +296,9 @@ main{
     }
     .navbar__list{
         flex-wrap: wrap;
+    }
+    .InfoTecnico{
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
     }
 }

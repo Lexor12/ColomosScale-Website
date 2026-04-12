@@ -87,9 +87,9 @@ END;$$ LANGUAGE plpgsql;
 
 -- Función corregida por USERNAME
 CREATE OR REPLACE FUNCTION obtener_usuario_por_username(p_username TEXT)  
-RETURNS TABLE(id INT,username TEXT, nombre_completo TEXT, correo TEXT, password TEXT, fecha_creacion TIMESTAMPTZ, id_rol INT,nombre_rol TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
+RETURNS TABLE(id INT,username TEXT, nombre_completo TEXT, correo TEXT, img TEXT, fecha_creacion TIMESTAMPTZ, id_rol INT,nombre_rol TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
-  SELECT u.id_usuario,u.username, u.nombre_completo, u.correo, u.password, u.fecha_creacion, u.rol 
+  SELECT u.id_usuario,u.username, u.nombre_completo, u.correo, u.img_url, u.fecha_creacion, u.rol,r.nombre 
   FROM "Usuario" AS u JOIN "Rol" as r ON r.id_rol=u.rol
   WHERE u.username = p_username;
 END;$$ LANGUAGE plpgsql;
