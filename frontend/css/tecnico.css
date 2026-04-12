@@ -8,14 +8,12 @@
 body{
     display: grid;
     grid-template-columns: 200px 1fr;
-    height: 100vh;
 }
-body {
+body{
     opacity: 0;
-    transition: opacity 0.3s ease-in;
+    transition: opacity ease-in .3s;
 }
-
-body.is-loaded {
+body.is-loaded{
     opacity: 1;
 }
 .navbar__icon__img{
@@ -24,14 +22,13 @@ body.is-loaded {
 .bar{
     grid-column: 1;
     background-color: #ffffff;
+    border:solid #eee 1px;
     padding: 10px;
     z-index: 10;
-    border:solid #eee 1px;
 }
 .navbar{
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
     height: 100%;
     justify-content: center;
     align-items: stretch;
@@ -106,18 +103,14 @@ main{
     justify-content: space-between;
     background: #ffffff;
     padding: 25px 20px;
-    border: none;
-    border-radius: 0px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
 }
 .selector__filtro{
     display: flex;
     flex-direction: row;
     gap: 20px;
 }
-.selector input, 
-.selector select {
+.selector input {
     padding: 10px;
     border: 2px solid #d1d5db;
     border-radius: 8px;
@@ -128,26 +121,11 @@ main{
     min-width: 15vw;
 }
 .selector input{
-    min-width: 10vw;
+    min-width: 30vw;
     width: 25vw;
 }
-.selector input:focus, 
-.selector select:focus {
+.selector input:focus {
     border-color: #3b82f6; 
-}
-.selector__agregar__boton {
-    background-color: #3b82f6;
-    color: #ffffff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.5s;
-}
-
-.selector__agregar__boton:hover {
-    background-color: #1b59df;
 }
 .elements{
     display: grid;
@@ -156,9 +134,8 @@ main{
     border-radius: 5px;
     margin: 3vh;
     gap: 20px;
-    
 }
-.elemento__balanza{
+.elemento__tecnico{
     display: flex;
     justify-content: center;
     background-color: #ffffff;
@@ -170,31 +147,31 @@ main{
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     transition: transform 0.5s;
 }
-.elemento__balanza:hover{
+.elemento__tecnico:hover{
     transform: scale(1.02);
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0,0,0,.1);
 }
-.elemento__balanza__content{
+.elemento__tecnico__content{
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
-.elemento__balanza__img__element{
+.elemento__tecnico__img__element{
     width: 100px;
 }
-.elemento__balanza p {
+.elemento__tecnico p {
     font-size: 0.9rem;
     margin-bottom: 4px;
     color: #555;
 }
 
-.elemento__balanza b {
+.elemento__tecnico b {
     color: #222;
     font-weight: 600;
 }
 
-.elemento__balanza span {
+.elemento__tecnico span {
     margin-left: 5px;
 }
 .navbar__list__element a, 
@@ -203,6 +180,15 @@ main{
 .navbar__list__element a:active {
     color: #222;
     text-decoration: none;
+}
+
+.navbar__about{
+    transition: all ease .3s;
+    cursor: pointer;
+}
+
+.navbar__about:hover{
+    background-color:#b9d6f171 ;
 }
 @media (max-width:990px){
     body{

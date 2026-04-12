@@ -20,6 +20,7 @@ CREATE TABLE "Usuario" (
   "nombre_completo" TEXT NOT NULL,
   "password" TEXT NOT NULL,
   "correo" TEXT NOT NULL UNIQUE,
+  "img_url" TEXT,
   "fecha_creacion" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   "rol" INT REFERENCES "Rol"("id_rol")
 );
@@ -64,13 +65,13 @@ INSERT INTO "Rol" VALUES (1, 'ADMIN'),(2, 'SUPERVISOR'),(3, 'TECNICO');
 --------- FUNCIONES Y PROCEDURES
 ----------------------- "Usuario"S ---------------------------
 -- INSERTA UN USUSARIO EN LA BASE DE DATOS
-CREATE OR REPLACE FUNCTION registrar_usuario(p_username TEXT,p_nombre_completo TEXT, p_correo TEXT,p_password TEXT,p_rol INT) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$
+CREATE OR REPLACE FUNCTION registrar_usuario(p_username TEXT,p_nombre_completo TEXT, p_correo TEXT,p_password TEXT,p_rol INT,p_img_url TEXT) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$
 BEGIN
   IF EXISTS (SELECT 1 FROM "Usuario" WHERE correo = p_correo OR username =p_username) THEN
     RETURN 'El correo y/o el username ya existe';
   END IF;
   --Caso contrario el else
-  INSERT INTO "Usuario"(username,nombre_completo,correo,password,fecha_creacion,rol) VALUES(p_username,p_nombre_completo,p_correo,p_password,NOW(),p_rol);
+  INSERT INTO "Usuario"(username,nombre_completo,correo,password,fecha_creacion,rol,img_url) VALUES(p_username,p_nombre_completo,p_correo,p_password,NOW(),p_rol,p_img_url);
   RETURN 'Usuario registrado correctamente.';
 END;
 $$ LANGUAGE plpgsql;
@@ -85,17 +86,19 @@ RETURNS TABLE(username TEXT, nombre_completo TEXT, correo TEXT, password TEXT, f
 END;$$ LANGUAGE plpgsql;
 
 -- Función corregida por USERNAME
-CREATE OR REPLACE FUNCTION obtener_usuarios_por_username(p_username TEXT)  
-RETURNS TABLE(username TEXT, nombre_completo TEXT, correo TEXT, password TEXT, fecha_creacion TIMESTAMPTZ, rol INT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
+CREATE OR REPLACE FUNCTION obtener_usuario_por_username(p_username TEXT)  
+RETURNS TABLE(id INT,username TEXT, nombre_completo TEXT, correo TEXT, password TEXT, fecha_creacion TIMESTAMPTZ, id_rol INT,nombre_rol TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
-  SELECT u.username, u.nombre_completo, u.correo, u.password, u.fecha_creacion, u.rol 
-  FROM "Usuario" AS u 
+  SELECT u.id_usuario,u.username, u.nombre_completo, u.correo, u.password, u.fecha_creacion, u.rol 
+  FROM "Usuario" AS u JOIN "Rol" as r ON r.id_rol=u.rol
   WHERE u.username = p_username;
 END;$$ LANGUAGE plpgsql;
 
 -- Obtener ususario por su id
-CREATE OR REPLACE FUNCTION obtener_usuario_por_id(p_id INT)RETURNS TABLE(username TEXT, nombre_completo TEXT, correo TEXT, fecha_creacion TIMESTAMPTZ, rol TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
-RETURN QUERY SELECT u.username, u.nombre_completo, u.correO, u.fecha_creacion, r.nombre 
+DROP FUNCTION obtener_usuario_por_id(INT);
+
+CREATE OR REPLACE FUNCTION obtener_usuario_por_id(p_id INT)RETURNS TABLE(username TEXT, nombre_completo TEXT, correo TEXT, fecha_creacion TIMESTAMPTZ, rol TEXT,img TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
+RETURN QUERY SELECT u.username, u.nombre_completo, u.correO, u.fecha_creacion, r.nombre, u.img_url
   FROM "Usuario" AS u JOIN "Rol" AS r ON r.id_rol = u.rol
   WHERE u.id_usuario = p_id;
 END;$$ LANGUAGE plpgsql;
@@ -420,6 +423,13 @@ AS $$BEGIN
     RETURN NEXT;
 END;$$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION obtener_tecnicos(p_rol INT) 
+RETURNS TABLE (nombre_completo TEXT, correo TEXT, fecha_creacion TIMESTAMPTZ,img TEXT,username TEXT,rol TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
+  RETURN QUERY 
+  SELECT u.nombre_completo,u.correo,u.fecha_creacion,u.img_url,u.username,r.nombre
+  FROM "Usuario" AS u JOIN "Rol" as r ON r.id_rol=u.rol WHERE u.rol<=p_rol;
+END;$$ LANGUAGE plpgsql;
+
 
 GRANT EXECUTE ON FUNCTION iniciar_sesion(TEXT, TEXT) TO anon;
 GRANT EXECUTE ON FUNCTION iniciar_sesion(TEXT, TEXT) TO authenticated;
@@ -440,7 +450,7 @@ GRANT USAGE ON SCHEMA public TO colomosback;
 -- CATEGORÍA: USUARIOS
 GRANT EXECUTE ON FUNCTION registrar_usuario(TEXT, TEXT, TEXT, TEXT, INT) TO colomosback;
 GRANT EXECUTE ON FUNCTION obtener_usuarios_por_correo(TEXT) TO colomosback;
-GRANT EXECUTE ON FUNCTION obtener_usuarios_por_username(TEXT) TO colomosback;
+GRANT EXECUTE ON FUNCTION obtener_usuario_por_username(TEXT) TO colomosback;
 GRANT EXECUTE ON FUNCTION obtener_usuarios() TO colomosback;
 GRANT EXECUTE ON FUNCTION actualizar_usuario(INT, TEXT, TEXT, TEXT, TEXT, INT) TO colomosback;
 GRANT EXECUTE ON FUNCTION eliminar_usuario(INT) TO colomosback;
@@ -467,3 +477,5 @@ GRANT EXECUTE ON FUNCTION obtener_laboratorio(INT) TO colomosback;
 GRANT EXECUTE ON FUNCTION obtener_reportes_balanza(INT) TO colomosback;
 GRANT EXECUTE ON FUNCTION obtener_reportes_usuario(INT) TO colomosback;
 GRANT EXECUTE ON FUNCTION obtener_reporte(INT) TO colomosback;
+
+GRANT EXECUTE ON FUNCTION obtener_tecnicos() TO colomosback;

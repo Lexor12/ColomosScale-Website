@@ -8,7 +8,13 @@
 body{
     display: grid;
     grid-template-columns: 200px 1fr;
-    height: 100vh;
+}
+body{
+    opacity: 0;
+    transition: opacity ease-in .3s;
+}
+body.is-loaded{
+    opacity: 1;
 }
 .navbar__icon__img{
     width: 190px;
@@ -97,33 +103,12 @@ main{
     justify-content: space-between;
     background: #ffffff;
     padding: 25px 20px;
-    border: none;
-    border-radius: 0px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 .selector__filtro{
     display: flex;
     flex-direction: row;
     gap: 20px;
-}
-.selector input, 
-.selector select {
-    padding: 10px;
-    border: 2px solid #d1d5db;
-    border-radius: 8px;
-    background-color: #f9fafb;
-    color: #374151;
-    font-size: .9rem;
-    transition: all 0.5s ease;
-    min-width: 15vw;
-}
-.selector input{
-    min-width: 10vw;
-    width: 25vw;
-}
-.selector input:focus, 
-.selector select:focus {
-    border-color: #3b82f6; 
 }
 .selector__volver__boton {
     background-color: red;
@@ -135,10 +120,12 @@ main{
     cursor: pointer;
     transition: background 0.5s;
 }
-
+.selector__volver__boton:hover {
+    background-color: rgb(196, 95, 95);
+}
 .InfoTecnico{
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 450px 1fr;
     grid-template-rows: 1fr 1fr;
     gap: 10px;
     background-color: #ffffff;
@@ -150,10 +137,9 @@ main{
     overflow-y: auto;
     height:100%;
 }
-
 .ImagenTecnico {
-    grid-column: 1 / 2;
-    grid-row: 1 / 2;
+    grid-column: 1;
+    grid-row: 1;
     height: 100%; 
     width: 100%;
     display: flex;
@@ -167,9 +153,9 @@ main{
     border: #333 solid 1px; 
 }
 
-.InfoTecnico__datos{
-    grid-column: 2 / 3;
-    grid-row: 1 / 3;
+.InfoTecnico__reportes{
+    grid-column: 2;
+    grid-row: span 3;
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -178,11 +164,38 @@ main{
     border-radius: 5px;
     overflow-y: auto;
 }
-
-.selector__volver__boton:hover {
-    background-color: rgb(196, 95, 95);
+.InfoTecnico__reportes__elemento{
+    display: flex;
+    justify-content: space-evenly;
+    background-color: #ffffff;
+    padding: 15px;
+    border: 1px solid #e0e4e8;
+    box-shadow: 0px 12px 15px rgba(0,0,0,0.05); 
+    border-radius: 8px;
+    border-left: 5px solid #0056b3;
+    transition: all ease .1s;
 }
-
+.InfoTecnico__reportes__elemento:hover{
+    background: #b9d6f171; 
+    transform: scale(1.005);
+}
+.InfoTecnico__reportes__elemento>strong{
+    color: #0056b3;
+    font-size: medium;
+}
+.InfoTecnico__reportes__elemento>strong>span{
+    color: #666;
+    font-size: small
+}
+.InfoTecnico__reportes__titulo,.InfoTecnico__General__titulo{
+    color: #13294d;
+}
+.InfoTecnico__General>strong{
+    color: #3f3e3e;
+}
+.InfoTecnico__General>strong>span{
+    color: rgb(128, 122, 122);
+}
 .navbar__list__element a, 
 .navbar__list__element a:visited, 
 .navbar__list__element a:hover, 
@@ -194,31 +207,81 @@ main{
 .InfoTecnico__General{
     display:flex;
     flex-direction: column;
-    text-align: center;
+    flex-wrap: wrap;
     gap: 15px;
-    /*place-self: center;*/
     padding: 10px;
     border: #222 solid 1px;
     border-radius: 5px;
     overflow-y: auto;
-    overflow-x: hidden;
+}
+.InfoTecnico__General>strong{
+    display: block; /* Hace que se comporte como un parrafo (ocupa toda la linea) */
+    width: 100%;
+    overflow-wrap: break-word; /*Fuerza el salto de linea */
 }
 
-.HistorialReportes__lista{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 20px;
+.navbar__about{
+    transition: all ease .3s;
+    cursor: pointer;
 }
 
-.InfoTecnico__datos__elemento{
-    background-color: #f9fafb;
-    padding: 10px;
-    border: 1px solid #d1d5db;
-    border-radius: 5px;
-    border-left: 5px solid #0056b3;
+.navbar__about:hover{
+    background-color:#b9d6f171 ;
 }
-
-.Ejemplo{
-    text-align: justify;
+@media (max-width:990px){
+    body{
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    height: auto;
+    }
+    .bar{
+        grid-column: 1;
+        position: sticky;
+        top: 0;
+        width: 100%;
+    }
+    .navbar{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .navbar__list{
+        margin-top: 0;
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+    }
+    .navbar__icon__img{
+        width: 15vw;
+    }
+    .navbar__about{
+        margin: 0;
+        padding: 5px;
+        order: 2;
+    }
+    .navbar__about__content__rol{
+        display: none;
+    }
+    .navbar__about__img__element {
+        width: 2.5vw;
+        border-radius: 50%; 
+    }
+    .navbar__about__content {
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+    }
+}
+@media(max-width:720px) {
+    .navbar__about {
+        display: none;
+    }  
+    .navbar__icon{
+        display: none;
+    }
+    .navbar__list{
+        flex-wrap: wrap;
+    }
 }

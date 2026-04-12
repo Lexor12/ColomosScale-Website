@@ -9,6 +9,13 @@ body{
     grid-template-columns: 1fr 1fr;
     min-height:100vh; 
 }
+body{
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+body.is-loaded {
+    opacity: 1;
+}
 .hero{
     background-image:url(https://file.garden/abZDVP9uwwfHTHzQ/Scale);
     background-repeat:no-repeat;

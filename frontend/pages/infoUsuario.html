@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/infotecnico.css">
-    <title>Informacion del técnico</title>
+    <link rel="stylesheet" href="../css/infoUsuario.css">
+    <title>Informacion del usuario</title>
 </head>
 <body>
-
     <aside class="bar">
         <nav class="navbar">
             <div class="navbar__icon">
                 <img src="../assets/logo/logo_sinfondo.png" class="navbar__icon__img">
             </div>
             <ul class="navbar__list">
-                <li class="navbar__list__element">
+                <li class="navbar__list__element" id="btnDashboard">
                     <img src="../assets/icons/dashboard.svg" class="navbar__list__element__icon navbar__list__element__dashboard">
                     <a href="dashboard.html">Dashboard</a>
                 </li>
-                <li class="navbar__list__element">
+                <li class="navbar__list__element" id="btnTecnicos">
                     <img src="../assets/icons/tecnicos.svg" class="navbar__list__element__icon navbar__list__element__tecnicos">
-                    <a href="#">Técnicos</a>
+                    <a href="tecnico.html">Técnicos</a>
                 </li>
-                <li class="navbar__list__element">
+                <li class="navbar__list__element" id="btnAdmin" style="display: none;">
                     <img src="../assets/icons/admin.svg" class="navbar__list__element__icon navbar__list__element__admin">
-                    <a href="#">Admin</a>
+                    <a href="admin.html">Admin</a>
                 </li>
             </ul>
             <div class="navbar__about">
@@ -32,7 +31,7 @@
                     <img src="../assets/icons/user.svg" class="navbar__about__img__element">
                 </div>
                 <div class="navbar__about__content">
-                    <p class="navbar__about__content__name" id="nombreUsuario">Juan Roberto Perez Jimenez</p>
+                    <p class="navbar__about__content__name" id="nombreUsuario">Usuario</p>
                     <p class="navbar__about__content__rol" id="rolUsuario">Tecnico</p>
                 </div>
             </div>
@@ -46,34 +45,30 @@
             </div>
         </nav>
     </aside>
-
     <main>
         <section class="selector">
             <div class="selector__filtro">
             </div>
-            <div class="selector__volver" id="volver">
+            <div class="selector__volver" id="btnVolver">
                 <button class="selector__volver__boton"> > Volver</button>
             </div>
         </section>
         <section class="InfoTecnico">
             <div class="ImagenTecnico">
-                <img src="https://files.catbox.moe/j4wvwk.jpg" alt="Imagen del técnico de ejemplo">
+                <img src="https://files.catbox.moe/j4wvwk.jpg" alt="Imagen del técnico de ejemplo" class="ImagenTecnico__elemento">
             </div>
-                <div class="InfoTecnico__datos">
-                    <h2 class="InfoTecnico__datos__titulo">Historial de reportes</h2>
-                    <p class="InfoTecnico__datos__elemento"><strong>Ejemplo:</strong> Ejemplo</p>
-                   <p class="InfoTecnico__datos__elemento"><strong>Ejemplo:</strong> Ejemplo</p>
-                   <p class="InfoTecnico__datos__elemento"><strong>Ejemplo:</strong> Ejemplo</p>
-                   <p class="InfoTecnico__datos__elemento"><strong>Ejemplo:</strong> Ejemplo</p>
-                   <p class="InfoTecnico__datos__elemento"><strong>Ejemplo:</strong> Ejemplo</p>
+                <div class="InfoTecnico__reportes">
+                    <h2 class="InfoTecnico__reportes__titulo">Historial de reportes</h2>
                 </div>
                 <div class="InfoTecnico__General">
-                    <h3>Informacion general del Técnico</h3>
-                    <p class="Ejemplo">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, voluptate.</p>
+                    <h3 class="InfoTecnico__General__titulo">Informacion general del usuario</h3>
+                    <strong>Nombre: <span class="InfoTecnico__General__nombre"></span></strong>
+                    <strong>Correo: <span class="InfoTecnico__General__correo"></span></strong>
+                    <strong>Fecha de creacion: <span class="InfoTecnico__General__fecha"></span></strong>
+                    <strong>Rol: <span class="InfoTecnico__General__rol"></span></strong>
                 </div>
         </section>
-
     </main>
 </body>
-<!-- <script src="../js/dashboard.js"></script> -->
+<script src="../js/infoUsuario.js"></script>
 </html>

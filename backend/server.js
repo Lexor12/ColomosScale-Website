@@ -77,6 +77,39 @@ app.get('/api/obtenerLaboratorios',async(req,res)=>
         return res.status(401).json({status:0,error:"Error al conectar a la base de datos."})
     }
 })
+
+app.get('/api/obtenerTecnicos',async(req,res)=>{
+    const token = req.header('token');
+    const statusToken = verificarToken(token);
+    if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
+    const rol = statusToken.usuario.rol==4?4:3
+    try{
+        const data = await sql`SELECT * FROM obtener_tecnicos(${rol})`;
+        res.json({status:1,data:data})
+    }
+    catch(e){
+        return res.status(401).json({status:0,error:"Error al conectar a la base de datos."})
+    }
+})
+
+app.get('/api/obtenerTecnico/:codigo',async(req,res)=>{
+    const token = req.header('token');
+    const statusToken = verificarToken(token);
+    const codigo = req.params.codigo
+    if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
+    const rol = statusToken.usuario.rol==4?4:3
+    try{
+        const usuario = await sql`SELECT * FROM obtener_usuario_por_username(${codigo})`;
+        if(usuario[0].id_rol>rol)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
+        const reportes = await sql`SELECT * FROM obtener_reportes_usuario(${usuario[0].id})`;
+        let data = {usuario:usuario[0],reportes:reportes};
+        res.json({status:1,data:data})
+    }
+    catch(e){
+        return res.status(401).json({status:0,error:"Error al conectar a la base de datos."})
+    }
+})
+
 app.get('/api/obtenerBalanza/:codigo',async(req,res)=>{
     const token = req.header('token');
     const statusToken = verificarToken(token);

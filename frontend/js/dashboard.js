@@ -3,6 +3,7 @@ let format = {headers:{'token':token}};
 
 const nombre = document.getElementById('nombreUsuario') 
 const rol = document.getElementById('rolUsuario') 
+const imgPersona = document.querySelector('.navbar__about__img__element')
 const elements = document.querySelector('.elements')//Hacemos referencia a todo nuestro contenedor de balanzas
 const selectorLabs = document.querySelector('.selector__filtro__laboratorio')
 const selectorEstado = document.querySelector('.selector__filtro__estado')
@@ -23,6 +24,11 @@ async function configurarNavBar(){
     const btnTecnicos = document.getElementById('btnTecnicos');
     btnTecnicos.addEventListener('click',()=>{
         window.location.href='../pages/tecnico.html'
+    })
+    const btnPaginaInicio = document.querySelector('.navbar__icon__img')
+    btnPaginaInicio.style.cursor='pointer'
+    btnPaginaInicio.addEventListener('click',()=>{
+        window.location.href=`../index.html`
     })
 }
 
@@ -137,9 +143,13 @@ function crearBalanzas(listaBalanzas){
 async function cargarBalanzas(){
     const datosUsuario = await obtenerValores('usuario')
     balanzasOriginal = await obtenerValores('obtenerBalanzas')
-    console.log(balanzasOriginal)
     nombre.textContent = datosUsuario.nombre_completo;
     rol.textContent = datosUsuario.rol;
+    imgPersona.src = datosUsuario.img
+    const btnVerPerfil = document.querySelector('.navbar__about')
+    btnVerPerfil.addEventListener('click',()=>{
+        window.location.href=`../pages/infoUsuario.html?id=${datosUsuario.username}`
+    })
     crearBalanzas(balanzasOriginal)
 }
 function manejarFiltros(){

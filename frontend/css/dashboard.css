@@ -8,14 +8,12 @@
 body{
     display: grid;
     grid-template-columns: 200px 1fr;
-    height: 100vh;
 }
-body {
+body{
     opacity: 0;
-    transition: opacity 0.3s ease-in;
+    transition: opacity ease-in .3s;
 }
-
-body.is-loaded {
+body.is-loaded{
     opacity: 1;
 }
 .navbar__icon__img{
@@ -24,14 +22,13 @@ body.is-loaded {
 .bar{
     grid-column: 1;
     background-color: #ffffff;
+    border:solid #eee 1px;
     padding: 10px;
     z-index: 10;
-    border:solid #eee 1px;
 }
 .navbar{
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
     height: 100%;
     justify-content: center;
     align-items: stretch;
@@ -106,10 +103,7 @@ main{
     justify-content: space-between;
     background: #ffffff;
     padding: 25px 20px;
-    border: none;
-    border-radius: 0px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
 }
 .selector__filtro{
     display: flex;
@@ -203,6 +197,14 @@ main{
 .navbar__list__element a:active {
     color: #222;
     text-decoration: none;
+}
+.navbar__about{
+    transition: all ease .3s;
+    cursor: pointer;
+}
+
+.navbar__about:hover{
+    background-color:#b9d6f171 ;
 }
 @media (max-width:990px){
     body{

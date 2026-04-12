@@ -56,9 +56,20 @@ async function configurarNavBar(){
     })
     const nombre = document.getElementById('nombreUsuario')
     const rol = document.getElementById('rolUsuario')
+    const imgPersona = document.querySelector('.navbar__about__img__element')
     const datosUsuario = await obtenerValores('usuario');
     nombre.textContent = datosUsuario.nombre_completo
     rol.textContent=datosUsuario.rol;
+    imgPersona.src = datosUsuario.img
+    const btnVerPerfil = document.querySelector('.navbar__about')
+    btnVerPerfil.addEventListener('click',()=>{
+        window.location.href=`../pages/infoUsuario.html?id=${datosUsuario.username}`
+    })
+    const btnPaginaInicio = document.querySelector('.navbar__icon__img')
+    btnPaginaInicio.style.cursor='pointer'
+    btnPaginaInicio.addEventListener('click',()=>{
+        window.location.href=`../index.html`
+    })
 }
 
 async function obtenerValores(valor){

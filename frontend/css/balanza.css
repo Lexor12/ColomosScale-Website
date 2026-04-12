@@ -261,6 +261,16 @@ main{
 strong{
     color:#475e85 ;
 }
+
+.navbar__about{
+    transition: all ease .3s;
+    cursor: pointer;
+}
+
+.navbar__about:hover{
+    background-color:#b9d6f171 ;
+}
+
 @media (max-width:990px){
     body,.InfoBalanza{
     grid-template-columns: 1fr;
