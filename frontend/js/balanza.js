@@ -95,6 +95,7 @@ async function cargarDatosBalanza() {
     const marca = document.getElementById('balanzaMarca')
     const modelo =document.getElementById('balanzaModelo');
     const serie = document.getElementById('balanzaSerie')
+    const codigo = document.getElementById('balanzaCodigo')
     imagenBalanza.src = datosBalanza.balanza.img_url
     nombreBalanza.textContent=datosBalanza.balanza.nombre
     laboratorio.textContent=datosBalanza.balanza.nombre_laboratorio
@@ -102,6 +103,8 @@ async function cargarDatosBalanza() {
     marca.textContent=datosBalanza.balanza.marca
     modelo.textContent=datosBalanza.balanza.modelo
     serie.textContent=datosBalanza.balanza.serie
+    codigo.textContent=datosBalanza.balanza.codigo_balanza
+    console.log(datosBalanza)
 
     let fecha = new Date(datosBalanza.balanza.ultima);
     ultimaMedicion.textContent=fecha.toLocaleDateString('es-MX');
