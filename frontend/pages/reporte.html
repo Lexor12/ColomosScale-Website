@@ -3,10 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte</title>
+    <link rel="stylesheet" href="../css/reporte.css">
+    <title>Información del reporte</title>
 </head>
 <body>
-    <h1>Hola, esta pagina falta de hacer @nadyaaa hazlaaaa!!!</h1>
-    <h6>Atte:Juan Alfonso Perez de la Mora </h6>
+    <aside class="bar">
+        <nav class="navbar">
+            <div class="navbar__icon">
+                <img src="../assets/logo/logo_sinfondo.png" class="navbar__icon__img">
+            </div>
+            <ul class="navbar__list">
+                <li class="navbar__list__element" id="btnDashboard">
+                    <img src="../assets/icons/dashboard.svg" class="navbar__list__element__icon navbar__list__element__dashboard">
+                    <a href="dashboard.html">Dashboard</a>
+                </li>
+                <li class="navbar__list__element" id="btnTecnicos">
+                    <img src="../assets/icons/tecnicos.svg" class="navbar__list__element__icon navbar__list__element__tecnicos">
+                    <a href="tecnico.html">Técnicos</a>
+                </li>
+                <li class="navbar__list__element" id="btnAdmin" style="display: none;">
+                    <img src="../assets/icons/admin.svg" class="navbar__list__element__icon navbar__list__element__admin">
+                    <a href="admin.html">Admin</a>
+                </li>
+            </ul>
+            <div class="navbar__about">
+                <div class="navbar__about__img">
+                    <img src="../assets/icons/user.svg" class="navbar__about__img__element">
+                </div>
+                <div class="navbar__about__content">
+                    <p class="navbar__about__content__name" id="nombreUsuario">Usuario</p>
+                    <p class="navbar__about__content__rol" id="rolUsuario">Tecnico</p>
+                </div>
+            </div>
+            <div class="navbar__footer">
+                <ul class="footer__list">
+                    <li class="navbar__list__element" id="btnSalir">
+                        <img src="../assets/icons/salir.svg" class="navbar__list__element__icon navbar__list__element__salir">
+                        <a>Salir</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+    <main>
+        <section class="selector">
+            <div class="selector__filtro">
+            </div>
+        </section>
+        <section class="elements">
+            <article class="elements__info">
+                <div class="elements__info__image">
+                    <img src="../assets/examples/balanza.jpg" alt="imagen de balanza" class="elements__info__image__element">
+                </div>
+                <div class="elements__info__report">
+                    <div class="elements__info__report__balanza elements__info__report__card">
+                        <p><strong>Nombre: </strong><span class="elements__info__report__balanza__nombre"></span></p>
+                        <p><strong>Código: </strong><span class="elements__info__report__balanza__codigo"></span></p>
+                        <p><strong>Laboratorio: </strong><span class="elements__info__report__balanza__laboratorio"></span></p>
+                    </div>
+                    <div class="elements__info__report__reporte elements__info__report__card">
+                        <p><strong>Fecha: </strong><span class="elements__info__report__reporte__fecha"></span></p>
+                        <p><strong>Número de Reporte: </strong><span class="elements__info__report__reporte__numero"></span></p>
+                    </div>
+                    <div class="elements__info__report__usuario elements__info__report__card">
+                        <p><strong>Nombre del analista: </strong><span class="elements__info__report__usuario__nombre"></span></p>
+                        <p><strong>Rol del analista: </strong><span class="elements__info__report__usuario__nombre"></span></p>
+                        <p><strong>Correo del analista: </strong><span class="elements__info__report__usuario__nombre"></span></p>
+                    </div>
+                </div>
+                <div class="elements__info__pdf">
+                    <p>Descargar PDF</p>
+                </div>
+            </article>
+            <article class="elements__report">
+                <div class="elements__report__status elements__report__element">
+                    <p><strong>Estado: </strong><span class="elements__report__status__estado"></span></p>
+                    <p><strong>EMT: </strong><span class="elements__report__status__emt"></span></p>
+                </div>
+                <div class="elements__report__table elements__report__element">
+                    <table class="elements__report__table__contenido">
+                        <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>Valor o Resultado</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Excentricidad Promedio</td><td><span class="elements__report__table__contenido__excentricidad"></span> g</td></tr>
+                            <tr><td>Repetibilidad 100</td><td><span></span class="elements__report__table__contenido__rep100"> g</td></tr>
+                            <tr><td>Repetibilidad 50</td><td><span></span class="elements__report__table__contenido__rep50"> g</td></tr>
+                            <tr><td>Linealidad Promedio</td><td><span></span class="elements__report__table__contenido__linealidad"> g</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="elements__report__obs elements__report__element">
+                    <p><b>Observaciones: </b></p>
+                    <p class="elements__report__status__estado">Texto</p>
+                </div>
+            </article>
+        </section>
+    </main>
 </body>
+<script src="../js/reporte.js"></script>
 </html>
