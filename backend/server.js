@@ -129,7 +129,6 @@ app.get('/api/reporte/:numeroReporte',async(req,res)=>{
     const token =  req.header('token')
     const statusToken = verificarToken(token);
     const idReporte = req.params.numeroReporte
-    (idReporte)
     if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
     try{
         const reporte = await sql`SELECT * FROM obtener_reporte(${idReporte})`

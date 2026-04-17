@@ -105,7 +105,6 @@ async function cargarDatosBalanza() {
     modelo.textContent=datosBalanza.balanza.modelo
     serie.textContent=datosBalanza.balanza.serie
     codigo.textContent=datosBalanza.balanza.codigo_balanza
-    (datosBalanza)
 
     let fecha = new Date(datosBalanza.balanza.ultima);
     ultimaMedicion.textContent=fecha.toLocaleDateString('es-MX');

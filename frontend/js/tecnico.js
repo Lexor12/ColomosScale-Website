@@ -76,7 +76,6 @@ async function obtenerValores(valor){
 
 async function cargarTecnicos(){
     tecnicosOriginal = await obtenerValores('obtenerTecnicos')
-    (tecnicosOriginal)
     crearTecnicos(tecnicosOriginal)
 }
 async function  crearTecnicos(listaTecnicos) {

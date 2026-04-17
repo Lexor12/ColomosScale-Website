@@ -28,6 +28,7 @@ async function verificarToken() {
             if(Object.keys(valoresDeConsulta).length===0){
                 window.location.href='../pages/noEncontrada.html'
             }
+            console.log(valoresDeConsulta)
         }catch(e){
             localStorage.removeItem('token_colomos_scale');
             window.location.href='../pages/notAuth.html'
