@@ -76,7 +76,7 @@ async function obtenerValores(valor){
 
 async function cargarTecnicos(){
     tecnicosOriginal = await obtenerValores('obtenerTecnicos')
-    console.log(tecnicosOriginal)
+    (tecnicosOriginal)
     crearTecnicos(tecnicosOriginal)
 }
 async function  crearTecnicos(listaTecnicos) {
@@ -148,7 +148,7 @@ function configurarSelector(){
     buscador.addEventListener('input',filtrar)
 }
 
-async function iniciarApp() {
+async function iniciarPagina() {
     await verificarToken(); 
     await configurarNavBar();
     await cargarTecnicos();
@@ -156,7 +156,7 @@ async function iniciarApp() {
     document.querySelector('body').classList.add('is-loaded');
 }
 
-iniciarApp();
+window.addEventListener('load',iniciarPagina())
 
 
 

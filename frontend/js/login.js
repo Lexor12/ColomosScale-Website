@@ -82,9 +82,9 @@ function cargarPagina(){
     })
 }
 
-async function iniciarApp(){
+async function iniciarPagina(){
     await verificarToken();
     cargarPagina();
     document.querySelector('body').classList.add('is-loaded')
 }
-iniciarApp();
+window.addEventListener('load',iniciarPagina())

@@ -7,6 +7,7 @@ let format = {headers:{'token':token}};
 let valoresDeConsulta = {}
 let datosUsuario ={}
 async function verificarToken() {
+    if(usernameUsuario===null)window.location.href='../pages/noEncontrada.html'
     if(!token)window.location.href='../pages/notAuth.html';
     else{
         try{
@@ -27,7 +28,7 @@ async function verificarToken() {
             if(Object.keys(valoresDeConsulta).length===0){
                 window.location.href='../pages/noEncontrada.html'
             }
-            console.log(valoresDeConsulta)
+            (valoresDeConsulta)
         }catch(e){
             localStorage.removeItem('token_colomos_scale');
             window.location.href='../pages/notAuth.html'
@@ -135,4 +136,4 @@ async function iniciarPagina(){
     cargarPagina();
     document.querySelector('body').classList.add('is-loaded');
 }
-iniciarPagina();
+window.addEventListener('load',iniciarPagina())

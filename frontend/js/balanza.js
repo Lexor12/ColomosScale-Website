@@ -6,6 +6,7 @@ const token = localStorage.getItem('token_colomos_scale');
 let format = {headers:{'token':token}};
 let datosBalanza;
 async function verificarToken() {
+    if(codigoBalanza===null)window.location.href='../pages/noEncontrada.html'
     if(!token)window.location.href='../pages/notAuth.html';
     else{
         try{
@@ -104,7 +105,7 @@ async function cargarDatosBalanza() {
     modelo.textContent=datosBalanza.balanza.modelo
     serie.textContent=datosBalanza.balanza.serie
     codigo.textContent=datosBalanza.balanza.codigo_balanza
-    console.log(datosBalanza)
+    (datosBalanza)
 
     let fecha = new Date(datosBalanza.balanza.ultima);
     ultimaMedicion.textContent=fecha.toLocaleDateString('es-MX');
@@ -153,4 +154,4 @@ async function iniciarPagina() {
     await cargarDatosBalanza();
     document.querySelector('body').classList.add('is-loaded');
 }
-iniciarPagina();
+window.addEventListener('load',iniciarPagina())

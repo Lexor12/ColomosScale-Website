@@ -8,12 +8,16 @@
 body{
     display: grid;
     grid-template-columns: 200px 1fr;
+    height: 100vh;
 }
-body{
+body {
     opacity: 0;
-    transition: opacity ease-in .3s;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in;
 }
-body.is-loaded{
+
+body.is-loaded {
+    visibility: visible;
     opacity: 1;
 }
 .navbar__icon__img{
@@ -31,7 +35,7 @@ body.is-loaded{
     flex-direction: column;
     height: 100%;
     justify-content: center;
-    align-items: stretch;
+    align-items: stretch;   
 }
 .navbar__list{
     margin-top: 2vh;
@@ -47,10 +51,11 @@ body.is-loaded{
     cursor: pointer;
     gap: 15px;
     color: #333;
+    border-radius: 6px;
+    border-left: 4px solid rgb(36, 121, 124);
 }
 .navbar__list__element:hover{
     background-color:#c9d0dbd7 ;
-    border-radius: 5px;
     
 }
 .navbar__list__element__icon{
@@ -67,6 +72,7 @@ body.is-loaded{
     border-radius: 5px;  
     padding: 10px 1px 10px 2px;  
     margin: 15px 0;
+    border-left: 4px solid rgb(36, 121, 124);
 }
 .navbar__about__img__element {
     width: 30px;
@@ -136,6 +142,7 @@ main{
     margin-bottom: 20px;
     overflow-y: auto;
     height:100%;
+    
 }
 .ImagenTecnico {
     grid-column: 1;
@@ -151,6 +158,9 @@ main{
     object-fit: cover; 
     display: block;
     border: #333 solid 1px; 
+    border: #eee solid 2px; 
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
 .InfoTecnico__reportes{
@@ -163,6 +173,11 @@ main{
     border:#222 solid 1px;
     border-radius: 5px;
     overflow-y: auto;
+    border: #eee solid 2px; 
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    border-radius: 6px;
+    border-left: 4px solid rgb(36, 121, 124);
 }
 .InfoTecnico__reportes__elemento{
     display: flex;
@@ -172,7 +187,7 @@ main{
     border: 1px solid #e0e4e8;
     box-shadow: 0px 12px 15px rgba(0,0,0,0.05); 
     border-radius: 8px;
-    border-left: 5px solid #0056b3;
+    border-left: 5px solid rgb(36, 121, 124);
     transition: all ease .1s;
 }
 .InfoTecnico__reportes__elemento:hover{
@@ -180,7 +195,7 @@ main{
     transform: scale(1.005);
 }
 .InfoTecnico__reportes__elemento>strong{
-    color: #0056b3;
+    color:#475e85 ;
     font-size: medium;
 }
 .InfoTecnico__reportes__elemento>strong>span{
@@ -188,10 +203,10 @@ main{
     font-size: small
 }
 .InfoTecnico__reportes__titulo,.InfoTecnico__General__titulo{
-    color: #13294d;
+    color: rgb(8, 68, 70);;
 }
 .InfoTecnico__General>strong{
-    color: #3f3e3e;
+    color:#475e85 ;
 }
 .InfoTecnico__General>strong>span{
     color: rgb(128, 122, 122);
@@ -210,9 +225,12 @@ main{
     flex-wrap: wrap;
     gap: 15px;
     padding: 10px;
-    border: #222 solid 1px;
-    border-radius: 5px;
     overflow-y: auto;
+    border: #eee solid 2px; 
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    border-radius: 6px;
+    border-left: 4px solid rgb(36, 121, 124);
 }
 .InfoTecnico__General>strong{
     display: block; /* Hace que se comporte como un parrafo (ocupa toda la linea) */
@@ -301,4 +319,22 @@ main{
         grid-template-columns: 1fr;
         grid-template-rows: auto;
     }
+}
+
+.InfoTecnico__General strong {
+    background: #f8fafc; 
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 8px;
+    display: flex; 
+    justify-content: space-between;
+    transition: all 0.3s ease;
+}
+
+.InfoTecnico__General strong:hover {
+    background: #ffffff;
+    border-color: rgb(36, 121, 124);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }

@@ -95,7 +95,7 @@ RETURNS TABLE(id INT,username TEXT, nombre_completo TEXT, correo TEXT, img TEXT,
 END;$$ LANGUAGE plpgsql;
 
 -- Obtener ususario por su id
-DROP FUNCTION obtener_usuario_por_id(INT);
+DROP FUNCTION   (INT);
 
 CREATE OR REPLACE FUNCTION obtener_usuario_por_id(p_id INT)RETURNS TABLE(username TEXT, nombre_completo TEXT, correo TEXT, fecha_creacion TIMESTAMPTZ, rol TEXT,img TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
 RETURN QUERY SELECT u.username, u.nombre_completo, u.correO, u.fecha_creacion, r.nombre, u.img_url
@@ -195,10 +195,10 @@ $$ LANGUAGE plpgsql;
 
 -- Obtener una balanza especifica
 CREATE OR REPLACE FUNCTION obtener_balanza_por_id(p_id INT) 
-RETURNS TABLE(nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, estado estado_equipo, ultima TIMESTAMPTZ, id_lab INT, codigo_balanza TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
+RETURNS TABLE(nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, estado estado_equipo, ultima TIMESTAMPTZ, id_lab INT, codigo_balanza TEXT,laboratorio TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
-  SELECT b."nombre", b."marca", b."modelo", b."serie", b."img_url", b."estado_calibracion", b."ultima_medicion", b."id_laboratorio", b."codigo" 
-  FROM "Balanza" AS b 
+  SELECT b."nombre", b."marca", b."modelo", b."serie", b."img_url", b."estado_calibracion", b."ultima_medicion", b."id_laboratorio", b."codigo",l.nombre 
+  FROM "Balanza" AS b JOIN "Laboratorio" AS l ON l.id_laboratorio=b.id_laboratorio;
   WHERE b."id_balanza" = p_id;
 END;$$ LANGUAGE plpgsql;
 

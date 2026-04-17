@@ -125,6 +125,23 @@ app.get('/api/obtenerBalanza/:codigo',async(req,res)=>{
         return res.status(401).json({status:0,error:"Error al conectar a la base de datos."})
     }
 })
+app.get('/api/reporte/:numeroReporte',async(req,res)=>{
+    const token =  req.header('token')
+    const statusToken = verificarToken(token);
+    const idReporte = req.params.numeroReporte
+    (idReporte)
+    if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
+    try{
+        const reporte = await sql`SELECT * FROM obtener_reporte(${idReporte})`
+        const usuario = await sql`SELECT * FROM obtener_usuario_por_id(${reporte[0].id_usuario})`
+        const balanza = await sql`SELECT * FROM obtener_balanza_por_id(${reporte[0].id_balanza})`
+        res.json({status:1,data:{reporte:reporte[0],usuario:usuario[0],balanza:balanza[0]}})
+    }
+    catch(e){
+        ('f')
+        return res.status(401).json({status:0,error:"Error al conectar a la base de datos."})
+    }
+})
 
 app.get('/api/usuario',async(req,res)=>{
     const token = req.header('token');

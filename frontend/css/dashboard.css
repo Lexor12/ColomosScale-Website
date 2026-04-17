@@ -8,12 +8,16 @@
 body{
     display: grid;
     grid-template-columns: 200px 1fr;
+    height: 100vh;
 }
-body{
+body {
     opacity: 0;
-    transition: opacity ease-in .3s;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in;
 }
-body.is-loaded{
+
+body.is-loaded {
+    visibility: visible;
     opacity: 1;
 }
 .navbar__icon__img{
@@ -31,7 +35,7 @@ body.is-loaded{
     flex-direction: column;
     height: 100%;
     justify-content: center;
-    align-items: stretch;
+    align-items: stretch;   
 }
 .navbar__list{
     margin-top: 2vh;
@@ -47,10 +51,11 @@ body.is-loaded{
     cursor: pointer;
     gap: 15px;
     color: #333;
+    border-radius: 6px;
+    border-left: 4px solid rgb(36, 121, 124);
 }
 .navbar__list__element:hover{
     background-color:#c9d0dbd7 ;
-    border-radius: 5px;
     
 }
 .navbar__list__element__icon{
@@ -67,6 +72,7 @@ body.is-loaded{
     border-radius: 5px;  
     padding: 10px 1px 10px 2px;  
     margin: 15px 0;
+    border-left: 4px solid rgb(36, 121, 124);
 }
 .navbar__about__img__element {
     width: 30px;
@@ -126,11 +132,11 @@ main{
     width: 25vw;
 }
 .selector input:focus, 
-.selector select:focus {
-    border-color: #3b82f6; 
+.selector select:focus,
+.selector input:focus {
+    border-color: rgb(36, 121, 124);; 
 }
 .selector__agregar__boton {
-    background-color: #3b82f6;
     color: #ffffff;
     padding: 10px 20px;
     border: none;
@@ -138,10 +144,12 @@ main{
     font-weight: 600;
     cursor: pointer;
     transition: background 0.5s;
+    border-radius: 8px;
+    background-color:  rgb(36, 121, 124);
 }
 
 .selector__agregar__boton:hover {
-    background-color: #1b59df;
+    background-color: rgb(5, 69, 71);
 }
 .elements{
     display: grid;
@@ -163,6 +171,8 @@ main{
     gap: 30px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     transition: transform 0.5s;
+    border-radius: 8px;
+    border-left: 6px solid rgb(36, 121, 124);
 }
 .elemento__balanza:hover{
     transform: scale(1.02);

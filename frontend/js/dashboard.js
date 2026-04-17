@@ -189,7 +189,7 @@ async function configurarSelector(){
     selectorEstado.addEventListener('change', manejarFiltros);
     buscador.addEventListener('input',manejarFiltros)
 }
-async function iniciarApp() {
+async function iniciarPagina() {
     await verificarToken(); 
     await cargarBalanzas(); 
     await configurarSelector();
@@ -197,7 +197,7 @@ async function iniciarApp() {
     document.querySelector('body').classList.add('is-loaded');
 }
 
-iniciarApp();
+window.addEventListener('load',iniciarPagina())
 
 
 

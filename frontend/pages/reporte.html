@@ -46,6 +46,21 @@
         </nav>
     </aside>
     <main>
+        <section>
+            <header class="print">
+            <div class="print__logo">
+                <img src="../assets/logo/logo_sinfondo.png" alt="Logo">
+            </div>
+            <div class="print__title">
+                <h1>REPORTE TÉCNICO DE BALANZAS</h1>
+                <p>Reporte de medición de balanza - ColomoScale</p>
+            </div>
+            <div class="print__datos">
+                <p><strong>Fecha: </strong> <span class="print__datos__fecha"></span></p>
+                <p><strong>Documento: </strong> Confidencial</p>
+            </div>
+        </header>
+        </section>
         <section class="selector">
             <div class="selector__filtro">
             </div>
@@ -57,7 +72,7 @@
                 </div>
                 <div class="elements__info__report">
                     <div class="elements__info__report__balanza elements__info__report__card">
-                        <p><strong>Nombre: </strong><span class="elements__info__report__balanza__nombre"></span></p>
+                        <p><strong>Nombre de Balanza: </strong><span class="elements__info__report__balanza__nombre"></span></p>
                         <p><strong>Código: </strong><span class="elements__info__report__balanza__codigo"></span></p>
                         <p><strong>Laboratorio: </strong><span class="elements__info__report__balanza__laboratorio"></span></p>
                     </div>
@@ -67,12 +82,12 @@
                     </div>
                     <div class="elements__info__report__usuario elements__info__report__card">
                         <p><strong>Nombre del analista: </strong><span class="elements__info__report__usuario__nombre"></span></p>
-                        <p><strong>Rol del analista: </strong><span class="elements__info__report__usuario__nombre"></span></p>
-                        <p><strong>Correo del analista: </strong><span class="elements__info__report__usuario__nombre"></span></p>
+                        <p><strong>Rol del analista: </strong><span class="elements__info__report__usuario__rol"></span></p>
+                        <p><strong>Correo del analista: </strong><span class="elements__info__report__usuario__correo"></span></p>
                     </div>
                 </div>
                 <div class="elements__info__pdf">
-                    <p>Descargar PDF</p>
+                    <p>Imprimir o Guardar en PDF</p>
                 </div>
             </article>
             <article class="elements__report">
@@ -90,19 +105,20 @@
                         </thead>
                         <tbody>
                             <tr><td>Excentricidad Promedio</td><td><span class="elements__report__table__contenido__excentricidad"></span> g</td></tr>
-                            <tr><td>Repetibilidad 100</td><td><span></span class="elements__report__table__contenido__rep100"> g</td></tr>
-                            <tr><td>Repetibilidad 50</td><td><span></span class="elements__report__table__contenido__rep50"> g</td></tr>
-                            <tr><td>Linealidad Promedio</td><td><span></span class="elements__report__table__contenido__linealidad"> g</td></tr>
+                            <tr><td>Repetibilidad 100</td><td><span class="elements__report__table__contenido__rep100"></span> g</td></tr>
+                            <tr><td>Repetibilidad 50</td><td><span class="elements__report__table__contenido__rep50"></span > g</td></tr>
+                            <tr><td>Linealidad Promedio</td><td><span class="elements__report__table__contenido__linealidad"></span > g</td></tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="elements__report__obs elements__report__element">
                     <p><b>Observaciones: </b></p>
-                    <p class="elements__report__status__estado">Texto</p>
+                    <p class="elements__report__obs__texto">Texto</p>
                 </div>
             </article>
         </section>
     </main>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="../js/reporte.js"></script>
 </html>
