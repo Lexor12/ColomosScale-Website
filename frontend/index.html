@@ -11,42 +11,49 @@
     <nav class="top-bar">
         <div class="bar-content">
             <div class="logo">
-                <img src="../frontend/assets/logo/logo_completo.jpeg" alt="ColomosScale" height="100px" width="auto">
+                <img src="../frontend/assets/logo/logo_sinfondo.png" alt="ColomosScale" height="100px" width="auto">
             </div>
             <div class="links">
                 <a href="#about" class="nav-link">Acerca</a>
-                <a href="pages/Login.html">Iniciar Sesión</a>
+                <a href="pages/Login.html" class="nav-link nav-link--cta">Iniciar Sesión</a>
             </div>
         </div>
     </nav>
-<header class="mensaje-inicio">
-    <h1>Bienvenido a ColomosScale</h1><br>
-    <p><i>Tu solución confiable para la gestión de balanzas en el campus Colomos</i></p>
-</header>
-<div class="hero">
-<div class="search-box">
-    <input id="txtbalanza" type="text" name="q" placeholder="Buscar una balanza" autofocus>
-    <button id="buscar" type="submit">Buscar</button>
-    <div id="result">
-        <p class="result__label"><b>Estado Actual:</b> <span id="estado-valor">ADECUADO</span></p>
-        <p class="result__label"><b>Ultima medición:</b> <span id="fecha-valor">01/01/2001</span></p>
-        <p id="mensaje-error" style="color: red; text-align: center; display: none;"></p>
-        <p id="mensaje-noencontrado" style="color: #cacacacc; text-align: center; display: none;"></p>
+
+    <div class="hero">
+        <div class="hero-content">
+            <div class="mensaje-inicio">
+                <h1>Bienvenido a<br><span class="highlight">ColomosScale</span></h1>
+                <p>Tu solución confiable para la gestión de balanzas en el campus Colomos</p>
+            </div>
+            <div class="search-box">
+                <input id="txtbalanza" type="text" name="q" placeholder="Buscar una balanza..." autofocus>
+                <button id="buscar" type="submit">Buscar →</button>
+            </div>
+            <div id="result">
+                <p class="result__label"><b>Estado Actual:</b> <span id="estado-valor">ADECUADO</span></p>
+                <p class="result__label"><b>Ultima medición:</b> <span id="fecha-valor">01/01/2001</span></p>
+                <p id="mensaje-error" style="color: red; text-align: center; display: none;"></p>
+                <p id="mensaje-noencontrado" style="color: #cacacacc; text-align: center; display: none;"></p>
+            </div>
+        </div>
     </div>
-</div>
-</div>
-<main id="about" class="about">
-    <h2>¿Qué es ColomosScale?</h2><br>
-    <p>ColomosScale es una aplicación web diseñada para facilitar la gestión de balanzas en el campus Colomos. Nuestra plataforma permite a los usuarios registrar, monitorear y administrar las balanzas de manera eficiente, asegurando un funcionamiento óptimo y una experiencia sin complicaciones.</p><br>
-    <h2>Características principales</h2><br>
-    <ul>
-        <li><strong>Monitoreo en tiempo real:</strong> Visualiza el estado actual de cada balanza, incluyendo sus especificaciones y cualquier problema reportado.</li><br>
-        <li><strong>Gestión de mantenimiento:</strong> Programa y realiza un seguimiento de las tareas de mantenimiento para garantizar que las balanzas estén siempre en buen estado.</li><br>
-        <li><strong>Reportes detallados:</strong> Genera informes sobre el uso y el rendimiento de las balanzas para tomar decisiones informadas.</li><br>
-    </ul>
-</main>
-<footer id="pie">
-    <p id="copy">&copy; Todos los derechos reservados.</p>
-</footer>
-<script src="js/buscador.js"></script>
+
+    <main id="about" class="about">
+        <h2>¿Qué es ColomosScale?</h2>
+        <p>ColomosScale es una aplicación web diseñada para facilitar la gestión de balanzas en el campus Colomos. Nuestra plataforma permite a los usuarios registrar, monitorear y administrar las balanzas de manera eficiente, asegurando un funcionamiento óptimo y una experiencia sin complicaciones.</p>
+        <h2>Características principales</h2>
+        <ul>
+            <li><strong>Monitoreo en tiempo real:</strong> Visualiza el estado actual de cada balanza, incluyendo sus especificaciones y cualquier problema reportado.</li>
+            <li><strong>Gestión de mantenimiento:</strong> Programa y realiza un seguimiento de las tareas de mantenimiento para garantizar que las balanzas estén siempre en buen estado.</li>
+            <li><strong>Reportes detallados:</strong> Genera informes sobre el uso y el rendimiento de las balanzas para tomar decisiones informadas.</li>
+        </ul>
+    </main>
+
+    <footer id="pie">
+        <p id="copy">&copy; Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="js/buscador.js"></script>
 </body>
+</html>

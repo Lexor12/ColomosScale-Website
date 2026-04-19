@@ -55,7 +55,7 @@ body{
 }
 
 a:hover {
-    color: red;
+    color: rgb(36,121,124);
 }
 #pie{
     display: flex;
