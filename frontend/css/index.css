@@ -71,6 +71,16 @@ body {
     transition: color 0.2s, background-color 0.2s;
 }
 
+.nav-link.nav-link--cta {
+    background-color: black;
+    color: #ffffff;
+}
+
+.nav-link.nav-link--cta:hover {
+    background-color: var(--color-accent-oscuro);
+    color: #ffffff;
+}
+
 .links a:hover {
     color: var(--color-text);
     background-color: var(--color-accent-claro);
