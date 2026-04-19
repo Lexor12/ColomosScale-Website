@@ -151,7 +151,7 @@ main {
 }
 
 .selector__volver__boton:hover {
-    background-color: var(--color-accent-danger);
+    background-color: var(--color-accent-dark);
 }
 
 .InfoTecnico {
