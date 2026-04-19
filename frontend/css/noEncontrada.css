@@ -1,3 +1,5 @@
+@import url('../css/variables-colores.css'); 
+
 *{
     box-sizing: border-box;
     font-family: Georgia, 'Times New Roman', Times, serif;
@@ -26,8 +28,8 @@ body{
     left: 0;
     width: 100%;
     height: 70px;
-    background-color: white;
-    border-bottom: 1px solid #eeeeee;
+    background-color: var(--color-bg-nav);
+    border-bottom: 1px solid var(--color-border-nav);
     z-index: 1000; 
     display: flex;
     justify-content: center;
@@ -50,12 +52,12 @@ body{
 .links a {
     margin-left: 20px;
     text-decoration: none;
-    color: #a8a8a8;
+    color: var(--color-secundario);
     font-weight: bold;
 }
 
 a:hover {
-    color: rgb(36,121,124);
+    color: var(--color-primario);
 }
 #pie{
     display: flex;
@@ -63,22 +65,8 @@ a:hover {
     align-items: center;
     width: 100vw;
     height: 100%;
-    background-color: #000;
+    background-color: var(--color-bg-footer);
 }
 #copy{
-    color: white;
-}
-#result{
-    display: none;
-    background-color: rgba(0, 0, 0, 0.7); /* Negro con transparencia */
-    border-radius: 0px 0px 10px 10px;
-    padding: 15px;
-    color: #ffffff;
-}
-#result>p{
-    margin-top: 10px;
-}
-#estado-valor,#fecha-valor{
-    color: #cacacacc;
-    font-weight: bold;
+    color: var(--color-blanco-texto);
 }

@@ -1,3 +1,4 @@
+   @import url('../css/variables-colores.css'); 
 *{
     box-sizing: border-box;
     font-family: Georgia, 'Times New Roman', Times, serif;
@@ -25,8 +26,8 @@ body.is-loaded {
 }
 .bar{
     grid-column: 1;
-    background-color: #ffffff;
-    border:solid #eee 1px;
+    background-color: var(--color-surface);
+    border:solid var(--color-border) 1px;
     padding: 10px;
     z-index: 10;
 }
@@ -52,10 +53,10 @@ body.is-loaded {
     gap: 15px;
     color: #333;
     border-radius: 6px;
-    border-left: 4px solid rgb(36, 121, 124);
+    border-left: 4px solid var(--color-accent);
 }
 .navbar__list__element:hover{
-    background-color:#c9d0dbd7 ;
+    background-color:var(--color-hover-nav) ;
     
 }
 .navbar__list__element__icon{
@@ -66,13 +67,13 @@ body.is-loaded {
     align-items: center;
     justify-content: stretch;
     gap: 12px;
-    background-color: #f8f9fa;
-    border: 1px solid #eee;
+    background-color: var(--color-surface-alt);
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     border-radius: 5px;  
     padding: 10px 1px 10px 2px;  
     margin: 15px 0;
-    border-left: 4px solid rgb(36, 121, 124);
+    border-left: 4px solid var(--color-accent);
 }
 .navbar__about__img__element {
     width: 30px;
@@ -100,14 +101,14 @@ main{
     height: 100vh;
     width: 100%;
     overflow-y: auto;
-    background-color: #f0f2f5;
+    background-color: var(--color-bg);
 }
 .selector{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
-    background: #ffffff;
+    background: var(--color-surface);
     padding: 25px 20px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
@@ -119,10 +120,10 @@ main{
 .selector input, 
 .selector select {
     padding: 10px;
-    border: 2px solid #d1d5db;
+    border: 2px solid var(--color-border-input);
     border-radius: 8px;
-    background-color: #f9fafb;
-    color: #374151;
+    background-color: var(--color-surface-input);
+    color: var(--color-text);
     font-size: .9rem;
     transition: all 0.5s ease;
     min-width: 15vw;
@@ -134,10 +135,10 @@ main{
 .selector input:focus, 
 .selector select:focus,
 .selector input:focus {
-    border-color: rgb(36, 121, 124);; 
+    border-color: var(--color-accent);; 
 }
 .selector__agregar__boton {
-    color: #ffffff;
+    color: var(--color-text-white);
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -145,11 +146,11 @@ main{
     cursor: pointer;
     transition: background 0.5s;
     border-radius: 8px;
-    background-color:  rgb(36, 121, 124);
+    background-color: var(--color-accent);
 }
 
 .selector__agregar__boton:hover {
-    background-color: rgb(5, 69, 71);
+    background-color: var(--color-accent-dark);
 }
 .elements{
     display: grid;
@@ -163,7 +164,7 @@ main{
 .elemento__balanza{
     display: flex;
     justify-content: center;
-    background-color: #ffffff;
+    background-color: var(--color-surface);
     align-items: center;
     border-radius: 5px;
     padding: 15px;
@@ -172,7 +173,7 @@ main{
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     transition: transform 0.5s;
     border-radius: 8px;
-    border-left: 6px solid rgb(36, 121, 124);
+    border-left: 6px solid var(--color-accent);
 }
 .elemento__balanza:hover{
     transform: scale(1.02);
@@ -190,11 +191,11 @@ main{
 .elemento__balanza p {
     font-size: 0.9rem;
     margin-bottom: 4px;
-    color: #555;
+    color: var(--color-text-muted);
 }
 
 .elemento__balanza b {
-    color: #222;
+    color: var(--color-text);
     font-weight: 600;
 }
 
@@ -205,7 +206,7 @@ main{
 .navbar__list__element a:visited, 
 .navbar__list__element a:hover, 
 .navbar__list__element a:active {
-    color: #222;
+    color: var(--color-text);
     text-decoration: none;
 }
 .navbar__about{
@@ -214,7 +215,7 @@ main{
 }
 
 .navbar__about:hover{
-    background-color:#b9d6f171 ;
+    background-color:var(--color-hover-about) ;
 }
 @media (max-width:990px){
     body{
