@@ -60,7 +60,7 @@ h2{
 
 .search-box button {
     padding: 12px 20px;
-    background: #000;
+    background: rgb(36,121,124);
     color: #fff;
     font-weight: bold;
     border: none;
@@ -108,7 +108,7 @@ button:active {
 }
 
 a:hover {
-    color: red;
+    color: rgb(36,121,124);
 }
 #pie{
     display: flex;

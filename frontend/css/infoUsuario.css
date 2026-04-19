@@ -117,7 +117,7 @@ main{
     gap: 20px;
 }
 .selector__volver__boton {
-    background-color: red;
+    background-color: rgb(36, 121, 124);
     color: #ffffff;
     padding: 10px 20px;
     border: none;
