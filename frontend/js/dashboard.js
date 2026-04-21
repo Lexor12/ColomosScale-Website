@@ -197,7 +197,7 @@ async function iniciarPagina() {
     document.querySelector('body').classList.add('is-loaded');
 }
 
-window.addEventListener('load',iniciarPagina())
+window.addEventListener('load',iniciarPagina)
 
 
 

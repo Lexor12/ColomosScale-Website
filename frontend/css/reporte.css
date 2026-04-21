@@ -3,6 +3,8 @@
     font-family: Georgia, 'Times New Roman', Times, serif;
     padding: 0px;
     margin: 0px;
+    scroll-snap-type: mandatory;
+    scroll-behavior: smooth;
     
 }
 body{
@@ -96,7 +98,6 @@ body.is-loaded {
 main{
     display: flex;
     flex-direction: column;
-    gap: 1vh;;
     height: 100vh;
     width: 100%;
     overflow-y: auto;

@@ -7,7 +7,7 @@ let format = {headers:{'token':token}};
 let valoresDeConsulta = {}
 let datosUsuario ={}
 async function verificarToken() {
-    if(usernameUsuario===null)window.location.href='../pages/noEncontrada.html'
+    if(usernameUsuario===null)window.location.href='../pages/404.html'
     if(!token)window.location.href='../pages/notAuth.html';
     else{
         try{
@@ -26,7 +26,7 @@ async function verificarToken() {
             }
             valoresDeConsulta = await obtenerValores(`obtenerTecnico/${usernameUsuario}`)
             if(Object.keys(valoresDeConsulta).length===0){
-                window.location.href='../pages/noEncontrada.html'
+                window.location.href='../pages/404.html'
             }
         }catch(e){
             localStorage.removeItem('token_colomos_scale');
@@ -135,4 +135,4 @@ async function iniciarPagina(){
     cargarPagina();
     document.querySelector('body').classList.add('is-loaded');
 }
-window.addEventListener('load',iniciarPagina())
+window.addEventListener('load',iniciarPagina)

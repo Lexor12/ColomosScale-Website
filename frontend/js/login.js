@@ -47,10 +47,10 @@ function cargarPagina(){
         username.style.borderColor = "#e0e0e0";
         contra.style.borderColor = "#e0e0e0";
         error.style.display='none';
-        if(name==""){
+        if(name=="" || name.length>48){
             username.style.borderColor = "red";
         } 
-        if(pass==""){
+        if(pass=="" || pass.length>256){
             contra.style.borderColor = "red";
         }
         else{
@@ -87,4 +87,4 @@ async function iniciarPagina(){
     cargarPagina();
     document.querySelector('body').classList.add('is-loaded')
 }
-window.addEventListener('load',iniciarPagina())
+window.addEventListener('load',iniciarPagina)

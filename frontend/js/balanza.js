@@ -6,7 +6,7 @@ const token = localStorage.getItem('token_colomos_scale');
 let format = {headers:{'token':token}};
 let datosBalanza;
 async function verificarToken() {
-    if(codigoBalanza===null)window.location.href='../pages/noEncontrada.html'
+    if(codigoBalanza===null)window.location.href='../pages/404.html'
     if(!token)window.location.href='../pages/notAuth.html';
     else{
         try{
@@ -33,7 +33,7 @@ async function verificarToken() {
             }
             datosBalanza = await obtenerValores(`obtenerBalanza/${codigoBalanza}`)
             if(Object.keys(datosBalanza).length===0){
-                window.location.href='../pages/noEncontrada.html'
+                window.location.href='../pages/404.html'
             }
         }catch(e){
             localStorage.removeItem('token_colomos_scale');
@@ -153,4 +153,4 @@ async function iniciarPagina() {
     await cargarDatosBalanza();
     document.querySelector('body').classList.add('is-loaded');
 }
-window.addEventListener('load',iniciarPagina())
+window.addEventListener('load',iniciarPagina)

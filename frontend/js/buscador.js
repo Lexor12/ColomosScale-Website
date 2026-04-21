@@ -15,6 +15,13 @@ botonBuscar.addEventListener('click',async(e)=>{
     if(inputBalanza.value.trim()===""){
         return;
     }
+    if(inputBalanza.value.trim().length<3){
+        etiquetas.forEach(n => n.style.display='none');
+        msgNoEncontrado.textContent = "Código de balanza no existente."
+        msgNoEncontrado.style.display ='block';
+        cuadroResult.style.display = 'block';
+        return;
+    }
     try{
         const respuesta = await fetch(`http://localhost:3000/api/buscador/${idBalanza}`);
         if(!respuesta.ok)throw new Error("Error en la respuesta del servidor");

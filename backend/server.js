@@ -5,26 +5,66 @@ import sql from './db.js'
 import {iniciarSesion} from './routes/login.js'
 import { verificarToken } from './routes/login.js';
 import jwt from 'jsonwebtoken'
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
+import z from 'zod'
+
 
 const app = express()
 const PORT = process.env.PORT;
+
+const limitadorGeneral = rateLimit(
+    {
+        windowMs:15*60*1000,//15 minutos de tiempo, decimos que tendremos el maximo es 50 peticiones cada 15 minutos
+        max:100,
+        message:{status:-1,error:"Demasiadas peticiones, intentelo más tarde."}
+    })
+    const limitadorInicioDeSesion = rateLimit(
+    {
+        windowMs:15*60*1000,//15 minutos de tiempo, decimos que tendremos el maximo es 10 peticiones cada 15 minutos para el modulo de iniciar sesion
+        max:10,
+        message:{status:-1,error:"Demasiadas peticiones, intentelo más tarde."}
+    })
+const opcionesCors = {
+    origin: ['http://localhost','https://colomoscale.app','http://127.0.0.1:5501'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    optionsSuccessStatus: 200
+}
+const zodIniciarSesion = z.object({
+    username: z.string().max(48), //Username de 3-48 caracteres
+    password: z.string().max(256, "La contraseña no puede exceder los 256 caracteres").trim()//Contraseña de 8 a 256
+})
+const zodCodigoParam = z.object({
+    codigo: z.string().min(3).max(48)//Los username son entre 3 a 48 y codigo de balanza deben ser de 48 caracteres
+});
+
+const zodReporteParams = z.object({
+    numeroReporte: z.coerce.number().int().positive("El ID del reporte debe ser un número positivo")
+});
 // --- Middlewares ---
-app.use(cors());
+app.use(helmet())
+app.use(cors(opcionesCors));
+app.use('/api/',limitadorGeneral);//Este limitador aplica para todas las apis que usemos
 app.use(express.json());//Devuelve automaticamente cualquier formato string en JSON
 // --- END POINTS (RUTAS) ---
 app.get('/api/buscador/:codigo',async(req,res)=>{
+    const validacion =zodCodigoParam.safeParse(req.params);
+    if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
     try{
         const codigoBalanza = req.params.codigo;
-        const data = await sql`SELECT * FROM buscador_balanza_por_codigo(${codigoBalanza})`;
+        const data = await sql`SELECT * FROM buscador_balanza_por_codigo(${validacion.data.codigo})`;
         res.json(data)
     }catch(e){
         res.status(500).json({error: "Error interno del servidor"});
     }
 });
 
-app.post('/api/iniciarSesion',async(req,res)=>{
-    const {username,password} = req.body
+app.post('/api/iniciarSesion',limitadorInicioDeSesion,async(req,res)=>{
+    const validacion = zodIniciarSesion.safeParse(req.body)
+    if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
+    const {username,password} = validacion.data
     const resultado = await iniciarSesion(username,password);
+    
     if(Object.keys(resultado).length==0){
         return res.status(401).json({status:0,error:"Usuario o contraseña incorrectos"})
     }
@@ -36,7 +76,6 @@ app.post('/api/iniciarSesion',async(req,res)=>{
         );
         res.json({status:1,token:token,resultado:resultado});
     }catch(e){
-        console.log(e)
         return res.status(500).json({ status: 0, error: "Error interno del servidor" });
     }
 })
@@ -74,7 +113,7 @@ app.get('/api/obtenerLaboratorios',async(req,res)=>
         res.json({status:1,data:data});
     }
     catch(e){
-        return res.status(401).json({status:0,error:"Error al conectar a la base de datos."})
+        return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
 
@@ -88,15 +127,18 @@ app.get('/api/obtenerTecnicos',async(req,res)=>{
         res.json({status:1,data:data})
     }
     catch(e){
-        return res.status(401).json({status:0,error:"Error al conectar a la base de datos."})
+        return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
 
 app.get('/api/obtenerTecnico/:codigo',async(req,res)=>{
     const token = req.header('token');
     const statusToken = verificarToken(token);
-    const codigo = req.params.codigo
     if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
+
+    const validacion =zodCodigoParam.safeParse(req.params);
+    if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
+    const codigo = validacion.data.codigo
     const rol = statusToken.usuario.rol==4?4:3
     try{
         const usuario = await sql`SELECT * FROM obtener_usuario_por_username(${codigo})`;
@@ -106,15 +148,19 @@ app.get('/api/obtenerTecnico/:codigo',async(req,res)=>{
         res.json({status:1,data:data})
     }
     catch(e){
-        return res.status(401).json({status:0,error:"Error al conectar a la base de datos."})
+        return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
 
 app.get('/api/obtenerBalanza/:codigo',async(req,res)=>{
     const token = req.header('token');
     const statusToken = verificarToken(token);
-    const codigo = req.params.codigo
     if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
+
+    const validacion =zodCodigoParam.safeParse(req.params);
+    if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
+    const codigo = validacion.data.codigo
+    
     try{
         const balanza = await sql`SELECT * FROM obtener_balanza_por_codigo(${codigo})`;
         const reportes = await sql`SELECT id_reporte,fecha_analisis,nombre_tecnico FROM obtener_reportes_balanza(${balanza[0].id})`;
@@ -122,14 +168,17 @@ app.get('/api/obtenerBalanza/:codigo',async(req,res)=>{
         res.json({status:1,data:result});
     }
     catch(e){
-        return res.status(401).json({status:0,error:"Error al conectar a la base de datos."})
+        return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
 app.get('/api/reporte/:numeroReporte',async(req,res)=>{
     const token =  req.header('token')
     const statusToken = verificarToken(token);
-    const idReporte = req.params.numeroReporte
     if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
+    
+    const validacion =zodReporteParams.safeParse(req.params);
+    if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
+    const idReporte = validacion.data.numeroReporte
     try{
         const reporte = await sql`SELECT * FROM obtener_reporte(${idReporte})`
         const usuario = await sql`SELECT * FROM obtener_usuario_por_id(${reporte[0].id_usuario})`
@@ -138,7 +187,7 @@ app.get('/api/reporte/:numeroReporte',async(req,res)=>{
     }
     catch(e){
         ('f')
-        return res.status(401).json({status:0,error:"Error al conectar a la base de datos."})
+        return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
 
@@ -152,12 +201,15 @@ app.get('/api/usuario',async(req,res)=>{
         return res.json({status:1,data:data[0]})
     }
     catch(e){
-        return res.status(401).json({status:0,error:"Error al conectar a la Base de datos."})
+        return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
 
 app.get('/',(req,res)=>{
     res.send("Activo");
+})
+app.use((req, res) => {
+    res.status(404).json({ status: 0, error: "Ruta no encontrada" })
 })
 app.listen(PORT,()=>{
     console.log(`Servidor corriento en http://localhost:${PORT}`)
