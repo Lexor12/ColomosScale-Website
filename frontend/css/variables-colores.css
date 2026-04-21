@@ -1,0 +1,63 @@
+/* CSS UNIFICADOS
+   Importar en cada archivo CSS con:
+   @import url('../css/variables-colores.css'); 
+   Unificado y escogidos por Nadya
+   Comentarios cortesía de Claude para saber qué es cada cosa */
+
+:root {
+
+    /* --- Acento principal --- */
+    --color-accent:             rgb(36, 121, 124);   /* color principal */
+    --color-accent-dark:        rgb(25, 95, 98);     /* hover botones primarios */
+    --color-accent-light:       rgba(36, 121, 124, 0.15); /* fondos sutiles / hover links */
+    --color-accent-glow:        rgba(13, 148, 136, 0.39); /* sombra botón PDF */
+    --color-accent-hex:         #24797c;             /* mismo teal, usado en print */
+
+    /* --- Peligro / Destructivo --- */
+    --color-danger:             rgb(196, 95, 95);    /* hover botón volver/eliminar */
+
+    /* --- Superficies y fondos --- */
+    --color-bg:                 #f0f2f5;             /* fondo general de páginas internas */
+    --color-bg-alt:             #f0f2f1;             /* fondo alternativo (reporte) */
+    --color-surface:            #ffffff;             /* tarjetas, paneles, nav */
+    --color-surface-alt:        #f8f9fa;             /* navbar__about, fondos secundarios */
+    --color-surface-input:      #f9fafb;             /* fondo de inputs */
+    --color-surface-field:      #f8fafc;             /* fondo de campos de info */
+    --color-surface-stripe:     #f4f9f9;             /* filas pares de tabla */
+
+
+    /* --- Overlays / transparencias --- */
+    --color-overlay-none:       rgba(0, 0, 0, 0);    /* extremo transparente del gradiente */
+    --color-surface-print-text: #eeeeeed0;           /* texto botón PDF */
+
+    /* --- Bordes --- */
+    --color-border:             #eee;                /* borde general, nav lateral */
+    --color-border-input:       #d1d5db;             /* inputs y selects */
+    --color-border-card:        #e0e4e8;             /* tarjetas de reportes */
+    --color-border-field:       #e2e8f0;             /* campos de datos de balanza/técnico */
+    --color-border-focus:       #3b82f6;             /* focus en inputs (azul) */
+
+    /* --- Texto --- */
+    --color-text:               #222;                /* texto principal */
+    --color-text-secondary:     #333;                /* texto nav items */
+    --color-text-muted:         #555;                /* texto secundario en tarjetas */
+    --color-text-soft-alt:      #444444;             /* alias de --color-text-soft */
+    --color-text-subtle:        rgb(128, 122, 122);  /* spans en InfoTecnico__General */
+    --color-text-label:         #475e85;             /* labels de datos (azul grisáceo) */
+    --color-text-link:          #a8a8a8;             /* links del nav público */
+    --color-text-muted-nav:     #a1a1a1;             /* subtítulo hero index */
+    --color-text-white:         #ffffff;             /* texto sobre fondos oscuros */
+
+    /* --- Hover states --- */
+    --color-hover-nav:          #c9d0dbd7;           /* hover elementos del navbar lateral */
+    --color-hover-about:        #b9d6f171;           /* hover navbar__about y reportes */
+
+    /* --- Sombras --- */
+    --color-shadow-soft:        rgba(0, 0, 0, 0.05); /* sombra suave general */
+    --color-shadow-hover:       rgba(0, 0, 0, 0.1);  /* sombra al hacer hover */
+    --color-shadow-card:        rgb(0 0 0 / 0.1);    /* sombra de imágenes y paneles */
+
+    /* --- Footer --- */
+    --color-bg-footer:          #000000;             /* fondo footer */
+    
+}
