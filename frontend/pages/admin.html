@@ -4,10 +4,235 @@
     <link rel="icon" type="image/x-icon" href="../assets/favicon/favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <title>Control de Administrador</title>
 </head>
 <body>
-    <h1>Hola, esta pagina falta de hacer @nadyaaa hazlaaaa!!!</h1>
-    <h6>Atte:Juan Alfonso Perez de la Mora </h6>
+    <aside class="bar">
+        <nav class="navbar">
+            <div class="navbar__icon">
+                <img src="../assets/logo/ic_logo_con_fondo_nav.png" class="navbar__icon__img">
+            </div>
+            <ul class="navbar__list">
+                <li class="navbar__list__element" id="btnDashboard">
+                    <img src="../assets/icons/dashboard.png" class="navbar__list__element__icon navbar__list__element__dashboard">
+                    <p>Dashboard</p>
+                </li>
+                <li class="navbar__list__element" id="btnTecnicos">
+                    <img src="../assets/icons/tecnicos.png" class="navbar__list__element__icon navbar__list__element__tecnicos">
+                    <p>Técnicos</p>
+                </li>
+                <li class="navbar__list__element active" id="btnAdmin" style="display: none;">
+                    <img src="../assets/icons/admin.png" class="navbar__list__element__icon navbar__list__element__admin">
+                    <p>Admin</p>
+                </li>
+            </ul>
+            <div class="navbar__about">
+                <div class="navbar__about__img">
+                    <img src="../assets/icons/user.svg" class="navbar__about__img__element">
+                </div>
+                <div class="navbar__about__content">
+                    <p class="navbar__about__content__name" id="nombreUsuario">Usuario</p>
+                    <p class="navbar__about__content__rol" id="rolUsuario">Tecnico</p>
+                </div>
+            </div>
+            <div class="navbar__footer">
+                <ul class="footer__list">
+                    <li class="navbar__list__element" id="btnSalir">
+                        <img src="../assets/icons/salir.png" class="navbar__list__element__icon navbar__list__element__salir">
+                        <p>Salir</p>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+    <main>
+        <section class="selector">
+            <div class="selector__navbar">
+                <div class="selector__navbar__elemento selector__navbar__elemento__usuarios" data-tab="usuarios">
+                    <p>Usuarios</p>
+                </div>
+                <div class="selector__navbar__elemento selector__navbar__elemento__laboratorios" data-tab="laboratorios">
+                    <p>Laboratorios</p>
+                </div>
+                <div class="selector__navbar__elemento selector__navbar__elemento__balanzas" data-tab="balanzas">
+                    <p>Balanzas</p>
+                </div>
+                <div class="selector__navbar__elemento selector__navbar__elemento__reportes" data-tab="reportes">
+                    <p>Reportes</p>
+                </div>
+            </div>
+        </section>
+        <section class="elements">
+
+            <!-- Para Usuarios -->
+
+            <article class="elements__usuarios elements__general" style="display: none;" data-seccion="usuarios">
+                <div class="elements__header">
+                    <h2 class="elements__titulo">Gestor de Usuarios</h2>
+                    <button class="elements__boton" id="btnNuevoUsuario">+ Nuevo Usuario</button>
+                </div>
+                <div class="elements__stats">
+                    <div class="admin__stat">
+                        <span class="admin__stat__label">Total de Usuarios</span>
+                        <span class="admin__stat__valor" id="valorTotalUsuarios">0</span>
+                    </div>
+                    <div class="admin__stat">
+                        <span class="admin__stat__label">Administradores</span>
+                        <span class="admin__stat__valor" id="valorTotalUsuariosAdmins">0</span>
+                    </div>
+                    <div class="admin__stat">
+                        <span class="admin__stat__label">Supervisores</span>
+                        <span class="admin__stat__valor" id="valorTotalUsuariosSupervisores">0</span>
+                    </div>
+                    <div class="admin__stat">
+                        <span class="admin__stat__label">Técnicos</span>
+                        <span class="admin__stat__valor" id="valorTotalUsuariosTecnicos">0</span>
+                    </div>
+                </div>
+                <div class="elements__buscador">
+                    <input class="admin__buscador" type="text" id="buscador" placeholder="Nombre del Usuario">
+                </div>
+                <div class="elements__tabla">
+                    <table class="admin__tabla">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Username</th>
+                                <th>Correo</th>
+                                <th>Rol</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contenidoTablaUsuarios">
+                            <!--Ejemplo de un valor pero pues para Usuario, hay que tomar en cuenta el nombre de los botones y el formato de roll
+                            <tr>
+                                <td>Daniela Reyes Soto</td>
+                                <td>dani.reyes</td>
+                                <td>dani.reyes@colomos.mx</td>
+                                <td><span class="rol-tecnico">Técnico</span></td>
+                                <td>
+                                    <button class="btn__accion__editar">Editar</button>
+                                    <button class="btn__accion__eliminar">Eliminar</button>
+                                </td>
+                            </tr>
+                            -->
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+            
+            <!-- Para laboratorios -->
+
+            <article class="elements__laboratorios elements__general" style="display: none" data-seccion="laboratorios">
+                <div class="elements__header">
+                    <h2 class="elements__titulo">Gestor de Laboratorios</h2>
+                    <button class="elements__boton" id="btnNuevoLaboratorio">+ Nuevo Laboratorio</button>
+                </div>
+                <div class="elements__stats">
+                    <div class="admin__stat">
+                        <span class="admin__stat__label">Total de Laboratorios</span>
+                        <span class="admin__stat__valor" id="valorTotalLaboratorios">0</span>
+                    </div>
+                </div>
+                <div class="elements__buscador">
+                    <input class="admin__buscador" type="text" id="buscador" placeholder="Nombre del Laboratorio">
+                </div>
+                <div class="elements__tabla">
+                    <table class="admin__tabla">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Ubicación</th>
+                                <th>Balanzas Registradas</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contenidoTablaLaboratorios">
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
+            <!-- Para balanzas -->
+
+            <article class="elements__balanzas elements__general" style="display: none" data-seccion="balanzas">
+                <div class="elements__header">
+                    <h2 class="elements__titulo">Gestor de Balanzas</h2>
+                    <button class="elements__boton" id="btnNuevaBalanza">+ Nueva Balanza</button>
+                </div>
+                <div class="elements__stats">
+                    <div class="admin__stat">
+                        <span class="admin__stat__label">Total de Balanzas</span>
+                        <span class="admin__stat__valor" id="valorTotalBalanza">0</span>
+                    </div>
+                    <div class="admin__stat">
+                        <span class="admin__stat__label">Adecuadas</span>
+                        <span class="admin__stat__valor" id="valorTotalBalanzaAdecuada">0</span>
+                    </div>
+                    <div class="admin__stat">
+                        <span class="admin__stat__label">Intermedias</span>
+                        <span class="admin__stat__valor" id="valorTotalBalanzaIntermedia">0</span>
+                    </div>
+                    <div class="admin__stat">
+                        <span class="admin__stat__label">Malas</span>
+                        <span class="admin__stat__valor" id="valorTotalBalanzaMala">0</span>
+                    </div>
+                </div>
+                <div class="elements__buscador">
+                    <input class="admin__buscador" type="text" id="buscador" placeholder="Nombre o Código de la Balanza">
+                </div>
+                <div class="elements__tabla">
+                    <table class="admin__tabla">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Codigo</th>
+                                <th>Laboratorio</th>
+                                <th>Estado de Calibración</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contenidoTablaBalanzas">
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
+            <!-- Para reportes -->
+
+            <article class="elements__reportes elements__general" style="display: none" data-seccion="reportes">
+                <div class="elements__header">
+                    <h2 class="elements__titulo">Gestor de Reportes</h2>
+                <!--<button class="elements__boton" id="btnNuevaBalanza">+ Nuevo Re</button>-->                    
+                </div>
+                <div class="elements__stats">
+                    <div class="admin__stat">
+                        <span class="admin__stat__label">Total de Reportes</span>
+                        <span class="admin__stat__valor" id="valorTotalReportes">0</span>
+                    </div>
+                </div>
+                <div class="elements__buscador">
+                    <input class="admin__buscador" type="text" id="buscador" placeholder="ID del Reporte">
+                </div>
+                <div class="elements__tabla">
+                    <table class="admin__tabla">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Balanza</th>
+                                <th>Analista</th>
+                                <th>Fecha</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contenidoTablaReportes">
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </section>
+    </main>
 </body>
+<script src="../js/admin.js"></script>
 </html>

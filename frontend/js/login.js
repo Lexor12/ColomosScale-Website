@@ -1,5 +1,3 @@
-const token = localStorage.getItem('token_colomos_scale')
-let format = {headers:{'token':token}}
 
 const username = document.getElementById('inputUsername');
 const contra = document.getElementById('inputPass');
@@ -7,24 +5,19 @@ const boton = document.getElementById('btn');
 const error = document.getElementById('mensaje-error');
 
 async function verificarToken(){
-    if(token)
-    {
         try{
-            const res = await fetch('http://localhost:3000/api/verificarToken',format)
+            const res = await fetch('http://127.0.0.1:3000/api/verificarToken',{
+                credentials:'include'
+            })
             const result = await res.json();
-            if(result.status===0){
-                localStorage.removeItem('token_colomos_scale');
-            }
-            else if(result.status===1){
+            if(result.status===1){
                 window.location.href='../pages/dashboard.html'
             }
         }
         catch(e){
-            localStorage.removeItem('token_colomos_scale');
+            
         }
-    }
 }
-
 function cargarPagina(){
         username.addEventListener('input',()=>{
     if(username.value.trim()!=""){
@@ -63,12 +56,13 @@ function cargarPagina(){
                     body: JSON.stringify({
                         username: name,
                         password:pass
-                    })
+                    }),
+                    credentials:'include'
                 }
-                const respuesta = await fetch(`http://localhost:3000/api/iniciarSesion`,opt);
+                const respuesta = await fetch(`http://127.0.0.1:3000/api/iniciarSesion`,opt);
                 const datos = await respuesta.json(); // Leemos la respuesta del servidor
                 if(datos.status===1){
-                    localStorage.setItem('token_colomos_scale',datos.token);
+                    console.log('cookie creada')
                     window.location.href='../pages/dashboard.html'
                 }
                 else{

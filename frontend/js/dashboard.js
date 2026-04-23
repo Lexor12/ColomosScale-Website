@@ -1,6 +1,3 @@
-const token = localStorage.getItem('token_colomos_scale');
-let format = {headers:{'token':token}};
-
 const nombre = document.getElementById('nombreUsuario') 
 const rol = document.getElementById('rolUsuario') 
 const imgPersona = document.querySelector('.navbar__about__img__element')
@@ -13,8 +10,11 @@ let balanzasOriginal = []
 
 async function configurarNavBar(){
     const botonSalir = document.getElementById('btnSalir')
-    botonSalir.addEventListener('click',()=>{
-        localStorage.removeItem('token_colomos_scale');
+    botonSalir.addEventListener('click',async()=>{
+        await fetch('http://127.0.0.1:3000/api/cerrarSesion', {
+            method: 'POST',
+            credentials: 'include'
+        });
         window.location.href='../index.html'
     })
     const btnDashboard = document.getElementById('btnDashboard');
@@ -33,13 +33,10 @@ async function configurarNavBar(){
 }
 
 async function verificarToken() {
-    if(!token)window.location.href='../pages/notAuth.html';
-    else{
         try{
-            const res = await fetch('http://localhost:3000/api/verificarToken',format)
+            const res = await fetch('http://127.0.0.1:3000/api/verificarToken',{credentials:'include'})
             const result = await res.json();
             if(result.status===0){
-                localStorage.removeItem('token_colomos_scale');
                 window.location.href='../pages/notAuth.html'
             }
             if(result.usuario.rol>=2){
@@ -57,15 +54,13 @@ async function verificarToken() {
                 })
             }
         }catch(e){
-            localStorage.removeItem('token_colomos_scale');
             window.location.href='../pages/notAuth.html'
         }
-    }
 }
 
 async function obtenerValores(valor){
     try{
-        const res = await fetch(`http://localhost:3000/api/${valor}`,format)
+        const res = await fetch(`http://127.0.0.1:3000/api/${valor}`,{credentials:'include'})
         const result = await res.json()
         return result.status===0? {}:result.data
     }

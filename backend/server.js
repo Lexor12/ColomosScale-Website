@@ -8,6 +8,8 @@ import jwt from 'jsonwebtoken'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import z from 'zod'
+import { da } from 'zod/v4/locales';
+import cookieParser from 'cookie-parser';
 
 
 const app = express()
@@ -16,7 +18,7 @@ const PORT = process.env.PORT;
 const limitadorGeneral = rateLimit(
     {
         windowMs:15*60*1000,//15 minutos de tiempo, decimos que tendremos el maximo es 50 peticiones cada 15 minutos
-        max:100,
+        max:120,
         message:{status:-1,error:"Demasiadas peticiones, intentelo más tarde."}
     })
     const limitadorInicioDeSesion = rateLimit(
@@ -28,7 +30,8 @@ const limitadorGeneral = rateLimit(
 const opcionesCors = {
     origin: ['http://localhost','https://colomoscale.app','http://127.0.0.1:5501'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200,
+    credentials: true//Para poder usar el sistema de cookies
 }
 const zodIniciarSesion = z.object({
     username: z.string().max(48), //Username de 3-48 caracteres
@@ -45,6 +48,7 @@ const zodReporteParams = z.object({
 app.use(helmet())
 app.use(cors(opcionesCors));
 app.use('/api/',limitadorGeneral);//Este limitador aplica para todas las apis que usemos
+app.use(cookieParser())
 app.use(express.json());//Devuelve automaticamente cualquier formato string en JSON
 // --- END POINTS (RUTAS) ---
 app.get('/api/buscador/:codigo',async(req,res)=>{
@@ -74,14 +78,21 @@ app.post('/api/iniciarSesion',limitadorInicioDeSesion,async(req,res)=>{
             process.env.TOKEN_FIRMA_PASS,
             {expiresIn:'2h'}
         );
-        res.json({status:1,token:token,resultado:resultado});
+        //res.json({status:1,token:token,resultado:resultado});
+        res.cookie('token',token,{
+            httpOnly:true,
+            secure: false,//Solo para http, ****ATENCION!!!! HAY QUE PONER ESTO EN TRUE CUANDO SE SUBA A RAILWAY
+            sameSite: 'lax',
+            maxAge: 2 * 60 * 60 * 1000 // 2 horas para que caduque
+        })
+        res.json({status:1,resultado:resultado});
     }catch(e){
         return res.status(500).json({ status: 0, error: "Error interno del servidor" });
     }
 })
 
 app.get('/api/verificarToken',(req,res)=>{
-    const token = req.header('token');
+    const token = req.cookies.token;
     if(!token)return res.status(403).json({status:0,error:"No hay token"});
     jwt.verify(token,process.env.TOKEN_FIRMA_PASS,(error,usuario)=>{
         if(error){
@@ -92,7 +103,7 @@ app.get('/api/verificarToken',(req,res)=>{
 })
 
 app.get('/api/obtenerBalanzas',async (req,res)=>{
-    const token = req.header('token');//Siempre mandaremos en el header el token
+    const token = req.cookies.token;//Siempre mandaremos en el header el token
     const statusToken = verificarToken(token).status;
     if(statusToken===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
     try{
@@ -105,8 +116,8 @@ app.get('/api/obtenerBalanzas',async (req,res)=>{
 
 app.get('/api/obtenerLaboratorios',async(req,res)=>
 {
-    const token = req.header('token');
-    const tokenStatus = verificarToken(token);
+    const token = req.cookies.token;
+    const tokenStatus = await verificarToken(token);
     if(tokenStatus.status===0) return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
     try{
         const data = await sql`SELECT * FROM obtener_laboratorios()`;
@@ -118,8 +129,8 @@ app.get('/api/obtenerLaboratorios',async(req,res)=>
 })
 
 app.get('/api/obtenerTecnicos',async(req,res)=>{
-    const token = req.header('token');
-    const statusToken = verificarToken(token);
+    const token = req.cookies.token;
+    const statusToken = await verificarToken(token);
     if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
     const rol = statusToken.usuario.rol==4?4:3
     try{
@@ -132,8 +143,8 @@ app.get('/api/obtenerTecnicos',async(req,res)=>{
 })
 
 app.get('/api/obtenerTecnico/:codigo',async(req,res)=>{
-    const token = req.header('token');
-    const statusToken = verificarToken(token);
+    const token = req.cookies.token;
+    const statusToken = await verificarToken(token);
     if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
 
     const validacion =zodCodigoParam.safeParse(req.params);
@@ -153,8 +164,8 @@ app.get('/api/obtenerTecnico/:codigo',async(req,res)=>{
 })
 
 app.get('/api/obtenerBalanza/:codigo',async(req,res)=>{
-    const token = req.header('token');
-    const statusToken = verificarToken(token);
+    const token = req.cookies.token;
+    const statusToken = await verificarToken(token);
     if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
 
     const validacion =zodCodigoParam.safeParse(req.params);
@@ -172,8 +183,8 @@ app.get('/api/obtenerBalanza/:codigo',async(req,res)=>{
     }
 })
 app.get('/api/reporte/:numeroReporte',async(req,res)=>{
-    const token =  req.header('token')
-    const statusToken = verificarToken(token);
+    const token =  req.cookies.token
+    const statusToken = await verificarToken(token);
     if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
     
     const validacion =zodReporteParams.safeParse(req.params);
@@ -192,7 +203,7 @@ app.get('/api/reporte/:numeroReporte',async(req,res)=>{
 })
 
 app.get('/api/usuario',async(req,res)=>{
-    const token = req.header('token');
+    const token = req.cookies.token;
     const tokenresult = verificarToken(token)
     const statusToken = tokenresult.status;
     if(statusToken===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
@@ -203,6 +214,28 @@ app.get('/api/usuario',async(req,res)=>{
     catch(e){
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
+})
+app.get('/api/admin',async(req,res)=>{
+    const token = req.cookies.token;
+    const tokenStatus = await verificarToken(token);
+    if(tokenStatus.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
+    //Caso contrario
+    if(tokenStatus.usuario.rol<3)return res.status(401).json({status:-1,error:"Error, su token no es adecuado."})
+    const rol = tokenStatus.usuario.rol==4?4:3
+    try{
+        const usuarios = await sql`SELECT * FROM obtener_tecnicos(${rol})`;
+        const laboratorios = await sql`SELECT * FROM obtener_laboratorios()`;
+        const balanzas = await sql`SELECT * FROM obtener_balanzas()`;
+        const reportes = await sql`SELECT * FROM obtener_reportes()`;
+        const data = {usuarios:usuarios,laboratorios:laboratorios,balanzas:balanzas,reportes:reportes}
+        return res.json({status:1,data:data})
+    }catch(e){
+        return res.status(401).json({status:0,error:"Error al conectar a la Base de datos."})
+    }
+})
+app.post('/api/cerrarSesion',(req,res)=>{
+    res.clearCookie('token',{sameSite:'lax'})
+    res.json({status:1});
 })
 
 app.get('/',(req,res)=>{

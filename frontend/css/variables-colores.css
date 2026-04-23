@@ -5,6 +5,8 @@
    Comentarios cortesía de Claude para saber qué es cada cosa */
 
 :root {
+    /*Navbar*/
+    --color--navbar:#0d4f45;
 
     /* --- Acento principal --- */
     --color-accent:             rgb(36, 121, 124);   /* color principal */
@@ -50,7 +52,7 @@
 
     /* --- Hover states --- */
     --color-hover-nav:          #c9d0dbd7;           /* hover elementos del navbar lateral */
-    --color-hover-about:        #b9d6f171;           /* hover navbar__about y reportes */
+    --color-hover-about:        #d3e2f071;           /* hover navbar__about y reportes */
 
     /* --- Sombras --- */
     --color-shadow-soft:        rgba(0, 0, 0, 0.05); /* sombra suave general */
@@ -59,5 +61,6 @@
 
     /* --- Footer --- */
     --color-bg-footer:          #000000;             /* fondo footer */
-    
+
+    --nav-height: 100vw;
 }

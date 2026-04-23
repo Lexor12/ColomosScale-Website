@@ -2,19 +2,15 @@ const queryParams = window.location.search;//Sirve para obtener los parametros d
 const urlParams = new URLSearchParams(queryParams);
 const codigoBalanza = urlParams.get('id')
 //De aqui en adelante son funciones basicas de todos los archivos
-const token = localStorage.getItem('token_colomos_scale');
-let format = {headers:{'token':token}};
 let datosBalanza;
 async function verificarToken() {
-    if(codigoBalanza===null)window.location.href='../pages/404.html'
-    if(!token)window.location.href='../pages/notAuth.html';
-    else{
+    if(codigoBalanza===null){window.location.href='../pages/404.html';return;}
         try{
-            const res = await fetch('http://localhost:3000/api/verificarToken',format)
+            const res = await fetch('http://127.0.0.1:3000/api/verificarToken',{credentials:'include'})
             const result = await res.json();
             if(result.status===0){
-                localStorage.removeItem('token_colomos_scale');
                 window.location.href='../pages/notAuth.html'
+                return;
             }
             if(result.usuario.rol>=2){
                 const btnEditar = document.querySelector('.selector__editar__boton')
@@ -33,18 +29,20 @@ async function verificarToken() {
             }
             datosBalanza = await obtenerValores(`obtenerBalanza/${codigoBalanza}`)
             if(Object.keys(datosBalanza).length===0){
-                window.location.href='../pages/404.html'
+                window.location.href='../pages/404.html';
+                return;
             }
         }catch(e){
-            localStorage.removeItem('token_colomos_scale');
             window.location.href='../pages/notAuth.html'
         }
-    }
 }
 async function configurarNavBar(){
     const botonSalir = document.getElementById('btnSalir')
-    botonSalir.addEventListener('click',()=>{
-        localStorage.removeItem('token_colomos_scale');
+    botonSalir.addEventListener('click',async()=>{
+        await fetch('http://127.0.0.1:3000/api/cerrarSesion', {
+            method: 'POST',
+            credentials: 'include'
+        });
         window.location.href='../index.html'
     })
     const btnDashboard = document.getElementById('btnDashboard');
@@ -75,7 +73,7 @@ async function configurarNavBar(){
 
 async function obtenerValores(valor){
     try{
-        const res = await fetch(`http://localhost:3000/api/${valor}`,format)
+        const res = await fetch(`http://127.0.0.1:3000/api/${valor}`,{credentials:'include'})
         const result = await res.json()
         return result.status===0? {}:result.data
     }

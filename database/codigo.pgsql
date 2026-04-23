@@ -345,6 +345,23 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql; 
 
+-- Obteer todos los REPORTES
+
+CREATE OR REPLACE FUNCTION obtener_reportes() RETURNS TABLE (
+  id_reporte INT, id_usuario INT, id_balanza INT, fecha_analisis TIMESTAMPTZ,
+  excentricidad_promedio NUMERIC, repetibilidad_50 NUMERIC, repetibilidad_100 NUMERIC, 
+  linealidad_promedio NUMERIC, cumple_emt BOOLEAN, observaciones TEXT, 
+  estado_final estado_equipo, nombre_tecnico TEXT
+) SECURITY DEFINER SET search_path = public AS $$ BEGIN
+  RETURN QUERY 
+  SELECT r.id_reporte, r.id_usuario, r.id_balanza, r.fecha_analisis,
+  r.excentricidad_promedio, r.repetibilidad_50, r.repetibilidad_100, 
+  r.linealidad_promedio, r.cumple_emt, r.observaciones, r.estado_final,
+  u.nombre_completo 
+  FROM "Reporte" AS r
+  JOIN "Usuario" AS u ON r.id_usuario = u.id_usuario;
+END;$$ LANGUAGE plpgsql;
+
 -- OBTENER TODOS LOS REPORTES de una balanza
 
 CREATE OR REPLACE FUNCTION obtener_reportes_balanza(p_id_balanza INT) RETURNS TABLE (
