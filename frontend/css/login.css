@@ -45,11 +45,8 @@ body.is-loaded {
 }
 
 .hero p i {
-<<<<<<< HEAD
     color: var(--color-accent);
-=======
     color: var(--color-accent-hex);
->>>>>>> 982fe6bacd3b4adb9beee2bc502b3a468d55b3fd
     font-weight: bold;
 }
 
