@@ -28,8 +28,8 @@ body.is-loaded {
     position: relative;
     background-image: linear-gradient(
         to bottom,
-        rgba(0, 0, 0, 0.5) 0%,  
-        rgba(0, 0, 0, 0) 100%
+        rgba(0, 0, 0, 0.6) 0%,
+        rgba(0, 0, 0, 0.6) 100%
     ), url('../assets/Login-Inicio/Balanza-Hero.jpeg');
     background-repeat: no-repeat;
     background-size: cover;
@@ -45,7 +45,11 @@ body.is-loaded {
 }
 
 .hero p i {
+<<<<<<< HEAD
     color: var(--color-accent);
+=======
+    color: var(--color-accent-hex);
+>>>>>>> 982fe6bacd3b4adb9beee2bc502b3a468d55b3fd
     font-weight: bold;
 }
 
