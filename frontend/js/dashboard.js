@@ -137,10 +137,10 @@ function crearBalanzas(listaBalanzas){
 }
 async function cargarBalanzas(){
     const datosUsuario = await obtenerValores('usuario')
-    balanzasOriginal = await obtenerValores('obtenerBalanzas')
+    balanzasOriginal = await obtenerValores('balanza')
     nombre.textContent = datosUsuario.nombre_completo;
     rol.textContent = datosUsuario.rol;
-    imgPersona.src = datosUsuario.img
+    imgPersona.src = '../assets/icons/user.svg'
     const btnVerPerfil = document.querySelector('.navbar__about')
     btnVerPerfil.addEventListener('click',()=>{
         window.location.href=`../pages/infoUsuario.html?id=${datosUsuario.username}`
@@ -167,7 +167,7 @@ function manejarFiltros(){
     crearBalanzas(resultado);
 }
 async function configurarSelector(){
-    const laboratorios = await obtenerValores('obtenerLaboratorios');
+    const laboratorios = await obtenerValores('laboratorio');
     laboratorios.forEach(item =>{
         const option = document.createElement('option');
         option.value = item.nombre

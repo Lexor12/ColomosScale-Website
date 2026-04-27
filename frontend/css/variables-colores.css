@@ -37,7 +37,7 @@
     --color-border-input:       #d1d5db;             /* inputs y selects */
     --color-border-card:        #e0e4e8;             /* tarjetas de reportes */
     --color-border-field:       #e2e8f0;             /* campos de datos de balanza/técnico */
-    --color-border-focus:       #3b82f6;             /* focus en inputs (azul) */
+    --color-border-focus:       #1b7438;             /* focus en inputs (azul) */
 
     /* --- Texto --- */
     --color-text:               #222;                /* texto principal */
@@ -63,4 +63,13 @@
     --color-bg-footer:          #000000;             /* fondo footer */
 
     --nav-height: 100vw;
+
+    /* --- Success  --- */
+    --color-success:                #1D9E75;
+    --color-success-bg:             #E1F5EE;
+
+    --color-cancel:                 #b92a25;
+    /* --- Modal  --- */
+    --color-modal-overlay:          rgba(0, 0, 0, 0.45);
+    --color-modal-focus:            rgba(24, 95, 165, 0.12);
 }

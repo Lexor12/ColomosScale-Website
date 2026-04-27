@@ -27,7 +27,8 @@ async function configurarNavBar(){
     const datosUsuario = await obtenerValores('usuario')
     nombre.textContent = datosUsuario.nombre_completo
     rol.textContent=datosUsuario.rol
-    img.src = datosUsuario.img
+    console.log(datosUsuario)
+    img.src = '../assets/icons/user.svg'
     const btnVerPerfil = document.querySelector('.navbar__about')
     btnVerPerfil.addEventListener('click',()=>{
         window.location.href=`../pages/infoUsuario.html?id=${datosUsuario.username}`
@@ -71,7 +72,7 @@ async function obtenerValores(valor){
 }
 
 async function cargarTecnicos(){
-    tecnicosOriginal = await obtenerValores('obtenerTecnicos')
+    tecnicosOriginal = await obtenerValores('tecnico')
     crearTecnicos(tecnicosOriginal)
 }
 async function  crearTecnicos(listaTecnicos) {
@@ -85,7 +86,7 @@ async function  crearTecnicos(listaTecnicos) {
         nuevoArticle.appendChild(divImg)
 
         const img = document.createElement('img')
-        img.src = tecnico.img
+        img.src = '../assets/icons/user.svg'
         img.classList.add('elemento__tecnico__img__element')
         img.alt="Tecnico"
         divImg.appendChild(img)

@@ -27,7 +27,7 @@ async function verificarToken() {
                     window.location.href='../pages/admin.html';
                 })
             }
-            datosBalanza = await obtenerValores(`obtenerBalanza/${codigoBalanza}`)
+            datosBalanza = await obtenerValores(`balanza/${codigoBalanza}`)
             if(Object.keys(datosBalanza).length===0){
                 window.location.href='../pages/404.html';
                 return;
@@ -59,7 +59,7 @@ async function configurarNavBar(){
     const datosUsuario = await obtenerValores('usuario');
     nombre.textContent = datosUsuario.nombre_completo
     rol.textContent=datosUsuario.rol;
-    imgPersona.src = datosUsuario.img
+    imgPersona.src = '../assets/icons/user.svg'
     const btnVerPerfil = document.querySelector('.navbar__about')
     btnVerPerfil.addEventListener('click',()=>{
         window.location.href=`../pages/infoUsuario.html?id=${datosUsuario.username}`

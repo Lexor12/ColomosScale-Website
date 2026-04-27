@@ -113,13 +113,16 @@ RETURNS TABLE (username TEXT, nombre_completo TEXT, correo TEXT, fecha_creacion 
 END;$$ LANGUAGE plpgsql;
 --ACTUALIZAR LOS DATOS DE USUSARIO
 
+DROP FUNCTION actualizar_usuario(INT,TEXT,TEXT,TEXT,TEXT,INT);
+
 CREATE OR REPLACE FUNCTION actualizar_usuario(
   p_id INT,
   p_username TEXT DEFAULT NULL,
   p_nombre_completo TEXT DEFAULT NULL,
   p_correo TEXT DEFAULT NULL,
   p_password TEXT DEFAULT NULL,
-  p_rol INT DEFAULT NULL
+  p_rol INT DEFAULT NULL,
+  p_img TEXT DEFAULT NULL
 ) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ BEGIN
   UPDATE "Usuario"
   SET
@@ -127,7 +130,8 @@ CREATE OR REPLACE FUNCTION actualizar_usuario(
     nombre_completo = COALESCE(p_nombre_completo, nombre_completo),
     correo = COALESCE(p_correo, correo),
     password = COALESCE(p_password, password),
-    rol = COALESCE(p_rol, rol)
+    rol = COALESCE(p_rol, rol),
+    img_url=COALESCE(p_img,img_url)
   WHERE id_usuario = p_id; 
 
   IF NOT FOUND THEN RETURN 'Usuario no encontrado'; END IF;
@@ -193,6 +197,17 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Eliminar balanza por codigo
+CREATE OR REPLACE FUNCTION eliminar_balanza_codigo(p_codigo TEXT) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ 
+BEGIN
+  IF(SELECT 1 FROM "Balanza" WHERE codigo=p_codigo)THEN
+    DELETE FROM "Balanza" WHERE codigo=p_codigo;
+    RETURN 'Balanza elimnada correctamente.';
+  END IF;
+  RETURN 'Balanza no encontrado.';
+END;
+$$ LANGUAGE plpgsql;
+
 -- Obtener una balanza especifica
 CREATE OR REPLACE FUNCTION obtener_balanza_por_id(p_id INT) 
 RETURNS TABLE(nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, estado estado_equipo, ultima TIMESTAMPTZ, id_lab INT, codigo_balanza TEXT,laboratorio TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
@@ -214,9 +229,9 @@ END;$$ LANGUAGE plpgsql;
 -- Obtener todas las balanzas
 
 CREATE OR REPLACE FUNCTION obtener_balanzas() 
-RETURNS TABLE (nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, estado_calibracion estado_equipo, ultima_medicion TIMESTAMPTZ, codigo TEXT, id_laboratorio INT, nombre_laboratorio TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
+RETURNS TABLE (id_balanza INT,nombre TEXT, marca TEXT, modelo TEXT, serie TEXT, img_url TEXT, estado_calibracion estado_equipo, ultima_medicion TIMESTAMPTZ, codigo TEXT, id_laboratorio INT, nombre_laboratorio TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
-  SELECT b."nombre", b."marca", b."modelo", b."serie", b."img_url", b."estado_calibracion", b."ultima_medicion", b."codigo", l."id_laboratorio", l."nombre" 
+  SELECT b.id_balanza,b."nombre", b."marca", b."modelo", b."serie", b."img_url", b."estado_calibracion", b."ultima_medicion", b."codigo", l."id_laboratorio", l."nombre" 
   FROM "Balanza" AS b 
   JOIN "Laboratorio" AS l ON l."id_laboratorio" = b."id_laboratorio";
 END;$$ LANGUAGE plpgsql;
@@ -444,6 +459,13 @@ CREATE OR REPLACE FUNCTION obtener_tecnicos(p_rol INT)
 RETURNS TABLE (nombre_completo TEXT, correo TEXT, fecha_creacion TIMESTAMPTZ,img TEXT,username TEXT,rol TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
   RETURN QUERY 
   SELECT u.nombre_completo,u.correo,u.fecha_creacion,u.img_url,u.username,r.nombre
+  FROM "Usuario" AS u JOIN "Rol" as r ON r.id_rol=u.rol WHERE u.rol<=p_rol;
+END;$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION obtener_tecnicos_id(p_rol INT) 
+RETURNS TABLE (id INT,nombre_completo TEXT, correo TEXT, fecha_creacion TIMESTAMPTZ,img TEXT,username TEXT,rol TEXT) SECURITY DEFINER SET search_path = public AS $$ BEGIN
+  RETURN QUERY 
+  SELECT u.id_usuario,u.nombre_completo,u.correo,u.fecha_creacion,u.img_url,u.username,r.nombre
   FROM "Usuario" AS u JOIN "Rol" as r ON r.id_rol=u.rol WHERE u.rol<=p_rol;
 END;$$ LANGUAGE plpgsql;
 

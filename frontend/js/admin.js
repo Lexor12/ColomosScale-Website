@@ -47,7 +47,7 @@ async function configurarNavBar(){
     const infoUsuario = await obtenerValores('usuario');
     nombre.textContent = infoUsuario.nombre_completo
     rol.textContent=infoUsuario.rol;
-    imgPersona.src = infoUsuario.img
+    imgPersona.src = '../assets/icons/user.svg'
     const btnVerPerfil = document.querySelector('.navbar__about')
     btnVerPerfil.addEventListener('click',()=>{
         window.location.href=`../pages/infoUsuario.html?id=${infoUsuario.username}`
@@ -67,6 +67,15 @@ async function obtenerValores(valor){
     }
     catch(e)   {
         return {}
+    }
+}
+async function eliminarValores(valor) {
+    try{
+        const resultado = await fetch(`http://127.0.0.1:3000/api/${valor}`,{method:'DELETE',credentials:'include'}).then(result=>result.json())
+        if(resultado.status===0)return "Error al eliminar el elemento."
+        return resultado.data
+    }catch(e){
+        return "Error al eliminar el elemento."
     }
 }
 //De aqui para atras son funciones basicas de todos los archivos
@@ -126,6 +135,19 @@ function cargarLaboratorios(){
         botones.append(editar)
         botones.append(eliminar)
         fila.append(botones)
+
+        const camposLaboratorioEditar = [//Arreglo de conjunto de objetos
+        { id:'nombre', labelTexto:'Nombre del Laboratorio', tipo:'text',contenido:laboratorio.nombre },
+        { id:'ubicacion', labelTexto:'Ubicación del Laboratorio', tipo:'text',contenido:laboratorio.ubicacion },
+        ]//El estado y codigo son creados aqui, ultima medicion siempre será el dia de creación
+
+        editar.addEventListener('click',()=>{
+            abrirModalFormulario('Editar una Balanza',camposLaboratorioEditar,(elemento)=>{editarElemento(`laboratorio/${laboratorio.id_laboratorio}`,elemento)})
+        })
+        eliminar.addEventListener('click',()=>{
+            abrirModalEliminar(`laboratorio/${laboratorio.id_laboratorio}`)
+        })
+        
         nombre.textContent=laboratorio.nombre
         Ubicacion.textContent=laboratorio.ubicacion
         balanzas.textContent=laboratorio.total_balanzas
@@ -137,6 +159,9 @@ function cargarBalanzas(){
     document.getElementById('valorTotalBalanzaAdecuada').textContent=balanzas.filter(balanza=>balanza.estado_calibracion==="ADECUADA").length
     document.getElementById('valorTotalBalanzaIntermedia').textContent=balanzas.filter(balanza=>balanza.estado_calibracion==="INTERMEDIA").length
     document.getElementById('valorTotalBalanzaMala').textContent=balanzas.filter(balanza=>balanza.estado_calibracion==="MALA").length
+
+    
+
     balanzas.forEach(balanza=>{
         const fila = document.createElement('tr')
         const nombre = document.createElement('td')
@@ -145,10 +170,12 @@ function cargarBalanzas(){
         fila.append(codigo)
         const laboratorio = document.createElement('td')
         fila.append(laboratorio)
+        const reportesAsociados = document.createElement('td')
         const calibracion = document.createElement('td')
         const calibracionspan = document.createElement('span')
         calibracion.append(calibracionspan)
         fila.append(calibracion)
+        fila.append(reportesAsociados)
 
         const botones = document.createElement('td')
         const editar = document.createElement('button')
@@ -168,10 +195,34 @@ function cargarBalanzas(){
         ver.addEventListener('click',()=>{
             window.location.href=`../pages/balanza.html?id=${balanza.codigo}`
         })
+        eliminar.addEventListener('click',()=>{
+            abrirModalEliminar(`balanza/${balanza.codigo}`)
+        })
+
+        const camposBalanzaEditar = [//Arreglo de conjunto de objetos
+        { id:'nombre', labelTexto:'Nombre de balanza', tipo:'text',contenido:balanza.nombre },
+        { id:'marca', labelTexto:'Marca de balanza', tipo:'text',contenido:balanza.marca },
+        { id:'modelo', labelTexto:'Modelo de balanza', tipo:'text',contenido:balanza.modelo },
+        { id:'serie', labelTexto:'Código de Serie de balanza', tipo:'text',contenido:balanza.serie },
+        { id:'img', labelTexto:'Nueva Imagen de balanza', tipo:'file' },
+        { id:'codigo', labelTexto:'Codigo de la balanza', tipo:'text',contenido:balanza.codigo },
+        ]//El estado y codigo son creados aqui, ultima medicion siempre será el dia de creación
+
+        
+        editar.addEventListener('click',()=>{
+            let laboratoriosSelector = [];
+            laboratorios.forEach(lab =>{
+                laboratoriosSelector.push({id:lab.nombre,value:lab.id_laboratorio,text:lab.nombre})
+            })
+            const selector = devolverObjetoSelector('Laboratorio',laboratoriosSelector,'selectLaboratorios')
+            selector.querySelector('select').value=balanza.id_laboratorio
+        abrirModalFormulario('Editar una Balanza',camposBalanzaEditar,(elemento)=>{editarElemento(`balanza/${balanza.id_balanza}`,elemento)},[selector])})
+        
 
         nombre.textContent=balanza.nombre
         codigo.textContent=balanza.codigo
         laboratorio.textContent=balanza.nombre_laboratorio
+        reportesAsociados.textContent=reportes.filter(reporte=>reporte.id_balanza==balanza.id_balanza).length
         calibracionspan.textContent=balanza.estado_calibracion
         switch(balanza.estado_calibracion){
             case "ADECUADA": calibracionspan.classList.add('estado-bueno')
@@ -198,23 +249,25 @@ function cargarReportes(){
         fila.append(fecha)
 
         const botones = document.createElement('td')
-        const editar = document.createElement('button')
-        const eliminar = document.createElement('button')
+        //const editar = document.createElement('button')
+        //const eliminar = document.createElement('button')
         const ver = document.createElement('button')
-        editar.classList.add('btn__accion__editar')
-        eliminar.classList.add('btn__accion__eliminar')
+        //editar.classList.add('btn__accion__editar')
+        //eliminar.classList.add('btn__accion__eliminar')
         ver.classList.add('btn__accion__ver')
-        editar.textContent='Editar'
-        eliminar.textContent='Eliminar'
+        //editar.textContent='Editar'
+        //eliminar.textContent='Eliminar'
         ver.textContent='Ver'
-        botones.append(eliminar)
-        botones.append(editar)
+        //botones.append(eliminar)
+        //botones.append(editar)
         botones.append(ver)
         fila.append(botones)
 
         ver.addEventListener('click',()=>{
             window.location.href=`../pages/reporte.html?id=${reporte.id_reporte}`
         })
+
+        //Un reporte no es algo que pueda editarse o incluso eliminarse, debe ser un valor fijo, algo del historial que ya se hizo
 
         id.textContent=reporte.id_reporte
         balanza.textContent=reporte.nombre_balanza
@@ -230,6 +283,7 @@ function cargarUsuarios(){
     document.getElementById('valorTotalUsuariosAdmins').textContent = usuarios.filter(u=>u.rol==="ADMIN").length
     document.getElementById('valorTotalUsuariosSupervisores').textContent = usuarios.filter(u=>u.rol==="SUPERVISOR").length
     document.getElementById('valorTotalUsuariosTecnicos').textContent = usuarios.filter(u=>u.rol==="TECNICO").length
+
     usuarios.forEach(usuario =>{
         const fila = document.createElement('tr')
         const nombre = document.createElement('td')
@@ -238,6 +292,8 @@ function cargarUsuarios(){
         fila.append(username)
         const correo = document.createElement('td')
         fila.append(correo)
+        const reportesAsociados = document.createElement('td')
+        
         const rol = document.createElement('td')
         const rolspan = document.createElement('span')
         rol.append(rolspan)
@@ -255,12 +311,36 @@ function cargarUsuarios(){
         botones.append(eliminar)
         botones.append(editar)
         botones.append(ver)
+        fila.append(reportesAsociados)
         fila.append(botones)
+        
 
         ver.addEventListener('click',()=>{
             window.location.href=`../pages/infoUsuario.html?id=${usuario.username}`
         })
+        
 
+        const camposUsuarioEditar = [
+        { id: 'nombre',   labelTexto: 'Nombre completo', tipo: 'text',contenido:usuario.nombre_completo     },
+        { id: 'username', labelTexto: 'Username',         tipo: 'text',contenido:usuario.username     },
+        { id: 'correo',   labelTexto: 'Correo',           tipo: 'text',contenido:usuario.correo     },
+        { id: 'password', labelTexto: 'Nueva Contraseña',       tipo: 'password',placeholder:"Mínimo 8 Caracteres si desea cambiarla" },
+        { id: 'img', labelTexto: 'Nueva imagen',       tipo: 'file' },
+        ]
+
+        
+        editar.addEventListener('click',()=>{
+            const selector = devolverObjetoSelector('Seleccione el Rol',[
+                {id:'tecnico',value:'TECNICO'},
+                {id:'supervisor',value:'SUPERVISOR'},
+                {id:'admin',value:'ADMIN'}
+            ],'rol');
+            selector.querySelector('select').value =usuario.rol
+            abrirModalFormulario('Editar un Usuario',camposUsuarioEditar,(elemento)=>{
+                editarElemento(`usuario/${usuario.id}`,elemento)
+            } ,[selector])})
+        eliminar.addEventListener('click',()=>abrirModalEliminar(`usuario/${usuario.username}`))
+        reportesAsociados.textContent=reportes.filter(reporte=>reporte.id_usuario==usuario.id).length
         nombre.textContent=usuario.nombre_completo
         username.textContent=usuario.username
         correo.textContent=usuario.correo
@@ -277,10 +357,207 @@ function cargarUsuarios(){
     })
 }
 
+async function crearElemento(direccion,formulario) {
+    const datos = new FormData()
+    formulario.querySelectorAll('input').forEach(input => {
+        if (input.type === 'file' && input.files[0]) {
+            datos.append(input.id, input.files[0])
+        } else {
+            if(input.value)
+            datos.append(input.id,input.value)
+        }
+    })
+    formulario.querySelectorAll('select').forEach(select => {
+        datos.append(select.id,select.value)
+    })
+
+}
+
+async function editarElemento(direccion,formulario){
+    const datos = new FormData()
+    
+    formulario.querySelectorAll('input').forEach(input => {
+        if (input.type === 'file' && input.files[0]) {
+            datos.append(input.id, input.files[0])
+        } else {
+            if(input.value)
+            datos.append(input.id,input.value)
+        }
+    })
+    
+    formulario.querySelectorAll('select').forEach(select => {
+        datos.append(select.id,select.value)
+    })
+    console.log(datos)
+    await fetch(`http://127.0.0.1:3000/api/${direccion}`,{method:'PATCH',credentials:'include',body:datos}).then(a=>a.json()).then(datos=>{
+        console.log(datos)
+    })
+}
+
+function devolverObjetoSelector(labeltxt,items,id='selector'){
+    const div = document.createElement('div')
+    div.classList.add('campo__formulario')
+    const selector = document.createElement('select')
+    selector.id=id
+    const label = document.createElement('label')
+    label.htmlFor = 'selector'
+    label.textContent = labeltxt
+    items.forEach(({id,value,text=null})=>{
+        const option = document.createElement('option')
+        option.id=id
+        option.value=value
+        if(!text)option.text=value
+        else option.text=text
+        selector.append(option)
+    })
+    div.append(label)
+    div.append(selector)
+    return div
+}
+
+function abrirModalEliminar(ruta) {
+    const modal = document.querySelector('.modal')
+    const modalEliminar = document.querySelector('.modal__eliminar')
+    const btnAceptar = document.querySelector('.modal__eliminar .modal__elemento__botones .aceptar')
+    const btnRechazar = document.querySelector('.modal__eliminar .modal__elemento__botones .rechazar')
+
+    modal.classList.add('activo')
+    modalEliminar.classList.add('mostrar')
+
+    btnAceptar.addEventListener('click', confirmarEliminar)
+    btnRechazar.addEventListener('click', cerrarModal)
+
+    async function confirmarEliminar() {
+        const resultado = await eliminarValores(ruta)
+        console.log(resultado)
+        cerrarModal()
+    }
+    function cerrarModal() {
+        modal.classList.remove('activo')
+        modalEliminar.classList.remove('mostrar')
+        btnAceptar.removeEventListener('click', confirmarEliminar)
+        btnRechazar.removeEventListener('click', cerrarModal)
+    }
+}
+
+function abrirModalFormulario(titulo, camposTexto, callbackAceptar,elementosAdicionales=null) {
+    const modal = document.querySelector('.modal')
+    const modalEditar = document.querySelector('.modal__editaragregar')
+    const btnAceptar = document.querySelector('.modal__editaragregar .modal__elemento__botones .aceptar')
+    const btnRechazar = document.querySelector('.modal__editaragregar .modal__elemento__botones .rechazar')
+    const formulario = document.querySelector('.modal__editaragregar__formulario')
+
+    formulario.innerHTML = ''
+
+    document.querySelector('.modal__editaragregar__header__titulo').textContent = titulo
+    modal.classList.add('activo')
+    modalEditar.classList.add('mostrar')
+
+    camposTexto.forEach(({ id, labelTexto, tipo,contenido,placeholder=null }) => {
+        const div = document.createElement('div')
+        div.classList.add('campo__formulario')
+
+        const label = document.createElement('label')
+        label.htmlFor = id
+        label.textContent = labelTexto
+
+        const input = document.createElement('input')
+        input.id = id
+        if(placeholder)input.placeholder=placeholder
+        input.type = tipo
+        if(contenido){input.value=contenido}
+
+        div.append(label, input)
+        formulario.append(div)
+    })
+    if(elementosAdicionales){//Tiene que devolver 
+        elementosAdicionales.forEach(elemento=>{
+            formulario.append(elemento)
+        })
+    }
+    btnAceptar.addEventListener('click', aceptar)
+    btnRechazar.addEventListener('click', cerrarModal)
+
+    function aceptar(){
+        callbackAceptar(formulario)//La funcion debe saber que hacer con los valores
+        cerrarModal()
+    }
+
+    function cerrarModal() {
+        modal.classList.remove('activo')
+        modalEditar.classList.remove('mostrar')
+        btnAceptar.removeEventListener('click', aceptar)
+        btnRechazar.removeEventListener('click', cerrarModal)
+        formulario.innerHTML = ''
+    }
+}
+const camposUsuario = [
+        { id: 'nombre',   labelTexto: 'Nombre completo', tipo: 'text'},
+        { id: 'username', labelTexto: 'Username',tipo: 'text'},
+        { id: 'correo',   labelTexto: 'Correo',tipo: 'text'},
+        { id: 'password', labelTexto: 'Nueva Contraseña', tipo: 'password',placeholder:"Mínimo 8 Caracteres si desea cambiarla" },
+        { id: 'img', labelTexto: 'Nueva imagen',tipo: 'file' },
+    ]
+const camposBalanza = [//Arreglo de conjunto de objetos
+        { id:'nombre', labelTexto:'Nombre de balanza', tipo:'text' },
+        { id:'marca', labelTexto:'Marca de balanza', tipo:'text' },
+        { id:'modelo', labelTexto:'Modelo de balanza', tipo:'text' },
+        { id:'serie', labelTexto:'Código de Serie de balanza', tipo:'text' },
+        { id:'imagen', labelTexto:'Imagen de balanza', tipo:'file' }
+    ]//El estado y codigo son creados aqui, ultima medicion siempre será el dia de creación
+const camposLaboratorio = [
+        {id:'nombre',labelTexto:'Nombre del Laboratorio',tipo:'text'},
+        {id:'ubicacion',labelTexto:'Ubicación del Laboratorio',tipo:'text'}
+    ]
+
+function registrarBotonesNuevo(){
+    document.getElementById('btnNuevoUsuario').addEventListener('click', () => {
+        const selector = devolverObjetoSelector('Seleccione el Rol', [
+        { id: 'tecnico',    value: 'TECNICO'    },
+        { id: 'supervisor', value: 'SUPERVISOR' },
+        { id: 'admin',      value: 'ADMIN'      }
+    ], 'rol')
+        abrirModalFormulario('Crear nuevo Usuario', camposUsuario, async function crearUsuario() {
+            const datos = {
+                nombre:document.getElementById('nombre').value,
+                username:document.getElementById('username').value,
+                correo:document.getElementById('correo').value,
+                password:document.getElementById('password').value,
+                rol:document.getElementById('rol').value  
+            }
+            console.log('Creando:', datos)
+        },[selector])
+    })
+
+    document.getElementById('btnNuevaBalanza').addEventListener('click', () => {
+        abrirModalFormulario('Crear nueva Balanza', camposBalanza, async function crearBalanza() {
+            const datos ={
+                nombre:  document.getElementById('nombre').value,
+                marca:   document.getElementById('marca').value,
+                modelo:  document.getElementById('modelo').value,
+                serie:   document.getElementById('serie').value,
+                imagen:  document.getElementById('imagen').files[0],  // file es diferente
+            }
+            console.log(datos)
+        })
+    })
+
+    document.getElementById('btnNuevoLaboratorio').addEventListener('click', () => {
+        abrirModalFormulario('Crear nuevo Laboratorio',camposLaboratorio,async function crearLaboratorio() {
+            const datos = {
+                nombre: document.getElementById('nombre').value,
+                ubicacion:document.getElementById('ubicacion').value,
+            }
+            console.log(datos)
+        })
+    })
+}
+
 async function iniciarPagina(){
     await verificarToken();
     await configurarNavBar();
     cargarPagina();
+    registrarBotonesNuevo();
     mostrarNodoVista(document.querySelector('.selector__navbar__elemento__usuarios'))
     document.querySelector('body').classList.add('is-loaded');
     

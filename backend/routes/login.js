@@ -1,4 +1,4 @@
-import sql from '../db.js'
+import {sql} from '../db.js'
 import jwt from 'jsonwebtoken'
 
 
@@ -15,7 +15,7 @@ export async function iniciarSesion(username,password){
     }
 }
 
-async function generarHash(mensaje) {
+export async function generarHash(mensaje) {
     const enconder = new TextEncoder();
     const data = enconder.encode(mensaje);
 
