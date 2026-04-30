@@ -216,7 +216,7 @@ function cargarBalanzas(){
             laboratorios.forEach(lab =>{
                 laboratoriosSelector.push({id:lab.nombre,value:lab.id_laboratorio,text:lab.nombre})
             })
-            const selector = devolverObjetoSelector('Laboratorio',laboratoriosSelector,'selectLaboratorios')
+            const selector = devolverObjetoSelector('Laboratorio',laboratoriosSelector,'id_laboratorio')
             selector.querySelector('select').value=balanza.id_laboratorio
         abrirModalFormulario('Editar una Balanza',camposBalanzaEditar,(elemento)=>{editarElemento(`balanza/${balanza.id_balanza}`,elemento)},[selector])})
         
