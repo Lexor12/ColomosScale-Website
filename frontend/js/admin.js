@@ -1,3 +1,4 @@
+import { crearToaster } from "./toaster.js";
 let valoresDeConsulta = {}
 
 async function verificarToken() {
@@ -19,7 +20,6 @@ async function verificarToken() {
                 window.location.href='../pages/404.html';
                 return;
             }
-            console.log(valoresDeConsulta)
         }catch(e){
             window.location.href='../pages/notAuth.html'
         }
@@ -72,10 +72,11 @@ async function obtenerValores(valor){
 async function eliminarValores(valor) {
     try{
         const resultado = await fetch(`http://127.0.0.1:3000/api/${valor}`,{method:'DELETE',credentials:'include'}).then(result=>result.json())
-        if(resultado.status===0)return "Error al eliminar el elemento."
-        return resultado.data
+        if(resultado.status==-1)return {status:-1,error:resultado.data[0].mensaje}
+        return resultado
     }catch(e){
-        return "Error al eliminar el elemento."
+        
+        return {status:-1,error:"No se pudo conectar a la base de datos."}
     }
 }
 //De aqui para atras son funciones basicas de todos los archivos
@@ -116,6 +117,7 @@ function cargarPagina(){
 
 function cargarLaboratorios(){
     document.getElementById('valorTotalLaboratorios').textContent=laboratorios.length
+    document.getElementById('contenidoTablaLaboratorios').innerHTML=''
     laboratorios.forEach(laboratorio=>{
         const fila = document.createElement('tr')
         const nombre = document.createElement('td')
@@ -159,7 +161,7 @@ function cargarBalanzas(){
     document.getElementById('valorTotalBalanzaAdecuada').textContent=balanzas.filter(balanza=>balanza.estado_calibracion==="ADECUADA").length
     document.getElementById('valorTotalBalanzaIntermedia').textContent=balanzas.filter(balanza=>balanza.estado_calibracion==="INTERMEDIA").length
     document.getElementById('valorTotalBalanzaMala').textContent=balanzas.filter(balanza=>balanza.estado_calibracion==="MALA").length
-
+    document.getElementById('contenidoTablaBalanzas').innerHTML=''
     
 
     balanzas.forEach(balanza=>{
@@ -196,7 +198,7 @@ function cargarBalanzas(){
             window.location.href=`../pages/balanza.html?id=${balanza.codigo}`
         })
         eliminar.addEventListener('click',()=>{
-            abrirModalEliminar(`balanza/${balanza.codigo}`)
+            abrirModalEliminar(`balanza/${balanza.id_balanza}`)
         })
 
         const camposBalanzaEditar = [//Arreglo de conjunto de objetos
@@ -237,6 +239,7 @@ function cargarBalanzas(){
 }
 function cargarReportes(){
     document.getElementById('valorTotalReportes').textContent=reportes.length
+    document.getElementById('contenidoTablaReportes').innerHTML=''
     reportes.forEach(reporte=>{
         const fila = document.createElement('tr')
         const id = document.createElement('td')
@@ -283,7 +286,7 @@ function cargarUsuarios(){
     document.getElementById('valorTotalUsuariosAdmins').textContent = usuarios.filter(u=>u.rol==="ADMIN").length
     document.getElementById('valorTotalUsuariosSupervisores').textContent = usuarios.filter(u=>u.rol==="SUPERVISOR").length
     document.getElementById('valorTotalUsuariosTecnicos').textContent = usuarios.filter(u=>u.rol==="TECNICO").length
-
+    document.getElementById('contenidoTablaUsuarios').innerHTML=''
     usuarios.forEach(usuario =>{
         const fila = document.createElement('tr')
         const nombre = document.createElement('td')
@@ -339,7 +342,7 @@ function cargarUsuarios(){
             abrirModalFormulario('Editar un Usuario',camposUsuarioEditar,(elemento)=>{
                 editarElemento(`usuario/${usuario.id}`,elemento)
             } ,[selector])})
-        eliminar.addEventListener('click',()=>abrirModalEliminar(`usuario/${usuario.username}`))
+        eliminar.addEventListener('click',()=>abrirModalEliminar(`usuario/${usuario.id}`))
         reportesAsociados.textContent=reportes.filter(reporte=>reporte.id_usuario==usuario.id).length
         nombre.textContent=usuario.nombre_completo
         username.textContent=usuario.username
@@ -371,6 +374,10 @@ async function crearElemento(direccion,formulario) {
         datos.append(select.id,select.value)
     })
 
+    await fetch(`http://127.0.0.1:3000/api/${direccion}`,{method:'POST',credentials:'include',body:datos}).then(a=>a.json()).then(datos=>{
+        notificar(datos)
+    })
+    volverACargarElementos()
 }
 
 async function editarElemento(direccion,formulario){
@@ -388,10 +395,26 @@ async function editarElemento(direccion,formulario){
     formulario.querySelectorAll('select').forEach(select => {
         datos.append(select.id,select.value)
     })
-    console.log(datos)
     await fetch(`http://127.0.0.1:3000/api/${direccion}`,{method:'PATCH',credentials:'include',body:datos}).then(a=>a.json()).then(datos=>{
-        console.log(datos)
+        notificar(datos)
     })
+    volverACargarElementos()
+}
+
+function notificar(datos){
+    const contenedor_toaster = document.querySelector('.toaster__contenedor');
+        let tipo;
+        let mensaje;
+        switch(datos.status){
+            case 1:
+                tipo='correcto'
+                mensaje=Object.values(datos.data[0])
+                break;
+            default: tipo='error'
+                mensaje=datos.error;
+                break;
+    }
+    crearToaster(mensaje,contenedor_toaster,tipo,5)
 }
 
 function devolverObjetoSelector(labeltxt,items,id='selector'){
@@ -429,7 +452,8 @@ function abrirModalEliminar(ruta) {
 
     async function confirmarEliminar() {
         const resultado = await eliminarValores(ruta)
-        console.log(resultado)
+        notificar(resultado)
+        volverACargarElementos()
         cerrarModal()
     }
     function cerrarModal() {
@@ -503,7 +527,7 @@ const camposBalanza = [//Arreglo de conjunto de objetos
         { id:'marca', labelTexto:'Marca de balanza', tipo:'text' },
         { id:'modelo', labelTexto:'Modelo de balanza', tipo:'text' },
         { id:'serie', labelTexto:'Código de Serie de balanza', tipo:'text' },
-        { id:'imagen', labelTexto:'Imagen de balanza', tipo:'file' }
+        { id:'img', labelTexto:'Imagen de balanza', tipo:'file' }
     ]//El estado y codigo son creados aqui, ultima medicion siempre será el dia de creación
 const camposLaboratorio = [
         {id:'nombre',labelTexto:'Nombre del Laboratorio',tipo:'text'},
@@ -516,41 +540,50 @@ function registrarBotonesNuevo(){
         { id: 'tecnico',    value: 'TECNICO'    },
         { id: 'supervisor', value: 'SUPERVISOR' },
         { id: 'admin',      value: 'ADMIN'      }
-    ], 'rol')
-        abrirModalFormulario('Crear nuevo Usuario', camposUsuario, async function crearUsuario() {
-            const datos = {
-                nombre:document.getElementById('nombre').value,
-                username:document.getElementById('username').value,
-                correo:document.getElementById('correo').value,
-                password:document.getElementById('password').value,
-                rol:document.getElementById('rol').value  
-            }
-            console.log('Creando:', datos)
-        },[selector])
+        ], 'rol')
+        selector.querySelector('select').value ='TECNICO'
+        abrirModalFormulario('Crear nuevo Usuario', camposUsuario,async (elemento)=>{crearElemento('usuario',elemento)},[selector])
     })
 
     document.getElementById('btnNuevaBalanza').addEventListener('click', () => {
-        abrirModalFormulario('Crear nueva Balanza', camposBalanza, async function crearBalanza() {
-            const datos ={
-                nombre:  document.getElementById('nombre').value,
-                marca:   document.getElementById('marca').value,
-                modelo:  document.getElementById('modelo').value,
-                serie:   document.getElementById('serie').value,
-                imagen:  document.getElementById('imagen').files[0],  // file es diferente
-            }
-            console.log(datos)
-        })
+        let laboratoriosSelector = [];
+            laboratorios.forEach(lab =>{
+                laboratoriosSelector.push({id:lab.nombre,value:lab.id_laboratorio,text:lab.nombre})
+            })
+        const selector = devolverObjetoSelector('Laboratorio',laboratoriosSelector,'id_laboratorio')
+        selector.querySelector('select').value =0
+        abrirModalFormulario('Crear nueva Balanza', camposBalanza, async (elemento)=>{crearElemento('balanza',elemento)},[selector])
     })
 
     document.getElementById('btnNuevoLaboratorio').addEventListener('click', () => {
-        abrirModalFormulario('Crear nuevo Laboratorio',camposLaboratorio,async function crearLaboratorio() {
-            const datos = {
-                nombre: document.getElementById('nombre').value,
-                ubicacion:document.getElementById('ubicacion').value,
-            }
-            console.log(datos)
-        })
+        abrirModalFormulario('Crear nuevo Laboratorio',camposLaboratorio,async (elemento)=>{crearElemento('laboratorio',elemento)})
     })
+}
+
+async function volverACargarElementos(){
+    try{
+            const res = await fetch('http://127.0.0.1:3000/api/verificarToken',{credentials:'include'})
+            const result = await res.json();
+            if(result.status===0){
+                window.location.href='../pages/notAuth.html'
+            }
+            if(result.usuario.rol<3){window.location.href='../pages/404.html';return;}
+            valoresDeConsulta = await obtenerValores(`admin`)
+            if(Object.keys(valoresDeConsulta).length===0){
+                window.location.href='../pages/404.html';
+                return;
+            }
+        }catch(e){
+            window.location.href='../pages/notAuth.html'
+        }
+    usuarios = valoresDeConsulta.usuarios;
+    balanzas = valoresDeConsulta.balanzas;
+    laboratorios = valoresDeConsulta.laboratorios;
+    reportes = valoresDeConsulta.reportes;
+    cargarUsuarios()
+    cargarLaboratorios()
+    cargarBalanzas()
+    cargarReportes()
 }
 
 async function iniciarPagina(){

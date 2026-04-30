@@ -1,5 +1,6 @@
 @import url('../css/estructuraBasica.css'); 
 @import url('../css/variables-colores.css'); 
+@import url('../css/toaster.css');
 
 .selector {
     padding: 0 20px; /* ← solo horizontal, nada vertical */   

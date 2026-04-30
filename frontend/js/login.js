@@ -62,7 +62,6 @@ function cargarPagina(){
                 const respuesta = await fetch(`http://127.0.0.1:3000/api/iniciarSesion`,opt);
                 const datos = await respuesta.json(); // Leemos la respuesta del servidor
                 if(datos.status===1){
-                    console.log('cookie creada')
                     window.location.href='../pages/dashboard.html'
                 }
                 else{

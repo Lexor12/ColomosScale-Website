@@ -26,7 +26,6 @@ async function verificarToken() {
                 window.location.href='../pages/404.html';
                 return;
             }
-            console.log(valoresDeConsulta)
         }catch(e){
             window.location.href='../pages/notAuth.html'
         }

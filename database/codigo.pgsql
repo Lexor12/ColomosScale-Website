@@ -71,10 +71,10 @@ BEGIN
     RETURN 'El correo y/o el username ya existe';
   END IF;
   --Caso contrario el else
-  INSERT INTO "Usuario"(username,nombre_completo,correo,password,fecha_creacion,rol,img_url) VALUES(p_username,p_nombre_completo,p_correo,p_password,NOW(),p_rol,p_img_url);
+  INSERT INTO "Usuario"(username,nombre_completo,correo,password,fecha_creacion,rol,img_url) VALUES(p_username,p_nombre_completo,p_correo,p_password,NOW(),p_rol,COALESCE(p_img_url,''));
   RETURN 'Usuario registrado correctamente.';
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql; 
 -- REGRESA TODOS LOS CAMPOS INCLUYENDO LA CONTRASEÑA PARA REALIZAR EL ANALISIS EN NODE
 -- Función corregida por CORREO
 CREATE OR REPLACE FUNCTION obtener_usuarios_por_correo(p_correo TEXT)  
@@ -139,26 +139,73 @@ CREATE OR REPLACE FUNCTION actualizar_usuario(
 END;$$ LANGUAGE plpgsql;
 
 -- Eliminar "Usuario"
-CREATE OR REPLACE  FUNCTION eliminar_usuario(p_id INT) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ 
+CREATE OR REPLACE FUNCTION eliminar_usuario(p_id INT)
+RETURNS TABLE(status INT, mensaje TEXT)
+SECURITY DEFINER SET search_path = public AS $$ 
+DECLARE v_cant_reportes INT;
+DECLARE v_rol INT;
 BEGIN
-  IF(SELECT 1 FROM "Usuario" WHERE id_usuario=p_id)THEN
-    DELETE FROM "Usuario" WHERE id_usuario=p_id;
-    RETURN 'Usuario elimnado correctamente.';
+  IF EXISTS (SELECT 1 FROM "Usuario" WHERE id_usuario=p_id) THEN
+      SELECT COUNT(*) INTO v_cant_reportes FROM "Reporte" WHERE id_usuario = p_id;
+
+      SELECT rol INTO v_rol FROM "Usuario" WHERE id_usuario=p_id;
+      IF v_rol =4 THEN
+        status := -1;
+        mensaje := 'Usuario no encontrado.';
+        RETURN NEXT; 
+      END IF;
+      IF v_cant_reportes > 0 THEN
+        status := -1;
+        mensaje := 'No puede eliminar este usuario ya que tiene ' || v_cant_reportes || ' reportes asociados.';
+        RETURN NEXT;
+        RETURN;
+      END IF;
+      
+      DELETE FROM "Usuario" WHERE id_usuario=p_id;
+      status := 1;
+      mensaje := 'Usuario eliminado correctamente.';
+  ELSE
+    status := -1;
+    mensaje := 'Usuario no encontrado.';
   END IF;
-  RETURN 'Usuario no encontrado.';
+  
+  RETURN NEXT; 
 END;
 $$ LANGUAGE plpgsql;
+
 
 ----------------------- "Balanza"S ---------------------------
 
 -- CREAR O AGREGAR UNA "Balanza"
 
-CREATE OR REPLACE FUNCTION registrar_balanza(p_nombre TEXT, p_marca TEXT, p_modelo TEXT, p_serie TEXT, p_img_url TEXT, p_id_laboratorio INT,p_codigo TEXT) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ 
+CREATE OR REPLACE FUNCTION registrar_balanza(
+    p_nombre TEXT, 
+    p_marca TEXT, 
+    p_modelo TEXT, 
+    p_serie TEXT, 
+    p_img_url TEXT, 
+    p_id_laboratorio INT
+) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ 
+DECLARE 
+    v_anio TEXT := TO_CHAR(NOW(), 'YYYY'); 
+    v_ultimo_correlativo INT; -- QUITAMOS EL "DECLARE" EXTRA
+    v_nuevo_codigo TEXT;      -- QUITAMOS EL "DECLARE" EXTRA
 BEGIN 
-  INSERT INTO "Balanza"(nombre,marca,modelo,serie,img_url,estado_calibracion,ultima_medicion,id_laboratorio,codigo) VALUES (p_nombre, p_marca, p_modelo, p_serie, p_img_url,'MALA',NOW(), p_id_laboratorio,p_codigo);
-  RETURN 'Balanza registrada correctamente.';
+    -- Tu lógica aquí...
+    SELECT COALESCE(MAX(SUBSTRING(codigo FROM 10)::INT), 0)
+    INTO v_ultimo_correlativo
+    FROM "Balanza"
+    WHERE codigo LIKE 'BAL-' || v_anio || '-%';
+
+    v_nuevo_codigo := 'BAL-' || v_anio || '-' || LPAD((v_ultimo_correlativo + 1)::TEXT, 4, '0');
+
+    INSERT INTO "Balanza" (nombre, marca, modelo, serie, img_url, estado_calibracion, ultima_medicion, id_laboratorio, codigo) 
+    VALUES (p_nombre, p_marca, p_modelo, p_serie, COALESCE(p_img_url, ''), 'MALA', NOW(), p_id_laboratorio, v_nuevo_codigo);
+    
+    RETURN 'Balanza registrada exitosamente con el código: ' || v_nuevo_codigo;
 END;
 $$ LANGUAGE plpgsql;
+
 -- ACTUALIZAR "Balanza"
 CREATE OR REPLACE FUNCTION actualizar_balanza(
   p_id INT,
@@ -187,13 +234,30 @@ CREATE OR REPLACE FUNCTION actualizar_balanza(
 END;$$ LANGUAGE plpgsql;
 
 -- Eliminar balanza
-CREATE OR REPLACE FUNCTION eliminar_balanza(p_id INT) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ 
+CREATE OR REPLACE FUNCTION eliminar_balanza(p_id INT) 
+RETURNS TABLE(status INT, mensaje TEXT)
+SECURITY DEFINER SET search_path = public AS $$ 
+DECLARE v_cant_reportes INT;
 BEGIN
-  IF(SELECT 1 FROM "Balanza" WHERE id_balanza=p_id)THEN
-    DELETE FROM "Balanza" WHERE id_balanza=p_id;
-    RETURN 'Balanza elimnada correctamente.';
-  END IF;
-  RETURN 'Balanza no encontrado.';
+    IF EXISTS (SELECT 1 FROM "Balanza" WHERE id_balanza=p_id) THEN
+      SELECT COUNT(*) INTO v_cant_reportes FROM "Reporte" WHERE id_balanza = p_id;
+
+      IF v_cant_reportes > 0 THEN
+        status := 0;
+        mensaje := 'No puede eliminar esta balanza ya que tiene ' || v_cant_reportes || ' reportes asociados.';
+        RETURN NEXT; 
+        RETURN;
+      END IF;
+      
+      DELETE FROM "Balanza" WHERE id_balanza=p_id;
+      status := 1;
+      mensaje := 'Balanza eliminada correctamente.';
+    ELSE
+      status := 0;
+      mensaje := 'Balanza no encontrada.';
+    END IF;
+    
+    RETURN NEXT;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -291,20 +355,30 @@ BEGIN
 END;$$ LANGUAGE plpgsql;
 
 -- Eliminar Laboratorio
-CREATE OR REPLACE FUNCTION eliminar_laboratorio(p_id INT) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ 
+CREATE OR REPLACE FUNCTION eliminar_laboratorio(p_id INT) 
+RETURNS TABLE(status INT, mensaje TEXT) 
+SECURITY DEFINER SET search_path = public AS $$ 
 DECLARE v_cant_balanzas INT;
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM "Laboratorio" WHERE id_laboratorio = p_id) THEN
-      RETURN 'Laboratorio no encontrado.';
+        status := 0;
+        mensaje := 'Laboratorio no encontrado.';
+        RETURN NEXT;
+        RETURN;
     END IF;
-
+    
     SELECT COUNT(*) INTO v_cant_balanzas FROM "Balanza" WHERE id_laboratorio = p_id;
-
+    
     IF v_cant_balanzas > 0 THEN
-      RETURN 'No puede eliminar este laboratorio ya que tiene ' || v_cant_balanzas || ' balanzas asociadas.';
+        status := 0;
+        mensaje := 'No puede eliminar este laboratorio ya que tiene ' || v_cant_balanzas || ' balanzas asociadas.';
+    ELSE
+        DELETE FROM "Laboratorio" WHERE id_laboratorio = p_id;
+        status := 1;
+        mensaje := 'Laboratorio eliminado correctamente.';
     END IF;
-    DELETE FROM "Laboratorio" WHERE id_laboratorio = p_id;
-    RETURN 'Laboratorio eliminado correctamente.';
+    
+    RETURN NEXT; 
 END;
 $$ LANGUAGE plpgsql;
 

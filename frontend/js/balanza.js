@@ -95,7 +95,8 @@ async function cargarDatosBalanza() {
     const modelo =document.getElementById('balanzaModelo');
     const serie = document.getElementById('balanzaSerie')
     const codigo = document.getElementById('balanzaCodigo')
-    imagenBalanza.src = datosBalanza.balanza.img_url
+    if(!datosBalanza.balanza.img_url)imagenBalanza.src ='../assets/logo/ic_logo_sin_fondo.png'
+        else imagenBalanza.src = datosBalanza.balanza.img_url
     nombreBalanza.textContent=datosBalanza.balanza.nombre
     laboratorio.textContent=datosBalanza.balanza.nombre_laboratorio
     estado.textContent=datosBalanza.balanza.estado

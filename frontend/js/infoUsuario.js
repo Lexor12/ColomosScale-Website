@@ -82,7 +82,8 @@ function cargarPagina(){
         window.location.href='../pages/tecnico.html'
     })
     const img = document.querySelector('.ImagenTecnico__elemento');
-    img.src = datosUsuario.img
+    if(!datosUsuario.img) img.src='../assets/icons/user.svg'
+    else img.src = datosUsuario.img
     const nombre = document.querySelector('.InfoTecnico__General__nombre')
     nombre.textContent=datosUsuario.nombre_completo
     const correo = document.querySelector('.InfoTecnico__General__correo')

@@ -80,7 +80,8 @@ function crearBalanzas(listaBalanzas){
 
         const img = document.createElement('img');
         img.classList.add('elemento__balanza__img__element')
-        img.src = element.img_url;
+        if(!element.img_url)img.src ='../assets/logo/ic_logo_sin_fondo.png'
+        else img.src = element.img_url;
         img.alt = `balanza`
         divImg.appendChild(img)
 

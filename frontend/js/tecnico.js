@@ -27,7 +27,6 @@ async function configurarNavBar(){
     const datosUsuario = await obtenerValores('usuario')
     nombre.textContent = datosUsuario.nombre_completo
     rol.textContent=datosUsuario.rol
-    console.log(datosUsuario)
     img.src = '../assets/icons/user.svg'
     const btnVerPerfil = document.querySelector('.navbar__about')
     btnVerPerfil.addEventListener('click',()=>{

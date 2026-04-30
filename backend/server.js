@@ -224,16 +224,16 @@ app.get('/api/usuario',async(req,res)=>{
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
-app.delete('/api/usuario/:codigo',async(req,res)=>{
+app.delete('/api/usuario/:id',async(req,res)=>{
     const token = req.cookies.token;//Siempre mandaremos en el header el token
     const statusToken = verificarToken(token);
     if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
-    const validacion =zodCodigoParam.safeParse(req.params);
+    const validacion =zodIdParam.safeParse(req.params);
     if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
-    const username = validacion.data.codigo
+    const id = validacion.data.id
     try{
-        const consulta = await sql`SELECT * FROM eliminar_usuario_por_username(${username})`;
-        res.json({status:1,data:consulta})
+        const consulta = await sql`SELECT * FROM eliminar_usuario(${id})`;
+        res.json({status:consulta[0].status,data:[{mensaje:consulta[0].mensaje}]})
     }catch(e){
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
@@ -243,7 +243,7 @@ app.patch('/api/usuario/:id',upload.single('img'),async(req,res)=>{
     const statusToken = verificarToken(token);
     if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
     const validacion =zodIdParam.safeParse(req.params);
-    if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
+    if(!validacion.success)return res.status(400).json({satus:-1,error:"Error al identificar el usuario."})
     const zodUsuario = z.object({
         nombre:   z.string().min(1).max(100).optional(),
         username: z.string().min(3).max(48).optional(),
@@ -258,7 +258,8 @@ app.patch('/api/usuario/:id',upload.single('img'),async(req,res)=>{
     const id = validacion.data.id
     let nombreArchivo = null;
     if(imagen){
-        const tiposPermitidos = ['image/jpeg', 'image/png', 'image/webp','image/jpg']
+        try{
+            const tiposPermitidos = ['image/jpeg', 'image/png', 'image/webp','image/jpg']
         if(!tiposPermitidos.includes(imagen.mimetype))return res.status(400).json({ status: -1, error: "Tipo de imagen no permitido" })
         if(imagen.size > 6 * 1024 * 1024)return res.status(400).json({ status: -1, error: "Imagen muy pesada" })
         const extension = imagen.originalname.split('.').pop(); //Aqui separamos la extension y usarla, usamos pop para eliminar todo lo q es el nombre
@@ -266,29 +267,69 @@ app.patch('/api/usuario/:id',upload.single('img'),async(req,res)=>{
 
         const {data, error}= await supabase.storage.from('user').upload(nombreArchivo,imagen.buffer,{contentType:imagen.mimetype,upsert:true})
         if(error)return res.status(500).json({ status: 0, error: "Error al subir la imagen." });
+        }catch(e){
+            return res.status(500).json({status:0,error:"Error intentelo más tarde."})
+        }
+        
         //const {data, error}= await supabase.storage.from('user').createSignedUrl(nombreArchivo,3600);//Dura 1 hora activo, lo que es más que suficiente
     }
     const rol = {'TECNICO':1,'SUPERVISOR':2,'ADMIN':3}
     try{
-        const consulta = await sql`SELECT * FROM actualizar_usuario(${id},${d.username||null},${d.nombre|| null},${d.correo|| null},${d.password?await generarHash(d.password):null},${rol[d.rol]||null},${nombreArchivo?nombreArchivo:null})`;
+        const consulta = await sql`SELECT * FROM actualizar_usuario(${id},${d.username?? null},${d.nombre??null},${d.correo??null},${d.password?await generarHash(d.password):null},${rol[d.rol]?? null},${nombreArchivo?nombreArchivo:null})`;
         res.json({status:1,data:consulta})
     }catch(e){
-        console.log(e)
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
-app.delete('/api/balanza/:codigo',async(req,res)=>{
+app.post('/api/usuario',upload.single('img'),async(req,res)=>{
+    const token = req.cookies.token
+    const statusToken = verificarToken(token);
+    if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+    const zodUsuario = z.object({
+        nombre:   z.string().min(1).max(100),
+        username: z.string().min(3).max(48),
+        correo:   z.string().email(),
+        password: z.string().min(8).max(256),//Al ser admin, lo mi
+        rol:      z.enum(['TECNICO', 'SUPERVISOR', 'ADMIN'])
+    })
+    const validacionBody = zodUsuario.safeParse(req.body)
+    if(!validacionBody.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
+    const imagen = req.file//Si no lo mando pues lo marca como indefinido
+    const d = validacionBody.data
+    let nombreArchivo = null;
+    if(imagen){
+        try{
+            const tiposPermitidos = ['image/jpeg', 'image/png', 'image/webp','image/jpg']
+        if(!tiposPermitidos.includes(imagen.mimetype))return res.status(400).json({ status: -1, error: "Tipo de imagen no permitido" })
+        if(imagen.size > 6 * 1024 * 1024)return res.status(400).json({ status: -1, error: "Imagen muy pesada" })
+        const extension = imagen.originalname.split('.').pop(); //Aqui separamos la extension y usarla, usamos pop para eliminar todo lo q es el nombre
+        nombreArchivo=`avatar_${d.username}_${Date.now()}.${extension}`;
+
+        const {data, error}= await supabase.storage.from('user').upload(nombreArchivo,imagen.buffer,{contentType:imagen.mimetype,upsert:true})
+        if(error)return res.status(500).json({ status: 0, error: "Error al subir la imagen." });
+        }catch{
+            return res.status(500).json({status:0,error:"Error intentelo más tarde."})
+        }
+    }
+    const rol = {'TECNICO':1,'SUPERVISOR':2,'ADMIN':3}
+    try{
+        const consulta = await sql`SELECT * FROM registrar_usuario(${d.username?? null},${d.nombre?? null},${d.correo?? null},${await generarHash(d.password)?? null},${rol[d.rol]?? null},${nombreArchivo?? null})`;
+        res.json({status:1,data:consulta})
+    }catch(e){
+        return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
+    }
+})
+app.delete('/api/balanza/:id',async(req,res)=>{
     const token = req.cookies.token;//Siempre mandaremos en el header el token
     const statusToken = verificarToken(token);
     if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
-    const validacion =zodCodigoParam.safeParse(req.params);
+    const validacion =zodIdParam.safeParse(req.params);
     if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
-    const codigoBalanza = validacion.data.codigo
+    const id = validacion.data.id
     try{
-        const consulta = await sql`SELECT * FROM eliminar_balanza_codigo(${codigoBalanza})`;
-        res.json({status:1,data:consulta})
+        const consulta = await sql`SELECT * FROM eliminar_balanza(${id})`;
+        res.json({status:consulta[0].status,data:[{mensaje:consulta[0].mensaje}]})
     }catch(e){
-        console.log(e)
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
@@ -303,7 +344,7 @@ app.patch('/api/balanza/:id',upload.single('img'),async(req,res)=>{
         marca:   z.string().min(1).max(100).optional(),
         modelo:   z.string().min(1).max(100).optional(),
         serie:   z.string().min(1).max(100).optional(),
-        id_laboratorio: z.coerce.number().int().positive().optional()//Para transformar a int si es string
+        id_laboratorio: z.coerce.number().int().nonnegative().optional()//Para transformar a int si es string
     })
     const validacionBody = zodBalanza.safeParse(req.body)
     if(!validacionBody.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
@@ -312,21 +353,64 @@ app.patch('/api/balanza/:id',upload.single('img'),async(req,res)=>{
     const id = validacion.data.id
     let nombreArchivo = null;
     if(imagen){
+        try{
         const tiposPermitidos = ['image/jpeg', 'image/png', 'image/webp','image/jpg']
         if(!tiposPermitidos.includes(imagen.mimetype))return res.status(400).json({ status: -1, error: "Tipo de imagen no permitido" })
         if(imagen.size > 6 * 1024 * 1024)return res.status(400).json({ status: -1, error: "Imagen muy pesada" })
         const extension = imagen.originalname.split('.').pop(); //Aqui separamos la extension y usarla, usamos pop para eliminar todo lo q es el nombre
         nombreArchivo=`balanza_${id}_${Date.now()}.${extension}`;
         const {data, error}= await supabase.storage.from('ColomosScale_img').upload(nombreArchivo,imagen.buffer,{contentType:imagen.mimetype,upsert:true})
-        if(error){console.log(error);return res.status(500).json({ status: 0, error: "Error al subir la imagen." });}
+        if(error){return res.status(500).json({ status: 0, error: "Error al subir la imagen." });}
         const {data:publicUrlData}= supabase.storage.from('ColomosScale_img').getPublicUrl(nombreArchivo);
         nombreArchivo = publicUrlData.publicUrl
+        }catch{
+            return res.status(500).json({status:0,error:"Error intentelo más tarde."})
+        }
     }
     try{
-        const consulta = await sql`SELECT * FROM actualizar_balanza(${id},${d.nombre||null},${d.marca|| null},${d.modelo|| null},${d.serie||null},${nombreArchivo},${d.id_laboratorio||null})`;
+        const consulta = await sql`SELECT * FROM actualizar_balanza(${id},${d.nombre?? null},${d.marca?? null},${d.modelo?? null},${d.serie?? null},${nombreArchivo},${d.id_laboratorio?? null})`;
         res.json({status:1,data:consulta})
     }catch(e){
-        console.log(e)
+        
+        return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
+    }
+})
+app.post('/api/balanza',upload.single('img'),async(req,res)=>{
+    const token = req.cookies.token;//Siempre mandaremos en el header el token
+    const statusToken = verificarToken(token);
+    if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+    const zodBalanza = z.object({
+        nombre:   z.string().min(1).max(100),
+        marca:   z.string().min(1).max(100),
+        modelo:   z.string().min(1).max(100),
+        serie:   z.string().min(1).max(100),
+        id_laboratorio: z.coerce.number().int().nonnegative()//Para transformar a int si es string
+    })
+    const validacionBody = zodBalanza.safeParse(req.body)
+    if(!validacionBody.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
+    const imagen = req.file//Si no lo mando pues lo marca como indefinido
+    const d = validacionBody.data
+    let nombreArchivo = null;
+    if(imagen){
+        try{
+            const tiposPermitidos = ['image/jpeg', 'image/png', 'image/webp','image/jpg']
+        if(!tiposPermitidos.includes(imagen.mimetype))return res.status(400).json({ status: -1, error: "Tipo de imagen no permitido" })
+        if(imagen.size > 6 * 1024 * 1024)return res.status(400).json({ status: -1, error: "Imagen muy pesada" })
+        const extension = imagen.originalname.split('.').pop(); //Aqui separamos la extension y usarla, usamos pop para eliminar todo lo q es el nombre
+        nombreArchivo=`balanza_${d.serie}_${Date.now()}.${extension}`;
+        const {data, error}= await supabase.storage.from('ColomosScale_img').upload(nombreArchivo,imagen.buffer,{contentType:imagen.mimetype,upsert:true})
+        if(error){return res.status(500).json({ status: 0, error: "Error al subir la imagen." });}
+        const {data:publicUrlData}= supabase.storage.from('ColomosScale_img').getPublicUrl(nombreArchivo);
+        nombreArchivo = publicUrlData.publicUrl
+        }catch{
+            return res.status(500).json({status:0,error:"Error intentelo más tarde."})
+        }
+    }
+    try{
+        const consulta = await sql`SELECT * FROM registrar_balanza(${d.nombre?? null},${d.marca?? null},${d.modelo?? null},${d.serie?? null},${nombreArchivo?? null},${d.id_laboratorio?? null})`;
+        res.json({status:1,data:consulta})
+    }catch(e){
+        
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
@@ -339,7 +423,7 @@ app.delete('/api/laboratorio/:id',async(req,res)=>{
     const id = validacion.data.id
     try{
         const consulta = await sql`SELECT * FROM eliminar_laboratorio(${id})`;
-        res.json({status:1,data:consulta})
+        res.json({status:consulta[0].status,data:[{mensaje:consulta[0].mensaje}]})
     }catch(e){
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
@@ -359,10 +443,30 @@ app.patch('/api/laboratorio/:id',upload.none(),async(req,res)=>{
     const d = validacionBody.data
     const id = validacion.data.id
     try{
-        const consulta = await sql`SELECT * FROM actualizar_laboratorio(${id},${d.nombre||null},${d.ubicacion||null})`;
+        const consulta = await sql`SELECT * FROM actualizar_laboratorio(${id},${d.nombre?? null},${d.ubicacion?? null})`;
         res.json({status:1,data:consulta})
     }catch(e){
-        console.log(e)
+        
+        return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
+    }
+})
+app.post('/api/laboratorio',upload.none(),async(req,res)=>{
+    const token = req.cookies.token
+    const statusToken = verificarToken(token);
+    if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+    const zodLaboratorio = z.object({
+        nombre:   z.string().min(1).max(100),
+        ubicacion: z.string().min(1).max(120)
+    })
+    const validacionBody = zodLaboratorio.safeParse(req.body)
+    if(!validacionBody.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
+    const d = validacionBody.data
+    try{
+        const consulta = await sql`SELECT * FROM registrar_laboratorio(${d.nombre?? null},${d.ubicacion?? null})`;
+        if(consulta=='')return res.json({status:1,error:"No se pudo registrar el laboratorio."})
+        res.json({status:1,data:consulta})
+    }catch(e){
+        
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })

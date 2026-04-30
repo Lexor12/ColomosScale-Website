@@ -1,0 +1,68 @@
+
+.toaster__contenedor{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;/*Para agregar los elementos todos hacia abajo*/
+    gap: 10px;
+}
+.toaster__contenedor__elemento{
+    min-width: 250px;
+    max-width: 350px;
+    min-height: 60px;
+    padding: 10px 15px;
+    color: white;
+    animation: slideIn .3s ease forwards;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+}
+.toaster__contenedor__elemento div{
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    padding-right: 15px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch; /* Esto hace que el div ocupe todo el alto del padre */
+}
+.toaster__contenedor__elemento div img{
+    width: 45px;
+}
+.toaster__contenedor__elemento__info{
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    flex: 1;
+}
+
+.toast-correcto{
+    background-color: rgba(45, 167, 45, 0.85);
+    border-left: 12px solid rgb(6, 77, 6);
+}
+.toast-error{
+    background-color: #e74d3cd3;
+    border-left: 12px solid #921d10d3;
+}
+.toast-info{
+    background-color: #3498dbda;
+    border-left: 12px solid #054a77da;
+}
+.toast-hide {
+    animation: slideOut 0.3s ease forwards;
+}
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+    /*La verdad es que no lo entendi muy bien*/
+}
+
+@keyframes slideOut {
+    to { transform: translateX(120%); opacity: 0; }
+    /*La verdad es que no lo entendi muy bien*/
+}
