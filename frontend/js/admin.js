@@ -113,12 +113,33 @@ function cargarPagina(){
     cargarLaboratorios()
     cargarBalanzas()
     cargarReportes()
+    const buscadorUsuario = document.getElementById('buscadorUsuario');
+    buscadorUsuario.addEventListener('input',()=>{
+        cargarUsuarios(buscadorUsuario.value)
+    })
+    const buscadorLaboratorio = document.getElementById('buscadorLaboratorio');
+    buscadorLaboratorio.addEventListener('input',()=>{
+        cargarLaboratorios(buscadorLaboratorio.value)
+    })
+    const buscadorBalanza = document.getElementById('buscadorBalanza');
+    buscadorBalanza.addEventListener('input',()=>{
+        cargarBalanzas(buscadorBalanza.value)
+    })
+    const buscadorReporte = document.getElementById('buscadorReporte');
+    buscadorReporte.addEventListener('input',()=>{
+        cargarReportes(buscadorReporte.value)
+    })
 }
 
-function cargarLaboratorios(){
+function cargarLaboratorios(input=''){
     document.getElementById('valorTotalLaboratorios').textContent=laboratorios.length
     document.getElementById('contenidoTablaLaboratorios').innerHTML=''
-    laboratorios.forEach(laboratorio=>{
+    const lista= laboratorios.filter(a=>a.nombre.trim().toLowerCase().includes(input.toLowerCase()));
+    if(lista.length===0 &&input!=''){
+        const contenedor_toaster = document.querySelector('.toaster__contenedor');
+        crearToaster("No existe ningún laboratorio con ese nombre.",contenedor_toaster,'info',1.5)
+    }
+    lista.forEach(laboratorio=>{
         const fila = document.createElement('tr')
         const nombre = document.createElement('td')
         fila.append(nombre)
@@ -156,15 +177,20 @@ function cargarLaboratorios(){
         document.getElementById('contenidoTablaLaboratorios').append(fila)
     })
 }
-function cargarBalanzas(){
+function cargarBalanzas(input=''){
     document.getElementById('valorTotalBalanza').textContent=balanzas.length
     document.getElementById('valorTotalBalanzaAdecuada').textContent=balanzas.filter(balanza=>balanza.estado_calibracion==="ADECUADA").length
     document.getElementById('valorTotalBalanzaIntermedia').textContent=balanzas.filter(balanza=>balanza.estado_calibracion==="INTERMEDIA").length
     document.getElementById('valorTotalBalanzaMala').textContent=balanzas.filter(balanza=>balanza.estado_calibracion==="MALA").length
     document.getElementById('contenidoTablaBalanzas').innerHTML=''
     
-
-    balanzas.forEach(balanza=>{
+    let lista= balanzas.filter(a=>a.nombre.trim().toLowerCase().includes(input.toLowerCase()));
+    if(lista.length==0)lista= balanzas.filter(a=>a.codigo.trim().toLowerCase().includes(input.toLowerCase()));
+    if(lista.length==0 && input!=''){
+        const contenedor_toaster = document.querySelector('.toaster__contenedor');
+        crearToaster("No existe ningúna balanza con ese nombre.",contenedor_toaster,'info',1.5)
+    }
+    lista.forEach(balanza=>{
         const fila = document.createElement('tr')
         const nombre = document.createElement('td')
         fila.append(nombre)
@@ -207,7 +233,6 @@ function cargarBalanzas(){
         { id:'modelo', labelTexto:'Modelo de balanza', tipo:'text',contenido:balanza.modelo },
         { id:'serie', labelTexto:'Código de Serie de balanza', tipo:'text',contenido:balanza.serie },
         { id:'img', labelTexto:'Nueva Imagen de balanza', tipo:'file' },
-        { id:'codigo', labelTexto:'Codigo de la balanza', tipo:'text',contenido:balanza.codigo },
         ]//El estado y codigo son creados aqui, ultima medicion siempre será el dia de creación
 
         
@@ -237,10 +262,15 @@ function cargarBalanzas(){
         document.getElementById('contenidoTablaBalanzas').append(fila)
     })
 }
-function cargarReportes(){
+function cargarReportes(input=''){
     document.getElementById('valorTotalReportes').textContent=reportes.length
     document.getElementById('contenidoTablaReportes').innerHTML=''
-    reportes.forEach(reporte=>{
+    const lista= reportes.filter(a=>a.id_reporte.toString().includes(input));
+    if(lista.length==0 && input!=''){
+        const contenedor_toaster = document.querySelector('.toaster__contenedor');
+        crearToaster("No existe ningún reporte con ese id.",contenedor_toaster,'info',1.5)
+    }
+    lista.forEach(reporte=>{
         const fila = document.createElement('tr')
         const id = document.createElement('td')
         fila.append(id)
@@ -281,13 +311,18 @@ function cargarReportes(){
     })
 }
 
-function cargarUsuarios(){
+function cargarUsuarios(input=''){
     document.getElementById('valorTotalUsuarios').textContent = usuarios.length 
     document.getElementById('valorTotalUsuariosAdmins').textContent = usuarios.filter(u=>u.rol==="ADMIN").length
     document.getElementById('valorTotalUsuariosSupervisores').textContent = usuarios.filter(u=>u.rol==="SUPERVISOR").length
     document.getElementById('valorTotalUsuariosTecnicos').textContent = usuarios.filter(u=>u.rol==="TECNICO").length
     document.getElementById('contenidoTablaUsuarios').innerHTML=''
-    usuarios.forEach(usuario =>{
+    const lista= usuarios.filter(a=>a.nombre_completo.trim().toLowerCase().includes(input.toLowerCase()));
+    if(lista.length==0 && input!=''){
+        const contenedor_toaster = document.querySelector('.toaster__contenedor');
+        crearToaster("No existe ningún usuario con ese nombre.",contenedor_toaster,'info',1.5)
+    }
+    lista.forEach(usuario =>{
         const fila = document.createElement('tr')
         const nombre = document.createElement('td')
         fila.append(nombre)
@@ -526,7 +561,7 @@ const camposBalanza = [//Arreglo de conjunto de objetos
         { id:'nombre', labelTexto:'Nombre de balanza', tipo:'text' },
         { id:'marca', labelTexto:'Marca de balanza', tipo:'text' },
         { id:'modelo', labelTexto:'Modelo de balanza', tipo:'text' },
-        { id:'serie', labelTexto:'Código de Serie de balanza', tipo:'text' },
+        { id:'serie', labelTexto:'Número de Serie de balanza', tipo:'text' },
         { id:'img', labelTexto:'Imagen de balanza', tipo:'file' }
     ]//El estado y codigo son creados aqui, ultima medicion siempre será el dia de creación
 const camposLaboratorio = [
@@ -585,7 +620,6 @@ async function volverACargarElementos(){
     cargarBalanzas()
     cargarReportes()
 }
-
 async function iniciarPagina(){
     await verificarToken();
     await configurarNavBar();

@@ -1,3 +1,4 @@
+import {crearToaster} from './toaster.js'
 const nombre = document.getElementById('nombreUsuario') 
 const rol = document.getElementById('rolUsuario') 
 const imgPersona = document.querySelector('.navbar__about__img__element')
@@ -7,7 +8,7 @@ const selectorEstado = document.querySelector('.selector__filtro__estado')
 const buscador = document.querySelector('.selector__filtro__buscador')
 let estados = ['ADECUADA','INTERMEDIA','MALA']
 let balanzasOriginal = []
-
+let laboratorios=[];
 async function configurarNavBar(){
     const botonSalir = document.getElementById('btnSalir')
     botonSalir.addEventListener('click',async()=>{
@@ -43,7 +44,7 @@ async function verificarToken() {
                 const botonAgregarBalanza = document.getElementById('agregarBalanza')
                 botonAgregarBalanza.style.display='block';
                 botonAgregarBalanza.addEventListener('click',()=>{
-                    window.location.href='../pages/crearBalanza.html';
+                    nuevaBalanza();
                 })
             }
             if(result.usuario.rol>=3){
@@ -53,6 +54,7 @@ async function verificarToken() {
                     window.location.href='../pages/admin.html';
                 })
             }
+            laboratorios = await obtenerValores('laboratorio');
         }catch(e){
             window.location.href='../pages/notAuth.html'
         }
@@ -68,7 +70,7 @@ async function obtenerValores(valor){
         return {}
     }
 }
-function crearBalanzas(listaBalanzas){
+function crearBalanzas(listaBalanzas=balanzasOriginal){
     elements.replaceChildren();
     listaBalanzas.forEach(element => {
         const nuevoArticle = document.createElement('article');
@@ -165,10 +167,14 @@ function manejarFiltros(){
             a.codigo.toLowerCase().includes(texto)
         );
     }
+    if(resultado.length==0){
+        const toaster__contenedor = document.querySelector('.toaster__contenedor')
+        crearToaster("No existe ningún elemento con tal descripción.",toaster__contenedor,'info',2)
+    }
     crearBalanzas(resultado);
 }
+
 async function configurarSelector(){
-    const laboratorios = await obtenerValores('laboratorio');
     laboratorios.forEach(item =>{
         const option = document.createElement('option');
         option.value = item.nombre
@@ -184,6 +190,68 @@ async function configurarSelector(){
     selectorLabs.addEventListener('change', manejarFiltros);
     selectorEstado.addEventListener('change', manejarFiltros);
     buscador.addEventListener('input',manejarFiltros)
+}
+function nuevaBalanza(){
+    const modal = document.querySelector('.modal')
+    const modalAgregar = document.querySelector('.modal__editaragregar')
+    const formulario = document.querySelector('.modal__editaragregar__formulario')
+    const btnAceptar = modalAgregar.querySelector('.aceptar')
+    const btnRechazar = modalAgregar.querySelector('.rechazar')
+    //Borrar todo el contenido y sobre escribir
+    modal.classList.add('activo')
+    modalAgregar.classList.add('mostrar')
+    const selectorLabs = document.querySelector('.campo__formulario__select')
+    selectorLabs.innerHTML=''
+    laboratorios.forEach(item =>{
+        const option = document.createElement('option');
+        option.value = item.id_laboratorio
+        option.textContent = item.nombre
+        selectorLabs.appendChild(option)
+    })  
+    selectorLabs.value=0;
+    btnAceptar.addEventListener('click',crearElemento)
+    btnRechazar.addEventListener('click',borrar)
+    function borrar(){
+        modal.classList.remove('activo')
+        modalAgregar.classList.remove('mostrar')
+        btnAceptar.removeEventListener('click',crearElemento)
+        btnRechazar.removeEventListener('click',borrar)
+    }
+    async function crearElemento(){
+        const datos = new FormData()
+        formulario.querySelectorAll('input').forEach(input=>{
+            if(input.type==='file' && input.files[0]){
+                datos.append(input.id,input.files[0])
+            }
+            else{
+                if(input.value){
+                    datos.append(input.id,input.value)
+                }
+            }
+        })
+        datos.append('id_laboratorio',selectorLabs.value)
+        console.log(datos)
+
+        await fetch('http://127.0.0.1:3000/api/balanza',{method:'POST',credentials:'include',body:datos}).then(a=>a.json()).then(datos=>{
+            const contenedor_toaster = document.querySelector('.toaster__contenedor');
+            let tipo;
+            let mensaje;
+            switch(datos.status){
+                case 1:
+                    tipo='correcto'
+                    mensaje=Object.values(datos.data[0])
+                break;
+                default: 
+                    tipo='error'
+                    mensaje=datos.error;
+                break;
+            }
+            crearToaster(mensaje,contenedor_toaster,tipo,5)
+        })
+        balanzasOriginal = await obtenerValores('balanza')
+        crearBalanzas(balanzasOriginal)
+        borrar()
+    }
 }
 async function iniciarPagina() {
     await verificarToken(); 

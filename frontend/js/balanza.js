@@ -1,8 +1,10 @@
+import { crearToaster } from "./toaster.js";
 const queryParams = window.location.search;//Sirve para obtener los parametros de a URL actual, es decir lo del id y el id
 const urlParams = new URLSearchParams(queryParams);
 const codigoBalanza = urlParams.get('id')
 //De aqui en adelante son funciones basicas de todos los archivos
 let datosBalanza;
+let laboratorios;
 async function verificarToken() {
     if(codigoBalanza===null){window.location.href='../pages/404.html';return;}
         try{
@@ -16,7 +18,7 @@ async function verificarToken() {
                 const btnEditar = document.querySelector('.selector__editar__boton')
                 btnEditar.style.display='block';
                 btnEditar.addEventListener('click',()=>{
-                    window.location.href=`../pages/editarBalanza.html?id=${codigoBalanza}`;
+                    editarBalanza()
                 })
                 //Aqui vamos a meter la logica para redigirlo a otra pagina solo si es mayor que supervisor
             }
@@ -32,6 +34,9 @@ async function verificarToken() {
                 window.location.href='../pages/404.html';
                 return;
             }
+            console.log(datosBalanza)
+            laboratorios = await obtenerValores('laboratorio');
+            
         }catch(e){
             window.location.href='../pages/notAuth.html'
         }
@@ -107,6 +112,7 @@ async function cargarDatosBalanza() {
 
     let fecha = new Date(datosBalanza.balanza.ultima);
     ultimaMedicion.textContent=fecha.toLocaleDateString('es-MX');
+    listaReportes.innerHTML=''
     datosBalanza.reportes.forEach(reporte => {
         const nuevoElemento = document.createElement('div')
         nuevoElemento.classList.add('HistorialReportes__lista__elemento')
@@ -144,7 +150,72 @@ async function cargarSelector() {
         window.location.href='../pages/dashboard.html'
     })
 }
-
+function editarBalanza(){
+    const modal = document.querySelector('.modal')
+    const modalAgregar = document.querySelector('.modal__editaragregar')
+    const formulario = document.querySelector('.modal__editaragregar__formulario')
+    const btnAceptar = modalAgregar.querySelector('.aceptar')
+    const btnRechazar = modalAgregar.querySelector('.rechazar')
+    //Borrar todo el contenido y sobre escribir
+    const Balanza=datosBalanza.balanza
+    modal.classList.add('activo')
+    modalAgregar.classList.add('mostrar')
+    const selectorLabs = document.querySelector('.campo__formulario__select')
+    selectorLabs.innerHTML=''
+    laboratorios.forEach(item =>{
+        const option = document.createElement('option');
+        option.value = item.id_laboratorio
+        option.textContent = item.nombre
+        selectorLabs.appendChild(option)
+    })  
+    selectorLabs.value=Balanza.id_lab;
+    document.querySelector('.campo__formulario>input#nombre').value=Balanza.nombre
+    document.querySelector('.campo__formulario>input#marca').value=Balanza.marca
+    document.querySelector('.campo__formulario>input#modelo').value=Balanza.modelo
+    document.querySelector('.campo__formulario>input#serie').value=Balanza.serie
+    btnAceptar.addEventListener('click',editarElemento)
+    btnRechazar.addEventListener('click',borrar)
+    function borrar(){
+        modal.classList.remove('activo')
+        modalAgregar.classList.remove('mostrar')
+        btnAceptar.removeEventListener('click',editarElemento)
+        btnRechazar.removeEventListener('click',borrar)
+    }
+    async function editarElemento(){
+        const datos = new FormData()
+        formulario.querySelectorAll('input').forEach(input=>{
+            if(input.type==='file' && input.files[0]){
+                datos.append(input.id,input.files[0])
+            }
+            else{
+                if(input.value){
+                    datos.append(input.id,input.value)
+                }
+            }
+        })
+        datos.append('id_laboratorio',selectorLabs.value)
+        
+        await fetch(`http://127.0.0.1:3000/api/balanza/${Balanza.id}`,{method:'PATCH',credentials:'include',body:datos}).then(a=>a.json()).then(datos=>{
+            const contenedor_toaster = document.querySelector('.toaster__contenedor');
+            let tipo;
+            let mensaje;
+            switch(datos.status){
+                case 1:
+                    tipo='correcto'
+                    mensaje=Object.values(datos.data[0])
+                break;
+                default: 
+                    tipo='error'
+                    mensaje=datos.error;
+                break;
+            }
+            crearToaster(mensaje,contenedor_toaster,tipo,5)
+        })
+        datosBalanza = await obtenerValores(`balanza/${codigoBalanza}`)
+        cargarDatosBalanza()
+        borrar()
+    }
+}
 async function iniciarPagina() {
     await verificarToken();
     await configurarNavBar();

@@ -78,8 +78,67 @@
                     </div>
                 </div>
         </section>
-
+        <section class="modal">
+            <article class="modal__editaragregar modal__elemento">
+                <div class="modal__elemento__header">
+                    <h2 class="modal__elemento__header__titulo modal__editaragregar__header__titulo">Crear Nueva Balanza</h2>
+                </div>
+                <div class="modal__elemento__formulario modal__editaragregar__formulario"><!--Creado dinamicamente cada input desde JS-->
+                    <div class="campo__formulario">
+                        <label for="nombre">Nombre de la balanza</label>
+                        <input type="text" id="nombre" >
+                    </div>
+                    <div class="campo__formulario">
+                        <label for="marca">Marca de la balanza</label>
+                        <input type="text" id="marca" >
+                    </div>
+                    <div class="campo__formulario">
+                        <label for="modelo">Modelo de la balanza</label>
+                        <input type="text" id="modelo" >
+                    </div>
+                    <div class="campo__formulario">
+                        <label for="serie">Número de Serie de la balanza</label>
+                        <input type="text" id="serie" >
+                    </div>
+                    <div class="campo__formulario">
+                        <label for="img">Nueva imagen de Balanza</label>
+                        <input type="file" id="img" >
+                    </div>
+                    <div class="campo__formulario">
+                        <label for="img">Laboratorio de la balanza</label>
+                        <select class="campo__formulario__select">
+                        </select>
+                    </div>
+                </div>
+                <div class="modal__elemento__botones">
+                    <button class="rechazar">Rechazar</button>
+                    <button class="aceptar">Aceptar</button>
+                </div>
+            </article>
+        </section>
+        <section class="toaster__contenedor">
+            <!--
+            <div class="toaster__contenedor__elemento toast-correcto">
+                <div>
+                    <img src="../assets/icons/icon_correcto.png" width="45px">
+                </div>
+                <p class="toaster__contenedor__elemento__info">Todo a sucedido correctamente</p>
+            </div>
+            <div class="toaster__contenedor__elemento toast-error">
+                <div>
+                    <img src="../assets/icons/icon_error.png" width="45px">
+                </div>
+                <p class="toaster__contenedor__elemento__info">Todo a sucedido correctamente ejemplo ejemplo ejemplo ejemplo ejemplo ejemplo ejemplo ejemploejemplo ejemplo ejemplo ejemplo</p>
+            </div>
+            <div class="toaster__contenedor__elemento toast-info">
+                <div>
+                    <img src="../assets/icons/icon_info.png" width="45px">
+                </div>
+                <p class="toaster__contenedor__elemento__info">Todo a sucedido correctamente</p>
+            </div>
+            -->
+        </section>
     </main>
 </body>
-<script src="../js/balanza.js"></script>
+<script src="../js/balanza.js" type="module"></script>
 </html>

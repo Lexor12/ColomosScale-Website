@@ -227,10 +227,12 @@ app.get('/api/usuario',async(req,res)=>{
 app.delete('/api/usuario/:id',async(req,res)=>{
     const token = req.cookies.token;//Siempre mandaremos en el header el token
     const statusToken = verificarToken(token);
+    
     if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
     const validacion =zodIdParam.safeParse(req.params);
     if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
     const id = validacion.data.id
+    if(statusToken.usuario.id===id)return res.status(400).json({satus:-1,error:"No puede eliminarse a si mismo."})
     try{
         const consulta = await sql`SELECT * FROM eliminar_usuario(${id})`;
         res.json({status:consulta[0].status,data:[{mensaje:consulta[0].mensaje}]})
@@ -336,7 +338,7 @@ app.delete('/api/balanza/:id',async(req,res)=>{
 app.patch('/api/balanza/:id',upload.single('img'),async(req,res)=>{
     const token = req.cookies.token;//Siempre mandaremos en el header el token
     const statusToken = verificarToken(token);
-    if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+    if(statusToken.status===0 || statusToken.usuario.rol<2)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
     const validacion =zodIdParam.safeParse(req.params);
     if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
     const zodBalanza = z.object({
@@ -378,7 +380,7 @@ app.patch('/api/balanza/:id',upload.single('img'),async(req,res)=>{
 app.post('/api/balanza',upload.single('img'),async(req,res)=>{
     const token = req.cookies.token;//Siempre mandaremos en el header el token
     const statusToken = verificarToken(token);
-    if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+    if(statusToken.status===0 || statusToken.usuario.rol<2)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
     const zodBalanza = z.object({
         nombre:   z.string().min(1).max(100),
         marca:   z.string().min(1).max(100),
