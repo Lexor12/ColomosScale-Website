@@ -1,3 +1,4 @@
+import {crearToaster} from './toaster.js'
 const nombre = document.getElementById('nombreUsuario') 
 const rol = document.getElementById('rolUsuario') 
 const elements = document.querySelector('.elements')//Hacemos referencia a todo nuestro contenedor de balanzas
@@ -136,6 +137,10 @@ async function  crearTecnicos(listaTecnicos) {
 function filtrar(){
     const texto = buscador.value.toLowerCase().trim();
     let nuevaLista = tecnicosOriginal.filter(tecnico=>tecnico.nombre_completo.toLowerCase().trim().includes(texto));
+    if(nuevaLista.length===0){
+        const toaster__contenedor = document.querySelector('.toaster__contenedor')
+        crearToaster("No existe ningún usuario con tal descripción.",toaster__contenedor,'info',2)
+    }
     crearTecnicos(nuevaLista)
 }
 
