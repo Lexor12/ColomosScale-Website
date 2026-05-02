@@ -27,7 +27,7 @@ const limitadorGeneral = rateLimit(
         message:{status:-1,error:"Demasiadas peticiones, intentelo más tarde."}
     })
 const opcionesCors = {
-    origin: ['http://localhost','https://colomoscale.netlify.app/pages/login','http://127.0.0.1:5501'],
+    origin: ['http://localhost','https://colomoscale.netlify.app','http://127.0.0.1:5501'],
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     optionsSuccessStatus: 200,
     credentials: true//Para poder usar el sistema de cookies
