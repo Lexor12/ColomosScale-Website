@@ -99,7 +99,7 @@ app.post('/api/iniciarSesion',limitadorInicioDeSesion,async(req,res)=>{
         res.cookie('token',token,{
             httpOnly:true,
             secure: true,//Solo para http, ****ATENCION!!!! HAY QUE PONER ESTO EN TRUE CUANDO SE SUBA A RAILWAY
-            sameSite: 'strict',
+            sameSite: 'none',
             maxAge: 2 * 60 * 60 * 1000 // 2 horas para que caduque
         })
         res.json({status:1,resultado:resultado});
@@ -447,7 +447,7 @@ app.post('/api/cerrarSesion',(req,res)=>{
     res.clearCookie('token',{
         httpOnly: true,
         secure: true,//Antes de publicarlo lo voy a cambiar
-        sameSite: 'strict',
+        sameSite: 'none',
         path: '/'
     })
     res.json({status:1});
