@@ -9,8 +9,7 @@ import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import z from 'zod'
 import cookieParser from 'cookie-parser';
-import { da } from 'zod/v4/locales';
-import multer, { diskStorage } from 'multer'
+import multer from 'multer'
 
 const app = express()
 const PORT = process.env.PORT;
@@ -53,7 +52,21 @@ app.use(helmet())
 app.use(cors(opcionesCors));
 app.use('/api/',limitadorGeneral);//Este limitador aplica para todas las apis que usemos
 app.use(cookieParser())
-app.use(express.json());//Devuelve automaticamente cualquier formato string en JSON
+app.use(express.json({ limit: '10kb' }));//Devuelve automaticamente cualquier formato string en JSON, ponemos un limitador de 10kb, para que nadie envie una solicitud demasiado grande
+
+function autenticar(rolMinimo=1){
+    function middleware(req,res,next){
+        const statusToken = verificarToken(req.cookies.token);
+
+        if(statusToken.status===0 || statusToken.usuario.rol<rolMinimo){
+            return res.status(401).json({ status: 0, error: "No autorizado" });
+        }
+        req.usuario = statusToken.usuario
+        next()
+    }
+    return middleware;
+}
+
 // --- END POINTS (RUTAS) ---
 app.get('/api/buscador/:codigo',async(req,res)=>{
     const validacion =zodCodigoParam.safeParse(req.params);
@@ -62,7 +75,7 @@ app.get('/api/buscador/:codigo',async(req,res)=>{
         const codigoBalanza = req.params.codigo;
         const data = await sql`SELECT * FROM buscador_balanza_por_codigo(${validacion.data.codigo})`;
         res.json(data)
-    }catch(e){
+    }catch{
         res.status(500).json({error: "Error interno del servidor"});
     }
 });
@@ -85,12 +98,12 @@ app.post('/api/iniciarSesion',limitadorInicioDeSesion,async(req,res)=>{
         //res.json({status:1,token:token,resultado:resultado});
         res.cookie('token',token,{
             httpOnly:true,
-            secure: false,//Solo para http, ****ATENCION!!!! HAY QUE PONER ESTO EN TRUE CUANDO SE SUBA A RAILWAY
-            sameSite: 'lax',
+            secure: true,//Solo para http, ****ATENCION!!!! HAY QUE PONER ESTO EN TRUE CUANDO SE SUBA A RAILWAY
+            sameSite: 'strict',
             maxAge: 2 * 60 * 60 * 1000 // 2 horas para que caduque
         })
         res.json({status:1,resultado:resultado});
-    }catch(e){
+    }catch{
         return res.status(500).json({ status: 0, error: "Error interno del servidor" });
     }
 })
@@ -106,55 +119,42 @@ app.get('/api/verificarToken',(req,res)=>{
     })
 })
 
-app.get('/api/balanza',async (req,res)=>{
-    const token = req.cookies.token;//Siempre mandaremos en el header el token
-    const statusToken = verificarToken(token).status;
-    if(statusToken===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+app.get('/api/balanza',autenticar(1),async (req,res)=>{
     try{
         const data = await sql`SELECT * FROM obtener_balanzas()`;
         res.json({status:1,data:data})
-    }catch(e){
+    }catch{
         res.json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
 
-app.get('/api/laboratorio',async(req,res)=>
+app.get('/api/laboratorio',autenticar(1),async(req,res)=>
 {
-    const token = req.cookies.token;
-    const tokenStatus = await verificarToken(token);
-    if(tokenStatus.status===0) return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
     try{
         const data = await sql`SELECT * FROM obtener_laboratorios()`;
         res.json({status:1,data:data});
     }
-    catch(e){
+    catch{
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
 
-app.get('/api/tecnico',async(req,res)=>{
-    const token = req.cookies.token;
-    const statusToken = await verificarToken(token);
-    if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
-    const rol = statusToken.usuario.rol==4?4:3
+app.get('/api/tecnico',autenticar(1),async(req,res)=>{
+    const rol = req.usuario.rol==4?4:3
     try{
         const data = await sql`SELECT * FROM obtener_tecnicos(${rol})`;
         res.json({status:1,data:data})
     }
-    catch(e){
+    catch{
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
 
-app.get('/api/tecnico/:codigo',async(req,res)=>{
-    const token = req.cookies.token;
-    const statusToken = await verificarToken(token);
-    if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
-
+app.get('/api/tecnico/:codigo',autenticar(1),async(req,res)=>{
     const validacion =zodCodigoParam.safeParse(req.params);
     if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
     const codigo = validacion.data.codigo
-    const rol = statusToken.usuario.rol==4?4:3
+    const rol = req.usuario.rol==4?4:3
     try{
         const usuario = await sql`SELECT * FROM obtener_usuario_por_username(${codigo})`;
         if(usuario[0].id_rol>rol)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
@@ -167,35 +167,26 @@ app.get('/api/tecnico/:codigo',async(req,res)=>{
         let data = {usuario:usuario[0],reportes:reportes};
         res.json({status:1,data:data})
     }
-    catch(e){
+    catch{
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
 
-app.get('/api/balanza/:codigo',async(req,res)=>{
-    const token = req.cookies.token;
-    const statusToken = await verificarToken(token);
-    if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
-
+app.get('/api/balanza/:codigo',autenticar(1),async(req,res)=>{
     const validacion =zodCodigoParam.safeParse(req.params);
     if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
     const codigo = validacion.data.codigo
-    
     try{
         const balanza = await sql`SELECT * FROM obtener_balanza_por_codigo(${codigo})`;
         const reportes = await sql`SELECT id_reporte,fecha_analisis,nombre_tecnico FROM obtener_reportes_balanza(${balanza[0].id})`;
         let result = {balanza:balanza[0],reportes:reportes}
         res.json({status:1,data:result});
     }
-    catch(e){
+    catch{
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
-app.get('/api/reporte/:numeroReporte',async(req,res)=>{
-    const token =  req.cookies.token
-    const statusToken = await verificarToken(token);
-    if(statusToken.status===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
-    
+app.get('/api/reporte/:numeroReporte',autenticar(1),async(req,res)=>{
     const validacion =zodReporteParams.safeParse(req.params);
     if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
     const idReporte = validacion.data.numeroReporte
@@ -205,45 +196,33 @@ app.get('/api/reporte/:numeroReporte',async(req,res)=>{
         const balanza = await sql`SELECT * FROM obtener_balanza_por_id(${reporte[0].id_balanza})`
         res.json({status:1,data:{reporte:reporte[0],usuario:usuario[0],balanza:balanza[0]}})
     }
-    catch(e){
-        ('f')
+    catch{
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
 
-app.get('/api/usuario',async(req,res)=>{
-    const token = req.cookies.token;
-    const tokenresult = verificarToken(token)
-    const statusToken = tokenresult.status;
-    if(statusToken===0)return res.status(401).json({status:0,error:"Error, su token no es adecuado."})
+app.get('/api/usuario',autenticar(1),async(req,res)=>{
     try{
-        const data = await sql`SELECT * FROM obtener_usuario_por_id(${tokenresult.usuario.id})`;
+        const data = await sql`SELECT * FROM obtener_usuario_por_id(${req.usuario.id})`;
         return res.json({status:1,data:data[0]})
     }
-    catch(e){
+    catch{
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
-app.delete('/api/usuario/:id',async(req,res)=>{
-    const token = req.cookies.token;//Siempre mandaremos en el header el token
-    const statusToken = verificarToken(token);
-    
-    if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+app.delete('/api/usuario/:id',autenticar(3),async(req,res)=>{
     const validacion =zodIdParam.safeParse(req.params);
     if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
     const id = validacion.data.id
-    if(statusToken.usuario.id===id)return res.status(400).json({satus:-1,error:"No puede eliminarse a si mismo."})
+    if(req.usuario.id===id)return res.status(400).json({satus:-1,error:"No puede eliminarse a si mismo."})
     try{
         const consulta = await sql`SELECT * FROM eliminar_usuario(${id})`;
         res.json({status:consulta[0].status,data:[{mensaje:consulta[0].mensaje}]})
-    }catch(e){
+    }catch{
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
-app.patch('/api/usuario/:id',upload.single('img'),async(req,res)=>{
-    const token = req.cookies.token
-    const statusToken = verificarToken(token);
-    if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+app.patch('/api/usuario/:id',autenticar(3),upload.single('img'),async(req,res)=>{
     const validacion =zodIdParam.safeParse(req.params);
     if(!validacion.success)return res.status(400).json({satus:-1,error:"Error al identificar el usuario."})
     const zodUsuario = z.object({
@@ -269,7 +248,7 @@ app.patch('/api/usuario/:id',upload.single('img'),async(req,res)=>{
 
         const {data, error}= await supabase.storage.from('user').upload(nombreArchivo,imagen.buffer,{contentType:imagen.mimetype,upsert:true})
         if(error)return res.status(500).json({ status: 0, error: "Error al subir la imagen." });
-        }catch(e){
+        }catch{
             return res.status(500).json({status:0,error:"Error intentelo más tarde."})
         }
         
@@ -279,14 +258,11 @@ app.patch('/api/usuario/:id',upload.single('img'),async(req,res)=>{
     try{
         const consulta = await sql`SELECT * FROM actualizar_usuario(${id},${d.username?? null},${d.nombre??null},${d.correo??null},${d.password?await generarHash(d.password):null},${rol[d.rol]?? null},${nombreArchivo?nombreArchivo:null})`;
         res.json({status:1,data:consulta})
-    }catch(e){
+    }catch{
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
-app.post('/api/usuario',upload.single('img'),async(req,res)=>{
-    const token = req.cookies.token
-    const statusToken = verificarToken(token);
-    if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+app.post('/api/usuario',autenticar(3),upload.single('img'),async(req,res)=>{
     const zodUsuario = z.object({
         nombre:   z.string().min(1).max(100),
         username: z.string().min(3).max(48),
@@ -317,28 +293,22 @@ app.post('/api/usuario',upload.single('img'),async(req,res)=>{
     try{
         const consulta = await sql`SELECT * FROM registrar_usuario(${d.username?? null},${d.nombre?? null},${d.correo?? null},${await generarHash(d.password)?? null},${rol[d.rol]?? null},${nombreArchivo?? null})`;
         res.json({status:1,data:consulta})
-    }catch(e){
+    }catch{
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
-app.delete('/api/balanza/:id',async(req,res)=>{
-    const token = req.cookies.token;//Siempre mandaremos en el header el token
-    const statusToken = verificarToken(token);
-    if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+app.delete('/api/balanza/:id',autenticar(3),async(req,res)=>{
     const validacion =zodIdParam.safeParse(req.params);
     if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
     const id = validacion.data.id
     try{
         const consulta = await sql`SELECT * FROM eliminar_balanza(${id})`;
         res.json({status:consulta[0].status,data:[{mensaje:consulta[0].mensaje}]})
-    }catch(e){
+    }catch{
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
-app.patch('/api/balanza/:id',upload.single('img'),async(req,res)=>{
-    const token = req.cookies.token;//Siempre mandaremos en el header el token
-    const statusToken = verificarToken(token);
-    if(statusToken.status===0 || statusToken.usuario.rol<2)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+app.patch('/api/balanza/:id',autenticar(2),upload.single('img'),async(req,res)=>{
     const validacion =zodIdParam.safeParse(req.params);
     if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
     const zodBalanza = z.object({
@@ -372,15 +342,12 @@ app.patch('/api/balanza/:id',upload.single('img'),async(req,res)=>{
     try{
         const consulta = await sql`SELECT * FROM actualizar_balanza(${id},${d.nombre?? null},${d.marca?? null},${d.modelo?? null},${d.serie?? null},${nombreArchivo},${d.id_laboratorio?? null})`;
         res.json({status:1,data:consulta})
-    }catch(e){
+    }catch{
         
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
-app.post('/api/balanza',upload.single('img'),async(req,res)=>{
-    const token = req.cookies.token;//Siempre mandaremos en el header el token
-    const statusToken = verificarToken(token);
-    if(statusToken.status===0 || statusToken.usuario.rol<2)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+app.post('/api/balanza',autenticar(2),upload.single('img'),async(req,res)=>{
     const zodBalanza = z.object({
         nombre:   z.string().min(1).max(100),
         marca:   z.string().min(1).max(100),
@@ -411,29 +378,23 @@ app.post('/api/balanza',upload.single('img'),async(req,res)=>{
     try{
         const consulta = await sql`SELECT * FROM registrar_balanza(${d.nombre?? null},${d.marca?? null},${d.modelo?? null},${d.serie?? null},${nombreArchivo?? null},${d.id_laboratorio?? null})`;
         res.json({status:1,data:consulta})
-    }catch(e){
+    }catch{
         
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
-app.delete('/api/laboratorio/:id',async(req,res)=>{
-    const token = req.cookies.token;//Siempre mandaremos en el header el token
-    const statusToken = verificarToken(token);
-    if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+app.delete('/api/laboratorio/:id',autenticar(3),async(req,res)=>{
     const validacion =zodIdParam.safeParse(req.params);
     if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
     const id = validacion.data.id
     try{
         const consulta = await sql`SELECT * FROM eliminar_laboratorio(${id})`;
         res.json({status:consulta[0].status,data:[{mensaje:consulta[0].mensaje}]})
-    }catch(e){
+    }catch{
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
-app.patch('/api/laboratorio/:id',upload.none(),async(req,res)=>{
-    const token = req.cookies.token
-    const statusToken = verificarToken(token);
-    if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+app.patch('/api/laboratorio/:id',autenticar(3),upload.none(),async(req,res)=>{
     const validacion =zodIdParam.safeParse(req.params);
     if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
     const zodLaboratorio = z.object({
@@ -447,15 +408,12 @@ app.patch('/api/laboratorio/:id',upload.none(),async(req,res)=>{
     try{
         const consulta = await sql`SELECT * FROM actualizar_laboratorio(${id},${d.nombre?? null},${d.ubicacion?? null})`;
         res.json({status:1,data:consulta})
-    }catch(e){
+    }catch{
         
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
-app.post('/api/laboratorio',upload.none(),async(req,res)=>{
-    const token = req.cookies.token
-    const statusToken = verificarToken(token);
-    if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
+app.post('/api/laboratorio',autenticar(3),upload.none(),async(req,res)=>{
     const zodLaboratorio = z.object({
         nombre:   z.string().min(1).max(100),
         ubicacion: z.string().min(1).max(120)
@@ -467,16 +425,13 @@ app.post('/api/laboratorio',upload.none(),async(req,res)=>{
         const consulta = await sql`SELECT * FROM registrar_laboratorio(${d.nombre?? null},${d.ubicacion?? null})`;
         if(consulta=='')return res.json({status:1,error:"No se pudo registrar el laboratorio."})
         res.json({status:1,data:consulta})
-    }catch(e){
+    }catch{
         
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
-app.get('/api/admin',async(req,res)=>{
-    const token = req.cookies.token;
-    const statusToken = await verificarToken(token);
-    if(statusToken.status===0 || statusToken.usuario.rol<3)return res.status(401).json({status:0,error:"Error, su token no es adecuado."});
-    const rol = statusToken.usuario.rol==4?4:3
+app.get('/api/admin',autenticar(3),async(req,res)=>{
+    const rol = req.usuario.rol==4?4:3
     try{
         const usuarios = await sql`SELECT * FROM obtener_tecnicos_id(${rol})`;
         const laboratorios = await sql`SELECT * FROM obtener_laboratorios()`;
@@ -484,12 +439,17 @@ app.get('/api/admin',async(req,res)=>{
         const reportes = await sql`SELECT * FROM obtener_reportes()`;
         const data = {usuarios:usuarios,laboratorios:laboratorios,balanzas:balanzas,reportes:reportes}
         return res.json({status:1,data:data})
-    }catch(e){
+    }catch{
         return res.status(401).json({status:0,error:"Error al conectar a la Base de datos."})
     }
 })
 app.post('/api/cerrarSesion',(req,res)=>{
-    res.clearCookie('token',{sameSite:'lax'})
+    res.clearCookie('token',{
+        httpOnly: true,
+        secure: true,//Antes de publicarlo lo voy a cambiar
+        sameSite: 'strict',
+        path: '/'
+    })
     res.json({status:1});
 })
 
