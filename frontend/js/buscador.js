@@ -23,7 +23,7 @@ botonBuscar.addEventListener('click',async(e)=>{
         return;
     }
     try{
-        const respuesta = await fetch(`http://127.0.0.1:3000/api/buscador/${idBalanza}`);
+        const respuesta = await fetch(`https://colomosscale-website-production.up.railway.app/api/buscador/${idBalanza}`);
         if(!respuesta.ok)throw new Error("Error en la respuesta del servidor");
         const datos = await respuesta.json();
         if(Object.keys(datos).length==0){

@@ -27,7 +27,7 @@ const limitadorGeneral = rateLimit(
         message:{status:-1,error:"Demasiadas peticiones, intentelo más tarde."}
     })
 const opcionesCors = {
-    origin: ['http://localhost','https://colomoscale.app','http://127.0.0.1:5501'],
+    origin: ['http://localhost','https://colomoscale.netlify.app','http://127.0.0.1:5501'],
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     optionsSuccessStatus: 200,
     credentials: true//Para poder usar el sistema de cookies
@@ -99,7 +99,7 @@ app.post('/api/iniciarSesion',limitadorInicioDeSesion,async(req,res)=>{
         res.cookie('token',token,{
             httpOnly:true,
             secure: true,//Solo para http, ****ATENCION!!!! HAY QUE PONER ESTO EN TRUE CUANDO SE SUBA A RAILWAY
-            sameSite: 'strict',
+            sameSite: 'none',
             maxAge: 2 * 60 * 60 * 1000 // 2 horas para que caduque
         })
         res.json({status:1,resultado:resultado});
@@ -447,7 +447,7 @@ app.post('/api/cerrarSesion',(req,res)=>{
     res.clearCookie('token',{
         httpOnly: true,
         secure: true,//Antes de publicarlo lo voy a cambiar
-        sameSite: 'strict',
+        sameSite: 'none',
         path: '/'
     })
     res.json({status:1});
