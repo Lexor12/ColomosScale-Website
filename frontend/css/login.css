@@ -125,4 +125,9 @@ button:active {
      .right-panel {
         min-height: 100vh;
     }
+
+    img{
+        max-width: 350px;
+        height: auto;
+    }
 }

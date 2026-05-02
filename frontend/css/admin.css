@@ -416,6 +416,17 @@
         width: 100%;
     }
 
+    .selector__navbar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+
+    .selector__navbar__elemento {
+        padding: 12px 20px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
 
     .elements__tabla {
         max-height: unset;
@@ -431,13 +442,6 @@
         max-height: 90vh;
     }
 
-    .selector__navbar {
-        flex-wrap: wrap;
-    }
-
-    .selector__navbar__elemento {
-        padding: 12px 20px;
-    }
 }
 
 @media (max-width: 720px) {
