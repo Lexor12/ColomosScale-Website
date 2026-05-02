@@ -77,3 +77,83 @@ body{
 #copy{
     color: var(--color-blanco-texto);
 }
+
+@import url('../css/variables-colores.css'); 
+
+*{
+    box-sizing: border-box;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin:0;
+    padding:0;
+}
+body{
+    padding-top:70px;
+    display:grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(400px, auto) 15vh;
+    min-height: 100vh;
+    justify-items: center; 
+    align-items: center;
+}
+
+.mensaje-inicio{
+    grid-row:1;
+    font-size: 150%;
+    text-align: center;
+}
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    min-height: 80px;
+    height: 7vh;
+    background-color: var(--color-bg-nav);
+    border-bottom: 1px solid var(--color-border-nav);
+    z-index: 1000; 
+    display: flex;
+    justify-content: center;
+}
+
+.bar-content {
+    width: 100%;
+    max-width: 100vw;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.links a {
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.links a:hover {
+    color: var(--color-text);
+    background-color: var(--color-accent-light);
+}
+#pie{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100%;
+    background-color: var(--color-bg-footer);
+}
+#copy{
+    color: var(--color-blanco-texto);
+}

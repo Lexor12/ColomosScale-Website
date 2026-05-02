@@ -66,3 +66,16 @@
     to { transform: translateX(120%); opacity: 0; }
     /*La verdad es que no lo entendi muy bien*/
 }
+
+@media (max-width: 480px) {
+    .toaster__contenedor {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+    }
+
+    .toaster__contenedor__elemento {
+        min-width: unset;
+        max-width: 100%;
+    }
+}

@@ -77,6 +77,9 @@
 }
 .elemento__balanza__img__element{
     width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
 }
 .elemento__balanza p {
     font-size: 0.9rem;

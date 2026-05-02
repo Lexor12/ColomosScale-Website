@@ -98,3 +98,39 @@ body {
     color: var(--color-text-muted);
     font-weight: bold;
 }
+
+@media (max-width: 768px) {
+    .bar-content {
+        padding: 0 16px;
+    }
+
+    .logo-area img {
+        height: 40px;
+        width: auto;
+    }
+
+    .links a {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+
+    body {
+        padding-top: 60px;
+    }
+
+    #result {
+        width: 90vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .links a {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+
+    #result {
+        width: 100%;
+        border-radius: 0 0 8px 8px;
+    }
+}

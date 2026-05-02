@@ -153,9 +153,6 @@
     box-shadow: 0 4px 12px var(--color-shadow-soft);
 }
 
-/* ===========================
-   RESPONSIVE
-=========================== */
 @media (max-width: 990px) {
     body {
         grid-template-columns: 1fr;
@@ -168,6 +165,7 @@
         position: sticky;
         top: 0;
         width: 100%;
+        z-index: 100;
     }
 
     .navbar {
@@ -176,17 +174,20 @@
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
+        padding: 8px 16px;
     }
 
     .navbar__list {
         margin-top: 0;
         display: flex;
         flex-direction: row;
-        gap: 5px;
+        gap: 4px;
+        flex-wrap: wrap;
     }
 
     .navbar__icon__img {
-        width: 15vw;
+        height: 36px;
+        width: auto;
     }
 
     .navbar__about {
@@ -200,7 +201,8 @@
     }
 
     .navbar__about__img__element {
-        width: 2.5vw;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
     }
 
@@ -210,28 +212,45 @@
         overflow: hidden;
     }
 
+
     .InfoTecnico {
         display: flex;
         flex-direction: column;
         height: auto;
-        grid-template-columns: 1fr;
+        margin: 12px 0;
+        padding: 16px;
     }
 
-    .ImagenTecnico,
+    .ImagenTecnico {
+        height: auto;
+    }
+
+    .ImagenTecnico img {
+        height: 260px;
+        object-fit: cover;
+    }
+
     .InfoTecnico__General,
     .InfoTecnico__reportes {
-        height: fit-content;
+        height: auto;
+        min-height: 200px;
+        overflow-y: auto;
     }
 
-    .ImagenTecnico > img {
-        height: 30vw;
-        object-fit: contain;
+    .InfoTecnico__reportes {
+        grid-column: unset;
+        grid-row: unset;
     }
 }
 
 @media (max-width: 720px) {
-    .navbar__about {
+    .navbar__about__content {
         display: none;
+    }
+
+    .navbar__about__img__element {
+        width: 28px;
+        height: 28px;
     }
 
     .navbar__icon {
@@ -240,10 +259,33 @@
 
     .navbar__list {
         flex-wrap: wrap;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .InfoTecnico__reportes__elemento {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .InfoTecnico__reportes {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar__list__element a {
+        font-size: 13px;
+        padding: 6px 8px;
     }
 
     .InfoTecnico {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
+        margin: 8px 0;
+        padding: 12px;
+    }
+
+    .ImagenTecnico img {
+        height: 200px;
     }
 }
