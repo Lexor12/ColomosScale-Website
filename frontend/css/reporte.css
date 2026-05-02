@@ -51,7 +51,7 @@
     font-size: .9rem;
 }
 .elements__info__report__card>p>span{
-    color: var(--color-accent);
+    color: var(--color-text);
     font-weight: 500;
 }
 .elements__info__pdf{
@@ -59,7 +59,7 @@
     justify-content: center;
     padding: 20px;
     background-color: var(--color-accent);
-    color: var(--color-surface-print-text);
+    color: var(--color-text-white);
     font-style: oblique;
     font-weight: 700;
     cursor: pointer;
@@ -69,8 +69,7 @@
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 .elements__info__pdf:hover{
-    background-color: var(--color-accent-hover);
-    color: #ffffff;
+   transform: scale(1.005);
 }
 
 .elements__report{
@@ -121,7 +120,7 @@
 }
 .elements__report__table__contenido thead th {
     background-color: var(--color-accent);
-    color: var(--color-surface-print-text);
+    color: var(--color-text-white);
     padding: 30px;
     text-align: center;
     font-size: 1.2rem;
@@ -162,12 +161,7 @@
     transition: all 0.3s ease;
 }
 
-.elements__info__report__card>p:hover {
-    background: #ffffff;
-    border-color: var(--color-accent);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
+
 .print {
     display: none;
 }
@@ -422,10 +416,5 @@
         display: block; 
         transition: none;
     }
-    .elements__info__report__card>p:hover {
-        background: none;
-        border-color: none;
-        transform: none;
-        box-shadow: none;
-    }
+  
 }

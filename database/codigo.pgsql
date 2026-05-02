@@ -156,7 +156,7 @@ BEGIN
       END IF;
       IF v_cant_reportes > 0 THEN
         status := -1;
-        mensaje := 'No puede eliminar este usuario ya que tiene ' || v_cant_reportes || ' reportes asociados.';
+        mensaje := 'No puede eliminar este usuario ya que tiene ' || v_cant_reportes || ' reporte(s) asociados.';
         RETURN NEXT;
         RETURN;
       END IF;

@@ -3,7 +3,7 @@
 @import url('../css/toaster.css');
 
 .selector {
-    padding: 0 20px; /* ← solo horizontal, nada vertical */   
+    padding: 0 20px; 
 }
 .selector__navbar {
     display: flex;
@@ -70,14 +70,13 @@
     border-bottom: 1px solid var(--color-border);
 }
 .admin__stat{
-    background-color: #eee;
+    background-color: var(--color-surface-alt);
     border-radius: 6px;
     padding: 30px 20px;
     display: flex;
     height: auto;
     flex-direction: column;
     gap: 4px;
-    background-color: var(--color-bg);
     border: 1px solid var(--color-border);
     border-radius: 8px;
     min-width: 200px;
@@ -346,90 +345,161 @@
 .modal__elemento__botones > button.rechazar:hover {
     background: var(--color-surface-alt);
 }
-@media (max-width:990px){
-    body{
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    height: auto;
+
+@media (max-width: 990px) {
+    body {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        height: auto;
     }
-    .bar{
+
+    .bar {
         grid-column: 1;
         position: sticky;
         top: 0;
         width: 100%;
+        z-index: 100;
     }
-    .navbar{
+
+    .navbar {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
+        padding: 8px 16px;
     }
-    .navbar__list{
+
+    .navbar__list {
         margin-top: 0;
         display: flex;
         flex-direction: row;
-        gap: 5px;
+        gap: 4px;
+        flex-wrap: wrap;
     }
-    .navbar__icon__img{
-        width: 15vw;
+
+    .navbar__icon__img {
+        height: 36px;
+        width: auto;
     }
-    .navbar__about{
+
+    .navbar__about {
         margin: 0;
         padding: 5px;
         order: 2;
     }
-    .navbar__about__content__rol{
+
+    .navbar__about__content__rol {
         display: none;
     }
+
     .navbar__about__img__element {
-        width: 2.5vw;
-        border-radius: 50%; 
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
     }
+
     .navbar__about__content {
         display: flex;
         flex-direction: row;
         overflow: hidden;
     }
-    .selector__filtro,.selector input{
+
+    .elements__stats {
         flex-direction: column;
-        min-width: 100%;
-        gap: 10px;
-        margin-bottom: 10px;
+        padding: 16px;
+        gap: 12px;
     }
-}
-@media(max-width:720px) {
-    .selector{
-        display: none;
+
+    .admin__stat {
+        min-width: unset;
+        width: 100%;
     }
-    .navbar__about {
-        display: none;
-    }  
-    .navbar__icon{
-        display: none;
+
+
+    .elements__tabla {
+        max-height: unset;
     }
-    .navbar__list{
+
+    .admin__buscador {
+        width: 100%;
+    }
+
+    .modal__elemento {
+        width: 92vw;
+        min-width: unset;
+        max-height: 90vh;
+    }
+
+    .selector__navbar {
         flex-wrap: wrap;
     }
-    .elements {
-        display: flex;
+
+    .selector__navbar__elemento {
+        padding: 12px 20px;
+    }
+}
+
+@media (max-width: 720px) {
+    .navbar__about__content {
+        display: none;
+    }
+
+    .navbar__about__img__element {
+        width: 28px;
+        height: 28px;
+    }
+
+    .navbar__icon {
+        display: none;
+    }
+
+    .navbar__list {
+        flex-wrap: wrap;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .elements__header > h2 {
+        font-size: 1.4rem;
+    }
+
+    .modal__elemento__botones {
+        flex-direction: column-reverse;
+        gap: 8px;
+    }
+
+    .modal__elemento__botones > button {
+        width: 100%;
+        padding: 12px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar__list__element a {
+        font-size: 13px;
+        padding: 6px 8px;
+    }
+
+    .elements__header {
         flex-direction: column;
-        align-items: center;
+        gap: 12px;
     }
-    .elements__info{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+
+    .elements__header > button {
+        width: 100%;
     }
-    .elements__info__report,.elements__info__pdf{
-        width: 100vw;
+
+    .admin__buscador {
+        font-size: 0.9rem;
     }
-    .elements__info__image{
-        width: 50%;
-        height: auto;
-        border: #eee solid 2px; 
-        overflow: hidden;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+
+    .modal__elemento__header {
+        padding: 14px 16px;
+    }
+
+    .modal__elemento__formulario {
+        padding: 14px;
     }
 }
