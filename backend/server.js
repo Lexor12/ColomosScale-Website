@@ -16,7 +16,7 @@ const PORT = process.env.PORT;
 const upload = multer({ storage: multer.memoryStorage() })//Hacemos que las imagenes siempre se guarden en formato de Bytes como un Buffer, esto es vital para mandarlo a supa
 const limitadorGeneral = rateLimit(
     {
-        windowMs:15*60*1000,//15 minutos de tiempo, decimos que tendremos el maximo es 50 peticiones cada 15 minutos
+        windowMs:15*60*1000,//15 minutos de tiempo,a decimos que tendremos el maximo es 50 peticiones cada 15 minutos
         max:120,
         message:{status:-1,error:"Demasiadas peticiones, intentelo más tarde."}
     })
