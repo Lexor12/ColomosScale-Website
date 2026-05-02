@@ -53,7 +53,7 @@
 }
 .elemento__balanza{
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     background-color: var(--color-surface);
     align-items: center;
     border-radius: 5px;

@@ -30,7 +30,7 @@
 
     .InfoBalanza{
         display: grid;
-        grid-template-columns: 300px 1fr;
+        grid-template-columns: 350px 1fr;
         gap: 10px;
         background-color: var(--color-surface);
         margin:20px;
@@ -48,22 +48,22 @@
     .ImagenBalanza {
         grid-column: 1 / 2;
         grid-row: 1 / 2;
-        height: auto; 
         width: 100%;
         display: flex;
-        object-fit: contain; 
+        justify-content: center;
+        height: auto; 
+        min-height: 300px; 
         border: #eee solid 2px; 
-        overflow: hidden;
         border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-        
+        overflow: hidden;
     }
 
     .ImagenBalanza img {
         width: 100%;
-        height: 100%;
-        object-fit: cover; 
+        height: auto;
+        min-height: 500px;
         display: block;
+        object-fit: cover;
         border-radius: 12px;
     }
 
@@ -434,6 +434,11 @@
         padding: 12px;
         text-align: center;
     }
+    .ImagenBalanza {
+        grid-column: 1;
+        grid-row: auto;
+        max-height: 260px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -453,5 +458,10 @@
 
     .modal__elemento__formulario {
         padding: 14px;
+    }
+    .ImagenBalanza {
+        grid-column: 1;
+        grid-row: 1;
+        max-height: 260px;
     }
 }

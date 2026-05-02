@@ -1,3 +1,4 @@
+/*Archivo de estructuraBasica*/
 @import url('../css/variables-colores.css'); 
 * {
     box-sizing: border-box;
@@ -157,4 +158,50 @@ main {
     background: var(--color-surface);
     padding: 25px 20px;
     box-shadow: 0 2px 5px var(--color-shadow-soft);
+}
+@media (max-width: 600px){
+    .navbar {
+        display: flex !important;
+        flex-direction: row !important; 
+        height: max-content;
+    }
+
+    .navbar__icon {
+        display: block !important;
+        border: 0px;
+    }
+    .navbar__list {
+        display: flex !important;
+        flex-direction: row !important; /* Juntitos en fila */
+        margin: 0 !important;
+        padding: 0 !important;
+        width: min-content !important;
+        gap: 0px !important;
+    }
+
+    .navbar__list__element {
+        flex-direction: column !important; 
+    }
+
+    .navbar__list__element p {
+        font-size: 10px !important;
+        text-decoration: none !important;
+        margin: 0;
+        white-space: nowrap; 
+    }
+    .navbar__footer{
+        order: 3;
+    }
+}
+@media (max-width: 460px){
+    .navbar__list__element{
+        flex-direction: column;
+    }
+    .navbar__list p{
+        display: none;
+    }
+    .navbar__icon {
+        display: none !important;
+        border: 0px;
+    }
 }
