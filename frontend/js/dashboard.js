@@ -12,7 +12,7 @@ let laboratorios=[];
 async function configurarNavBar(){
     const botonSalir = document.getElementById('btnSalir')
     botonSalir.addEventListener('click',async()=>{
-        await fetch('http://127.0.0.1:3000/api/cerrarSesion', {
+        await fetch('https://colomosscale-website-production.up.railway.app/api/cerrarSesion', {
             method: 'POST',
             credentials: 'include'
         });
@@ -35,7 +35,7 @@ async function configurarNavBar(){
 
 async function verificarToken() {
         try{
-            const res = await fetch('http://127.0.0.1:3000/api/verificarToken',{credentials:'include'})
+            const res = await fetch('https://colomosscale-website-production.up.railway.app/api/verificarToken',{credentials:'include'})
             const result = await res.json();
             if(result.status===0){
                 window.location.href='../pages/notAuth.html'
@@ -62,7 +62,7 @@ async function verificarToken() {
 
 async function obtenerValores(valor){
     try{
-        const res = await fetch(`http://127.0.0.1:3000/api/${valor}`,{credentials:'include'})
+        const res = await fetch(`https://colomosscale-website-production.up.railway.app/api/${valor}`,{credentials:'include'})
         const result = await res.json()
         return result.status===0? {}:result.data
     }
@@ -232,7 +232,7 @@ function nuevaBalanza(){
         datos.append('id_laboratorio',selectorLabs.value)
         console.log(datos)
 
-        await fetch('http://127.0.0.1:3000/api/balanza',{method:'POST',credentials:'include',body:datos}).then(a=>a.json()).then(datos=>{
+        await fetch('https://colomosscale-website-production.up.railway.app/api/balanza',{method:'POST',credentials:'include',body:datos}).then(a=>a.json()).then(datos=>{
             const contenedor_toaster = document.querySelector('.toaster__contenedor');
             let tipo;
             let mensaje;

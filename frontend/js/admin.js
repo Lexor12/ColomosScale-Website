@@ -3,7 +3,7 @@ let valoresDeConsulta = {}
 
 async function verificarToken() {
         try{
-            const res = await fetch('http://127.0.0.1:3000/api/verificarToken',{credentials:'include'})
+            const res = await fetch('https://colomosscale-website-production.up.railway.app/api/verificarToken',{credentials:'include'})
             const result = await res.json();
             if(result.status===0){
                 window.location.href='../pages/notAuth.html'
@@ -27,7 +27,7 @@ async function verificarToken() {
 async function configurarNavBar(){
     const botonSalir = document.getElementById('btnSalir')
     botonSalir.addEventListener('click',async()=>{
-        await fetch('http://127.0.0.1:3000/api/cerrarSesion', {
+        await fetch('https://colomosscale-website-production.up.railway.app/api/cerrarSesion', {
             method: 'POST',
             credentials: 'include'
         });
@@ -61,7 +61,7 @@ async function configurarNavBar(){
 
 async function obtenerValores(valor){
     try{
-        const res = await fetch(`http://127.0.0.1:3000/api/${valor}`,{credentials:'include'})
+        const res = await fetch(`https://colomosscale-website-production.up.railway.app/api/${valor}`,{credentials:'include'})
         const result = await res.json()
         return result.status===0? {}:result.data
     }
@@ -71,7 +71,7 @@ async function obtenerValores(valor){
 }
 async function eliminarValores(valor) {
     try{
-        const resultado = await fetch(`http://127.0.0.1:3000/api/${valor}`,{method:'DELETE',credentials:'include'}).then(result=>result.json())
+        const resultado = await fetch(`https://colomosscale-website-production.up.railway.app/api/${valor}`,{method:'DELETE',credentials:'include'}).then(result=>result.json())
         if(resultado.status==-1)return {status:-1,error:resultado.data[0].mensaje}
         return resultado
     }catch(e){
@@ -409,7 +409,7 @@ async function crearElemento(direccion,formulario) {
         datos.append(select.id,select.value)
     })
 
-    await fetch(`http://127.0.0.1:3000/api/${direccion}`,{method:'POST',credentials:'include',body:datos}).then(a=>a.json()).then(datos=>{
+    await fetch(`https://colomosscale-website-production.up.railway.app/api/${direccion}`,{method:'POST',credentials:'include',body:datos}).then(a=>a.json()).then(datos=>{
         notificar(datos)
     })
     volverACargarElementos()
@@ -430,7 +430,7 @@ async function editarElemento(direccion,formulario){
     formulario.querySelectorAll('select').forEach(select => {
         datos.append(select.id,select.value)
     })
-    await fetch(`http://127.0.0.1:3000/api/${direccion}`,{method:'PATCH',credentials:'include',body:datos}).then(a=>a.json()).then(datos=>{
+    await fetch(`https://colomosscale-website-production.up.railway.app/api/${direccion}`,{method:'PATCH',credentials:'include',body:datos}).then(a=>a.json()).then(datos=>{
         notificar(datos)
     })
     volverACargarElementos()
@@ -597,7 +597,7 @@ function registrarBotonesNuevo(){
 
 async function volverACargarElementos(){
     try{
-            const res = await fetch('http://127.0.0.1:3000/api/verificarToken',{credentials:'include'})
+            const res = await fetch('https://colomosscale-website-production.up.railway.app/api/verificarToken',{credentials:'include'})
             const result = await res.json();
             if(result.status===0){
                 window.location.href='../pages/notAuth.html'

@@ -1,6 +1,6 @@
 async function verificarToken() {
         try{
-            const res = await fetch('http://127.0.0.1:3000/api/verificarToken',{credentials:'include'})
+            const res = await fetch('https://colomosscale-website-production.up.railway.app/api/verificarToken',{credentials:'include'})
             const result = await res.json();
             if(result.status===0){
                 redirigir();
