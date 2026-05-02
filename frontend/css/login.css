@@ -119,4 +119,10 @@ button:active {
         grid-template-columns: 1fr;
         grid-template-rows: auto;
     }
+    .hero{
+        display: none;
+    }
+     .right-panel {
+        min-height: 100vh;
+    }
 }
