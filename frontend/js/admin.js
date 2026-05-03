@@ -20,6 +20,7 @@ async function verificarToken() {
                 window.location.href='../pages/404.html';
                 return;
             }
+            console.log(valoresDeConsulta)
         }catch(e){
             window.location.href='../pages/notAuth.html'
         }
@@ -282,30 +283,57 @@ function cargarReportes(input=''){
         fila.append(fecha)
 
         const botones = document.createElement('td')
-        //const editar = document.createElement('button')
-        //const eliminar = document.createElement('button')
+        const editar = document.createElement('button')
+        const eliminar = document.createElement('button')
         const ver = document.createElement('button')
-        //editar.classList.add('btn__accion__editar')
-        //eliminar.classList.add('btn__accion__eliminar')
+        editar.classList.add('btn__accion__editar')
+        eliminar.classList.add('btn__accion__eliminar')
         ver.classList.add('btn__accion__ver')
-        //editar.textContent='Editar'
-        //eliminar.textContent='Eliminar'
+        editar.textContent='Editar'
+        eliminar.textContent='Eliminar'
         ver.textContent='Ver'
-        //botones.append(eliminar)
-        //botones.append(editar)
+        botones.append(eliminar)
+        botones.append(editar)
         botones.append(ver)
         fila.append(botones)
 
         ver.addEventListener('click',()=>{
             window.location.href=`../pages/reporte.html?id=${reporte.id_reporte}`
         })
+        const fechavalor = new Date(reporte.fecha_analisis)
+        const camposReporteEditar = [//Arreglo de conjunto de objetos
+            { id:'fecha', labelTexto:'Fecha de análisis', tipo:'date',contenido: fechavalor.toISOString().split('T')[0]},
+            { id:'excentricidad', labelTexto:'Excentricidad (gramos)', tipo:'text',contenido:reporte.excentricidad_promedio },
+            { id:'rep50', labelTexto:'Repetibilidad 50 (gramos)', tipo:'text',contenido:reporte.repetibilidad_50 },
+            { id:'rep100', labelTexto:'Repetibilidad 100 (gramos)', tipo:'text',contenido:reporte.repetibilidad_100 },
+            { id:'linealidad', labelTexto:'Linealidad Promedio (gramos)', tipo:'text',contenido:reporte.linealidad_promedio },
+            { id:'observaciones', labelTexto:'Observaciones', tipo:'text',contenido:reporte.observaciones }
+        ]//El estado y codigo son creados aqui, ultima medicion siempre será el dia de creación
 
-        //Un reporte no es algo que pueda editarse o incluso eliminarse, debe ser un valor fijo, algo del historial que ya se hizo
+        editar.addEventListener('click',()=>{
+            let usuariosSelector = [];
+            let balanzaSelector = [];
+            balanzas.forEach(balanza=>{
+                balanzaSelector.push({id:balanza.id_balanza,value:balanza.id_balanza,text:balanza.nombre})
+            })
+            usuarios.forEach(usuario =>{
+                usuariosSelector.push({id:usuario.username,value:usuario.id,text:usuario.username})
+            })
+            const selectorUsuario = devolverObjetoSelector('Usuario',usuariosSelector,'id_usuario')
+            const selectorBalanza = devolverObjetoSelector('Balanza',balanzaSelector,'id_balanza')
+            selectorUsuario.querySelector('select').value=reporte.id_usuario
+            selectorBalanza.querySelector('select').value=reporte.id_balanza
+            abrirModalFormulario('Editar Reporte',camposReporteEditar,(elemento)=>{editarElemento(`reporte/${reporte.id_reporte}`,elemento)},[selectorUsuario,selectorBalanza])
+        })
+        eliminar.addEventListener('click',()=>{
+            abrirModalEliminar(`reporte/${reporte.id_reporte}`)
+        })
+        
 
         id.textContent=reporte.id_reporte
         balanza.textContent=reporte.nombre_balanza
         tecnico.textContent=reporte.nombre_tecnico
-        const fechavalor = new Date(reporte.fecha_analisis)
+        
         fecha.textContent= fechavalor.toLocaleDateString('es-MX')
         document.getElementById('contenidoTablaReportes').append(fila)
     })

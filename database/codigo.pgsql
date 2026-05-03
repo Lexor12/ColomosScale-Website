@@ -491,6 +491,53 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Borrar reporte 
+CREATE OR REPLACE FUNCTION eliminar_reporte(p_id INT)
+RETURNS TABLE(status INT, mensaje TEXT)
+SECURITY DEFINER SET search_path = public AS $$ 
+BEGIN
+  IF EXISTS (SELECT 1 FROM "Reporte" WHERE id_reporte=p_id) THEN
+      DELETE FROM "Reporte" WHERE id_reporte=p_id;
+      status := 1;
+      mensaje := 'Reporte eliminado correctamente.';
+  ELSE
+    status := -1;
+    mensaje := 'Reporte no encontrado.';
+  END IF;
+  RETURN NEXT; 
+END;
+$$ LANGUAGE plpgsql;
+
+
+--Actualizar reporte
+
+CREATE OR REPLACE FUNCTION actualizar_reporte(
+  p_id INT,
+  p_id_usuario INT,
+  p_id_balanza INT,
+  p_excentricidad_promedio NUMERIC,
+  p_repetibilidad_50 NUMERIC,
+  p_repetibilidad_100 NUMERIC,
+  p_linealidad_promedio NUMERIC,
+  p_observaciones TEXT
+) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ BEGIN
+  UPDATE "Reporte"
+  SET
+    id_usuario = COALESCE(id_usuario,p_id_usuario),
+    id_balanza = COALESCE(id_balanza,p_id_balanza),
+    fecha_analisis = COALESCE(fecha_analisis,p_id_usuario),
+    excentricidad_promedio = COALESCE(excentricidad_promedio,p_excentricidad_promedio),
+    repetibilidad_50 = COALESCE(repetibilidad_50,p_repetibilidad_50),
+    repetibilidad_100 = COALESCE(repetibilidad_100,p_repetibilidad_100),
+    linealidad_promedio = COALESCE(linealidad_promedio,p_linealidad_promedio),
+    observaciones = COALESCE(observaciones,p_observaciones)
+  WHERE id_reporte = p_id; 
+
+  IF NOT FOUND THEN RETURN 'Reporte no encontrado'; END IF;
+  RETURN 'Reporte actualizado';
+END;$$ LANGUAGE plpgsql;
+
+
 -- obtener datos reporte completo
 
 CREATE OR REPLACE FUNCTION obtener_reporte(p_id_reporte INT) RETURNS TABLE (
@@ -589,6 +636,9 @@ GRANT EXECUTE ON FUNCTION obtener_laboratorio(INT) TO colomosback;
 -- CATEGORÍA: REPORTES (Solo lectura, como pediste)
 GRANT EXECUTE ON FUNCTION obtener_reportes_balanza(INT) TO colomosback;
 GRANT EXECUTE ON FUNCTION obtener_reportes_usuario(INT) TO colomosback;
+GRANT EXECUTE ON FUNCTION actualizar_reporte(INT,INT,INT,NUMERIC,NUMERIC,NUMERIC,NUMERIC,TEXT) TO colomosback;p_id 
+GRANT EXECUTE ON FUNCTION eliminar_reporte(INT) TO colomosback;
 GRANT EXECUTE ON FUNCTION obtener_reporte(INT) TO colomosback;
+
 
 GRANT EXECUTE ON FUNCTION obtener_tecnicos() TO colomosback;
