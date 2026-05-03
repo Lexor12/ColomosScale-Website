@@ -20,7 +20,6 @@ async function verificarToken() {
                 window.location.href='../pages/404.html';
                 return;
             }
-            console.log(valoresDeConsulta)
         }catch(e){
             window.location.href='../pages/notAuth.html'
         }
@@ -302,7 +301,6 @@ function cargarReportes(input=''){
         })
         const fechavalor = new Date(reporte.fecha_analisis)
         const camposReporteEditar = [//Arreglo de conjunto de objetos
-            { id:'fecha', labelTexto:'Fecha de análisis', tipo:'date',contenido: fechavalor.toISOString().split('T')[0]},
             { id:'excentricidad', labelTexto:'Excentricidad (gramos)', tipo:'text',contenido:reporte.excentricidad_promedio },
             { id:'rep50', labelTexto:'Repetibilidad 50 (gramos)', tipo:'text',contenido:reporte.repetibilidad_50 },
             { id:'rep100', labelTexto:'Repetibilidad 100 (gramos)', tipo:'text',contenido:reporte.repetibilidad_100 },
@@ -449,7 +447,8 @@ async function editarElemento(direccion,formulario){
     formulario.querySelectorAll('input').forEach(input => {
         if (input.type === 'file' && input.files[0]) {
             datos.append(input.id, input.files[0])
-        } else {
+        }
+        else {
             if(input.value)
             datos.append(input.id,input.value)
         }

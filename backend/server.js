@@ -458,7 +458,6 @@ app.patch('/api/reporte/:id',autenticar(3),upload.none(),async(req,res)=>{
     const validacion =zodIdParam.safeParse(req.params);
     if(!validacion.success)return res.status(400).json({satus:-1,error:"Datos de solicitud inválidos"})
     const zodReporte = z.object({
-        fecha: z.coerce.date().optional(),
         excentricidad: z.coerce.number().optional(),
         rep50: z.coerce.number().optional(),
         rep100: z.coerce.number().optional(),
@@ -472,7 +471,7 @@ app.patch('/api/reporte/:id',autenticar(3),upload.none(),async(req,res)=>{
     const d = validacionBody.data
     const id = validacion.data.id
     try{
-        const consulta = await sql`SELECT * FROM actualizar_reporte(${id},${d.id_usuario?? null},${d.id_balanza?? null},${d.excentricidad?? null},${d.rep50?? null},${d.rep100?? null},${d.linealidad?? null},${d.observaciones?? null},${d.fecha??null})`;
+        const consulta = await sql`SELECT * FROM actualizar_reporte(${id},${d.id_usuario?? null},${d.id_balanza?? null},${d.excentricidad?? null},${d.rep50?? null},${d.rep100?? null},${d.linealidad?? null},${d.observaciones?? null})`;
         res.json({status:1,data:consulta})
     }catch{
         return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
