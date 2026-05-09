@@ -4,8 +4,8 @@
     <link rel="icon" type="image/x-icon" href="../assets/favicon/favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/infoUsuario.css">
-    <title>Informacion del usuario</title>
+    <link rel="stylesheet" href="../css/laboratorios.css">
+    <title>Técnicos</title>
 </head>
 <body>
     <aside class="bar">
@@ -22,7 +22,7 @@
                     <img src="../assets/icons/tecnicos.png" class="navbar__list__element__icon navbar__list__element__tecnicos">
                     <p>Técnicos</p>
                 </li>
-                <li class="navbar__list__element" id="btnLaboratorios">
+                <li class="navbar__list__element active" id="btnLaboratorios">
                     <img src="../assets/icons/laboratorios.png" class="navbar__list__element__icon navbar__list__element__tecnicos">
                     <p>Laboratorios</p>
                 </li>
@@ -53,27 +53,29 @@
     <main>
         <section class="selector">
             <div class="selector__filtro">
-            </div>
-            <div class="selector__volver" id="btnVolver">
-                <button class="selector__volver__boton"> > Volver</button>
+                <input class="selector__filtro__buscador" type="text" placeholder="🔍 Buscar laboratorio por nombre...">
             </div>
         </section>
-        <section class="InfoTecnico">
-            <div class="ImagenTecnico">
-                <img src="../assets/icons/user.svg" alt="Imagen del técnico de ejemplo" class="ImagenTecnico__elemento">
+        <section class="elements">
+            <article class="elements__header" >
+                <p>Nombre</p>
+                <p>Ubicación</p>
+                <p>Número de balanzas asociadas</p>
+            </article>
+            <div>
+                <article class="elements__lab" style="grid-template-columns: 1fr;">
+                    <p class="elements__lab__elemento elements__lab__elemento--NumBalanzas">No hay laboratorios registrados.</p>
+                </article>
+                <!--<article class="elements__lab" >
+                <p class="elements__lab__elemento elements__lab__elemento--Nombre ">Laboratorio Principal Jijija</p>
+                <p class="elements__lab__elemento elements__lab__elemento--Ubicacion">Se encuentra justo por debajo de donde se encuentra el otro laboratorio que esta a la vuelta de la esquina Se encuentra justo por debajo de donde se encuentra el otro laboratorio que esta a la vuelta de la esquina.</p>
+                <p class="elements__lab__elemento elements__lab__elemento--NumBalanzas">10</p>
+            </article>-->
             </div>
-                <div class="InfoTecnico__reportes">
-                    <h2 class="InfoTecnico__reportes__titulo">Historial de reportes</h2>
-                </div>
-                <div class="InfoTecnico__General">
-                    <h3 class="InfoTecnico__General__titulo">Informacion general del usuario</h3>
-                    <strong>Nombre: <span class="InfoTecnico__General__nombre"></span></strong>
-                    <strong>Correo: <span class="InfoTecnico__General__correo"></span></strong>
-                    <strong>Fecha de creacion: <span class="InfoTecnico__General__fecha"></span></strong>
-                    <strong>Rol: <span class="InfoTecnico__General__rol"></span></strong>
-                </div>
+        </section>
+        <section class="toaster__contenedor">
         </section>
     </main>
 </body>
-<script src="../js/infoUsuario.js"></script>
+<script src="../js/laboratorios.js" type="module"></script>
 </html>

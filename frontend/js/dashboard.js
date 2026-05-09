@@ -26,6 +26,10 @@ async function configurarNavBar(){
     btnTecnicos.addEventListener('click',()=>{
         window.location.href='../pages/tecnico.html'
     })
+    const btnLaboratorios = document.getElementById('btnLaboratorios');
+    btnLaboratorios.addEventListener('click',()=>{
+        window.location.href='../pages/laboratorios.html'
+    })
     const btnPaginaInicio = document.querySelector('.navbar__icon__img')
     btnPaginaInicio.style.cursor='pointer'
     btnPaginaInicio.addEventListener('click',()=>{

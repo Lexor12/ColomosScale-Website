@@ -3,7 +3,7 @@ const nombre = document.getElementById('nombreUsuario')
 const rol = document.getElementById('rolUsuario') 
 const elements = document.querySelector('.elements')//Hacemos referencia a todo nuestro contenedor de balanzas
 const buscador = document.querySelector('.selector__filtro__buscador')
-let tecnicosOriginal = {}
+let laboratoriosOriginal = {}
 
 async function configurarNavBar(){
     const botonSalir = document.getElementById('btnSalir')
@@ -76,78 +76,40 @@ async function obtenerValores(valor){
 }
 
 async function cargarTecnicos(){
-    tecnicosOriginal = await obtenerValores('tecnico')
-    crearTecnicos(tecnicosOriginal)
+    laboratoriosOriginal = await obtenerValores('laboratorio')
+    crearLabs(laboratoriosOriginal)
 }
-async function  crearTecnicos(listaTecnicos) {
-    elements.replaceChildren();
-    listaTecnicos.forEach(tecnico => {
-        const nuevoArticle = document.createElement('article')
-        nuevoArticle.classList.add('elemento__tecnico')
+function crearLabs(lista=laboratoriosOriginal){
+    document.querySelector('.elements>div').innerHTML=''
+    lista.forEach(lab => {
+        const div = document.createElement('div')
+        div.classList.add('elements__lab')
 
-        const divImg = document.createElement('div')
-        divImg.classList.add('elemento__tecnico__img')
-        nuevoArticle.appendChild(divImg)
+        const pNombre = document.createElement('p')
+        pNombre.classList.add('elements__lab__elemento','elements__lab__elemento--Nombre')
+        pNombre.textContent=lab.nombre
 
-        const img = document.createElement('img')
-        img.src = '../assets/icons/user.svg'
-        img.classList.add('elemento__tecnico__img__element')
-        img.alt="Tecnico"
-        divImg.appendChild(img)
+        const pUbi = document.createElement('p')
+        pUbi.classList.add('elements__lab__elemento','elements__lab__elemento--Ubicacion')
+        pUbi.textContent=lab.ubicacion
 
-        const divContenido = document.createElement('div')
-        divContenido.classList.add('elemento__tecnico__content')
-        nuevoArticle.appendChild(divContenido)
+        const pNumBal = document.createElement('p')
+        pNumBal.classList.add('elements__lab__elemento','elements__lab__elemento--NumBalanzas')
+        pNumBal.textContent=lab.total_balanzas
 
-        const nombreParrafo = document.createElement('p');
-        nombreParrafo.innerHTML="<b>Nombre completo: </b>";
-        const nombreSpan = document.createElement('span');
-        nombreSpan.classList.add('elemento__tecnico__content__name')
-        nombreSpan.textContent=tecnico.nombre_completo;
-        nombreParrafo.appendChild(nombreSpan)
-        divContenido.appendChild(nombreParrafo);
-
-        const correoParrafo = document.createElement('p');
-        correoParrafo.innerHTML="<b>Correo: </b>"
-        const correoSpan = document.createElement('span');
-        correoSpan.classList.add('elemento__tecnico__content__correo');
-        correoSpan.textContent = tecnico.correo;
-        correoParrafo.appendChild(correoSpan);
-        divContenido.appendChild(correoParrafo)
-
-        const rolParrafo = document.createElement('p');
-        rolParrafo.innerHTML="<b>Rol: </b>"
-        const rolSpan = document.createElement('span');
-        rolSpan.classList.add('elemento__balanza__content__rol');
-        rolSpan.textContent = tecnico.rol;
-        rolParrafo.appendChild(rolSpan);
-        divContenido.appendChild(rolParrafo)
-
-        const fechaParrafo = document.createElement('p');
-        fechaParrafo.innerHTML="<b>Fecha de ingreso: </b>"
-        const fechaSpan = document.createElement('span');
-        fechaSpan.classList.add('elemento__tecnico__content__fecha');
-        let fecha = new Date(tecnico.fecha_creacion)
-        fechaSpan.textContent = fecha.toLocaleDateString('es-MX');
-        fechaParrafo.appendChild(fechaSpan);
-        divContenido.appendChild(fechaParrafo)
-        elements.appendChild(nuevoArticle)
-
-        nuevoArticle.addEventListener('dblclick',()=>{
-            window.location.href=`../pages/infoUsuario.html?id=${tecnico.username}`
-        })
+        div.append(pNombre,pUbi,pNumBal)
+        document.querySelector('.elements>div').append(div)
     });
 }
 function filtrar(){
     const texto = buscador.value.toLowerCase().trim();
-    let nuevaLista = tecnicosOriginal.filter(tecnico=>tecnico.nombre_completo.toLowerCase().trim().includes(texto));
+    let nuevaLista = laboratoriosOriginal.filter(lab=>lab.nombre.toLowerCase().trim().includes(texto));
     if(nuevaLista.length===0){
         const toaster__contenedor = document.querySelector('.toaster__contenedor')
-        crearToaster("No existe ningún usuario con tal descripción.",toaster__contenedor,'info',2)
+        crearToaster("No existe ningún laboratorio con tal descripción.",toaster__contenedor,'info',2)
     }
-    crearTecnicos(nuevaLista)
+    crearLabs(nuevaLista)
 }
-
 function configurarSelector(){
     buscador.addEventListener('input',filtrar)
 }
@@ -161,7 +123,3 @@ async function iniciarPagina() {
 }
 
 window.addEventListener('load',iniciarPagina)
-
-
-
-
