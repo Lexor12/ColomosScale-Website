@@ -20,7 +20,7 @@ async function configurarNavBar(){
     })
     const btnTecnicos = document.getElementById('btnTecnicos');
     btnTecnicos.addEventListener('click',()=>{
-        window.location.href='#'
+        window.location.href='../pages/tecnico.html'
     })
     const btnLaboratorios = document.getElementById('btnLaboratorios');
     btnLaboratorios.addEventListener('click',()=>{

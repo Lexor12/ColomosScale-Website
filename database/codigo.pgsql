@@ -513,24 +513,25 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION actualizar_reporte(
   p_id INT,
-  p_id_usuario INT,
-  p_id_balanza INT,
-  p_excentricidad_promedio NUMERIC,
-  p_repetibilidad_50 NUMERIC,
-  p_repetibilidad_100 NUMERIC,
-  p_linealidad_promedio NUMERIC,
-  p_observaciones TEXT
-) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ BEGIN
+  p_id_usuario INT DEFAULT NULL,
+  p_id_balanza INT DEFAULT NULL,
+  p_excentricidad_promedio NUMERIC DEFAULT NULL,
+  p_repetibilidad_50 NUMERIC DEFAULT NULL,
+  p_repetibilidad_100 NUMERIC DEFAULT NULL,
+  p_linealidad_promedio NUMERIC DEFAULT NULL,
+  p_observaciones TEXT DEFAULT NULL
+) RETURNS TEXT SECURITY DEFINER SET search_path = public AS $$ 
+BEGIN
   UPDATE "Reporte"
   SET
-    id_usuario = COALESCE(id_usuario,p_id_usuario),
-    id_balanza = COALESCE(id_balanza,p_id_balanza),
-    fecha_analisis = COALESCE(fecha_analisis,p_id_usuario),
-    excentricidad_promedio = COALESCE(excentricidad_promedio,p_excentricidad_promedio),
-    repetibilidad_50 = COALESCE(repetibilidad_50,p_repetibilidad_50),
-    repetibilidad_100 = COALESCE(repetibilidad_100,p_repetibilidad_100),
-    linealidad_promedio = COALESCE(linealidad_promedio,p_linealidad_promedio),
-    observaciones = COALESCE(observaciones,p_observaciones)
+    id_usuario = COALESCE(p_id_usuario, id_usuario),
+    id_balanza = COALESCE(p_id_balanza, id_balanza),
+    fecha_analisis = NOW(),
+    excentricidad_promedio = COALESCE(p_excentricidad_promedio, excentricidad_promedio),
+    repetibilidad_50 = COALESCE(p_repetibilidad_50, repetibilidad_50),
+    repetibilidad_100 = COALESCE(p_repetibilidad_100, repetibilidad_100),
+    linealidad_promedio = COALESCE(p_linealidad_promedio, linealidad_promedio),
+    observaciones = COALESCE(p_observaciones, observaciones)
   WHERE id_reporte = p_id; 
 
   IF NOT FOUND THEN RETURN 'Reporte no encontrado'; END IF;
@@ -595,6 +596,9 @@ GRANT EXECUTE ON FUNCTION iniciar_sesion(TEXT, TEXT) TO anon;
 GRANT EXECUTE ON FUNCTION iniciar_sesion(TEXT, TEXT) TO authenticated;
 GRANT EXECUTE ON FUNCTION agregar_reporte(INT, TEXT,NUMERIC,NUMERIC,NUMERIC,NUMERIC,BOOLEAN,TEXT,estado_equipo) TO anon;
 GRANT EXECUTE ON FUNCTION agregar_reporte(INT, TEXT,NUMERIC,NUMERIC,NUMERIC,NUMERIC,BOOLEAN,TEXT,estado_equipo) TO authenticated;
+GRANT EXECUTE ON FUNCTION obtener_usuario_por_id(int) TO anon;
+GRANT EXECUTE ON FUNCTION obtener_usuario_por_id(int) TO authenticated;
+
 
 ALTER TABLE "Reporte" ALTER COLUMN excentricidad_promedio TYPE NUMERIC;
 ALTER TABLE "Reporte" ALTER COLUMN repetibilidad_50 TYPE NUMERIC;
@@ -636,7 +640,7 @@ GRANT EXECUTE ON FUNCTION obtener_laboratorio(INT) TO colomosback;
 -- CATEGORÍA: REPORTES (Solo lectura, como pediste)
 GRANT EXECUTE ON FUNCTION obtener_reportes_balanza(INT) TO colomosback;
 GRANT EXECUTE ON FUNCTION obtener_reportes_usuario(INT) TO colomosback;
-GRANT EXECUTE ON FUNCTION actualizar_reporte(INT,INT,INT,NUMERIC,NUMERIC,NUMERIC,NUMERIC,TEXT) TO colomosback;p_id 
+GRANT EXECUTE ON FUNCTION actualizar_reporte(INT,INT,INT,NUMERIC,NUMERIC,NUMERIC,NUMERIC,TEXT) TO colomosback;
 GRANT EXECUTE ON FUNCTION eliminar_reporte(INT) TO colomosback;
 GRANT EXECUTE ON FUNCTION obtener_reporte(INT) TO colomosback;
 

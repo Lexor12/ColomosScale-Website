@@ -157,6 +157,7 @@
     }
     .HistorialReportes__lista__elemento:hover{
         transform: scale(1.005);
+        cursor: pointer;
     }
     .HistorialReportes__lista__elemento>strong{
         color: var(--color-text);
