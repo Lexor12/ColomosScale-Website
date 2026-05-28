@@ -30,6 +30,10 @@ async function configurarNavBar(){
     btnLaboratorios.addEventListener('click',()=>{
         window.location.href='../pages/laboratorios.html'
     })
+    const btnAppMovil = document.getElementById('btnAppMovil');
+    btnAppMovil.addEventListener('click',()=>{
+        window.location.href='../pages/appmovil.html'
+    })
     const btnPaginaInicio = document.querySelector('.navbar__icon__img')
     btnPaginaInicio.style.cursor='pointer'
     btnPaginaInicio.addEventListener('click',()=>{

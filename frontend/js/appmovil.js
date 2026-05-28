@@ -1,9 +1,6 @@
 import {crearToaster} from './toaster.js'
 const nombre = document.getElementById('nombreUsuario') 
 const rol = document.getElementById('rolUsuario') 
-const elements = document.querySelector('.elements')//Hacemos referencia a todo nuestro contenedor de balanzas
-const buscador = document.querySelector('.selector__filtro__buscador')
-let laboratoriosOriginal = {}
 
 async function configurarNavBar(){
     const botonSalir = document.getElementById('btnSalir')
@@ -79,50 +76,20 @@ async function obtenerValores(valor){
     }
 }
 
-async function cargarTecnicos(){
-    laboratoriosOriginal = await obtenerValores('laboratorio')
-    crearLabs(laboratoriosOriginal)
+function inicializarEventos(){
+    const btnAppMovil = document.getElementById('btnDescargarApk');
+    btnAppMovil.addEventListener('click',()=>{descargarApp()})
 }
-function crearLabs(lista=laboratoriosOriginal){
-    document.querySelector('.elements>div').innerHTML=''
-    lista.forEach(lab => {
-        const div = document.createElement('div')
-        div.classList.add('elements__lab')
 
-        const pNombre = document.createElement('p')
-        pNombre.classList.add('elements__lab__elemento','elements__lab__elemento--Nombre')
-        pNombre.textContent=lab.nombre
-
-        const pUbi = document.createElement('p')
-        pUbi.classList.add('elements__lab__elemento','elements__lab__elemento--Ubicacion')
-        pUbi.textContent=lab.ubicacion
-
-        const pNumBal = document.createElement('p')
-        pNumBal.classList.add('elements__lab__elemento','elements__lab__elemento--NumBalanzas')
-        pNumBal.textContent=lab.total_balanzas
-
-        div.append(pNombre,pUbi,pNumBal)
-        document.querySelector('.elements>div').append(div)
-    });
-}
-function filtrar(){
-    const texto = buscador.value.toLowerCase().trim();
-    let nuevaLista = laboratoriosOriginal.filter(lab=>lab.nombre.toLowerCase().trim().includes(texto));
-    if(nuevaLista.length===0){
-        const toaster__contenedor = document.querySelector('.toaster__contenedor')
-        crearToaster("No existe ningún laboratorio con tal descripción.",toaster__contenedor,'info',2)
-    }
-    crearLabs(nuevaLista)
-}
-function configurarSelector(){
-    buscador.addEventListener('input',filtrar)
+function descargarApp(){
+    const contenedor_toaster = document.querySelector('.toaster__contenedor');
+    crearToaster("Por el momento esta funcionalidad no esta activa.",contenedor_toaster,'info',1.5)
 }
 
 async function iniciarPagina() {
     await verificarToken(); 
     await configurarNavBar();
-    await cargarTecnicos();
-    configurarSelector();
+    inicializarEventos();
     document.querySelector('body').classList.add('is-loaded');
 }
 

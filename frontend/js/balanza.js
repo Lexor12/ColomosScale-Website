@@ -62,6 +62,10 @@ async function configurarNavBar(){
     btnLaboratorios.addEventListener('click',()=>{
         window.location.href='../pages/laboratorios.html'
     })
+    const btnAppMovil = document.getElementById('btnAppMovil');
+    btnAppMovil.addEventListener('click',()=>{
+        window.location.href='../pages/appmovil.html'
+    })
     const nombre = document.getElementById('nombreUsuario')
     const rol = document.getElementById('rolUsuario')
     const imgPersona = document.querySelector('.navbar__about__img__element')

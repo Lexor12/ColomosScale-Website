@@ -591,6 +591,17 @@ RETURNS TABLE (id INT,nombre_completo TEXT, correo TEXT, fecha_creacion TIMESTAM
   FROM "Usuario" AS u JOIN "Rol" as r ON r.id_rol=u.rol WHERE u.rol<=p_rol;
 END;$$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION obtener_numero_entidades() RETURNS TABLE(numBalanzas INT,numReportes INT,numLaboratorios INT,numUsuarios INT) 
+SECURITY DEFINER 
+SET search_path = public 
+AS $$ 
+BEGIN
+    RETURN QUERY
+    SELECT (SELECT COUNT(*)::INT FROM "Balanza"),(SELECT COUNT(*)::INT FROM "Reporte"),(SELECT COUNT(*)::INT FROM "Laboratorio"),(SELECT COUNT(*)::INT FROM "Usuario");
+END;
+$$ LANGUAGE plpgsql;
+
+
 
 GRANT EXECUTE ON FUNCTION iniciar_sesion(TEXT, TEXT) TO anon;
 GRANT EXECUTE ON FUNCTION iniciar_sesion(TEXT, TEXT) TO authenticated;
@@ -598,6 +609,8 @@ GRANT EXECUTE ON FUNCTION agregar_reporte(INT, TEXT,NUMERIC,NUMERIC,NUMERIC,NUME
 GRANT EXECUTE ON FUNCTION agregar_reporte(INT, TEXT,NUMERIC,NUMERIC,NUMERIC,NUMERIC,BOOLEAN,TEXT,estado_equipo) TO authenticated;
 GRANT EXECUTE ON FUNCTION obtener_usuario_por_id(int) TO anon;
 GRANT EXECUTE ON FUNCTION obtener_usuario_por_id(int) TO authenticated;
+GRANT EXECUTE ON FUNCTION obtener_numero_entidades() TO anon;
+GRANT EXECUTE ON FUNCTION obtener_numero_entidades() TO authenticated;
 
 
 ALTER TABLE "Reporte" ALTER COLUMN excentricidad_promedio TYPE NUMERIC;

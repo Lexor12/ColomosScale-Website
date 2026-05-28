@@ -1,0 +1,168 @@
+@import url('../css/variables-colores.css'); 
+@import url('../css/estructuraBasica.css'); 
+@import url('../css/toaster.css');
+
+
+.elements {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 100vw;
+    height: 100%;
+    max-height: 100vh;
+    padding: 3rem;
+    display: flex;
+}
+
+.descargar-tarjeta {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+}
+
+.descargar-tarjeta__title {
+    font-size: 2.2rem;
+    color: #111827; 
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.descargar-tarjeta__subtitle {
+    font-size: 1.05rem;
+    color: #4b5563; 
+    line-height: 1.5;
+    margin-bottom: 2rem;
+}
+
+.descargar-tarjeta__info {
+    margin-bottom: 2.5rem;
+}
+
+.descargar-tarjeta__info h3 {
+    font-size: 1.15rem;
+    color: #1f2937;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.descargar-tarjeta__info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.descargar-tarjeta__info li {
+    font-size: 1rem;
+    color: #374151;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.descargar-tarjeta__acciones {
+    margin-top: auto; /* Empuja el botón al fondo si hay espacio */
+}
+
+.btn-descargar {
+    background-color: #0c5449;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 1.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 12px rgba(12, 84, 73, 0.2);
+    text-align: left;
+}
+
+.btn-descargar:hover {
+    background-color: #083b33;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(12, 84, 73, 0.3);
+}
+
+.btn-descargar:active {
+    transform: translateY(0);
+}
+
+.btn-descargar__icon {
+    width: 24px;
+    height: 24px;
+}
+
+.btn-descargar__text {
+    display: flex;
+    flex-direction: column;
+}
+
+.btn-descargar__text span {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.btn-descargar__text small {
+    font-size: 0.8rem;
+    opacity: 0.85;
+    margin-top: 0.1rem;
+}
+
+.descargar-tarjeta__notice {
+    font-size: 0.8rem;
+    color: #9ca3af; 
+    margin-top: 0.75rem;
+    font-style: italic;
+}
+
+.descargar-instrucciones {
+    flex: .7;
+    background-color: #e2e2e2; /* Gris extremadamente claro para contrastar */
+    border-radius: 8px;
+    padding: 2rem;
+    border: 2px solid #fafbfd;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.instrucciones__ejemplo {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.instrucciones__img {
+    max-height: 500px;
+    width: auto;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+
+.instrucciones__pasos h4 {
+    font-size: 1.1rem;
+    color: #1f2937;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.instrucciones__pasos ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.instrucciones__pasos li {
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+}
+
+.instrucciones__pasos strong {
+    color: #111827;
+}
