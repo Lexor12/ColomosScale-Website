@@ -166,3 +166,88 @@
 .instrucciones__pasos strong {
     color: #111827;
 }
+
+@media (max-width: 990px) {
+    .elements {
+        flex-direction: column;
+        padding: 2rem;
+        max-height: none;
+        height: auto;
+    }
+
+    .descargar-tarjeta,
+    .descargar-instrucciones {
+        flex: unset;
+        width: 100%;
+    }
+
+    .descargar-instrucciones {
+        justify-content: flex-start;
+    }
+
+    .instrucciones__img {
+        max-height: 350px;
+    }
+}
+
+@media (max-width: 720px) {
+    .elements {
+        padding: 1.5rem;
+    }
+
+    .descargar-tarjeta__title {
+        font-size: 1.7rem;
+    }
+
+    .descargar-tarjeta__subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .descargar-tarjeta__info {
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-descargar {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .instrucciones__img {
+        max-height: 260px;
+    }
+}
+
+@media (max-width: 480px) {
+    .elements {
+        padding: 1rem;
+        border-radius: 0;
+    }
+
+    .descargar-tarjeta__title {
+        font-size: 1.4rem;
+    }
+
+    .descargar-tarjeta__subtitle,
+    .descargar-tarjeta__info li,
+    .instrucciones__pasos li {
+        font-size: 0.9rem;
+    }
+
+    .descargar-instrucciones {
+        padding: 1.25rem;
+    }
+
+    .instrucciones__img {
+        max-height: 200px;
+        padding: 0.5rem;
+    }
+
+    .btn-descargar {
+        padding: 0.85rem 1.25rem;
+    }
+
+    .btn-descargar__text span {
+        font-size: 1rem;
+    }
+}
