@@ -82,17 +82,30 @@ async function inicializarEventos(){
     const btnAppMovil = document.getElementById('btnDescargarApk');
     const url = await obtenerValores("app")
     console.log(url)
-    if(url){
-        let urlDescarga=url.appTempURL
+    
+    if(url && url.appTempURL){
+        urlDescarga = url.appTempURL
     }
+    
     btnAppMovil.addEventListener('click',()=>{descargarApp()})
 }
 
 function descargarApp(){
+    const contenedor_toaster = document.querySelector('.toaster__contenedor');
+    
+    if(!urlDescarga){
+        crearToaster("Por el momento esta funcionalidad no esta activa o el archivo no existe.", contenedor_toaster, 'info', 2)
+        return;
+    }
+
+    crearToaster("Iniciando descarga del APK...", contenedor_toaster, 'success', 1.5)
     const a = document.createElement('a')
-    a.href=urlDescarga
+    a.href = urlDescarga
     a.setAttribute('download', 'ColomosScale.apk');
+    
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
 }
 
 async function iniciarPagina() {
