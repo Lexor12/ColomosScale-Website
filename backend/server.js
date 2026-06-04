@@ -487,6 +487,20 @@ app.post('/api/cerrarSesion',(req,res)=>{
     res.json({status:1});
 })
 
+app.get('/api/app',autenticar(3),async(req,res)=>{
+    //Este no requiere ningun tipo de validacion, ya que es un get que no recibe datos
+    try{
+        let appURL ='app-colomoscale-movile-v1.apk'
+        const {data,error} = await supabase.storage.from('resources').createSignedUrl(appURL,1500)//Debe durar unos 25 minutos
+        if(error||!data){
+            return res.status(404).json({status:0,error:"No se encontró el archivo APK."})
+        }
+        return res.json({status:1,data:{appTempURL:data.signedUrl}})
+    }catch{
+        return res.status(500).json({status:0,error:"Error al conectar a la Base de datos."})
+    }
+})
+
 app.get('/',(req,res)=>{
     res.send("Activo");
 })
