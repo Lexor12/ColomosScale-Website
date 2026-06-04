@@ -2,6 +2,8 @@ import {crearToaster} from './toaster.js'
 const nombre = document.getElementById('nombreUsuario') 
 const rol = document.getElementById('rolUsuario') 
 
+let urlDescarga=''
+
 async function configurarNavBar(){
     const botonSalir = document.getElementById('btnSalir')
     botonSalir.addEventListener('click',async()=>{
@@ -76,20 +78,27 @@ async function obtenerValores(valor){
     }
 }
 
-function inicializarEventos(){
+async function inicializarEventos(){
     const btnAppMovil = document.getElementById('btnDescargarApk');
+    const url = await obtenerValores("app")
+    console.log(url)
+    if(url){
+        let urlDescarga=url.appTempURL
+    }
     btnAppMovil.addEventListener('click',()=>{descargarApp()})
 }
 
 function descargarApp(){
-    const contenedor_toaster = document.querySelector('.toaster__contenedor');
-    crearToaster("Por el momento esta funcionalidad no esta activa.",contenedor_toaster,'info',1.5)
+    const a = document.createElement('a')
+    a.href=urlDescarga
+    a.setAttribute('download', 'ColomosScale.apk');
+    a.click();
 }
 
 async function iniciarPagina() {
     await verificarToken(); 
     await configurarNavBar();
-    inicializarEventos();
+    await inicializarEventos();
     document.querySelector('body').classList.add('is-loaded');
 }
 
