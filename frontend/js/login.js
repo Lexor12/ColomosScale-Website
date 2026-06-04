@@ -6,7 +6,7 @@ const error = document.getElementById('mensaje-error');
 
 async function verificarToken(){
         try{
-            const res = await fetch('https://colomosscale-website-production.up.railway.app/api/verificarToken',{
+            const res = await fetch('https://colomosscale-website-production-a4de.up.railway.app/api/verificarToken',{
                 credentials:'include'
             })
             const result = await res.json();
@@ -59,7 +59,7 @@ function cargarPagina(){
                     }),
                     credentials:'include'
                 }
-                const respuesta = await fetch(`https://colomosscale-website-production.up.railway.app/api/iniciarSesion`,opt);
+                const respuesta = await fetch(`https://colomosscale-website-production-a4de.up.railway.app/api/iniciarSesion`,opt);
                 const datos = await respuesta.json(); // Leemos la respuesta del servidor
                 if(datos.status===1){
                     window.location.href='../pages/dashboard.html'

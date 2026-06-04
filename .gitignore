@@ -9,3 +9,4 @@ package-lock.json
 # Sistema
 .DS_Store
 Thumbs.db
+.vscode
