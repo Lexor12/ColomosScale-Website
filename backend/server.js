@@ -487,7 +487,7 @@ app.post('/api/cerrarSesion',(req,res)=>{
     res.json({status:1});
 })
 
-app.get('/api/app',autenticar(3),async(req,res)=>{
+app.get('/api/app',autenticar(1),async(req,res)=>{
     //Este no requiere ningun tipo de validacion, ya que es un get que no recibe datos
     try{
         let appURL ='app-colomoscale-movile-v1.apk'
