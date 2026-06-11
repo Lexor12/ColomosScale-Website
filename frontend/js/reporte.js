@@ -119,7 +119,8 @@ function cargarPagina(){
 
     estadoReporte.textContent=valoresDeConsulta.reporte.estado_final
     emtReporte.textContent=valoresDeConsulta.reporte.cumple_emt?"CUMPLE":"NO CUMPLE"
-    imagen.src=valoresDeConsulta.balanza.img_url
+    if(!valoresDeConsulta.balanza.img_url)imagen.src ='../assets/logo/ic_logo_sin_fondo.png'
+        else imagen.src=valoresDeConsulta.balanza.img_url
     excentricidad.textContent=valoresDeConsulta.reporte.excentricidad_promedio
     rep100.textContent=valoresDeConsulta.reporte.repetibilidad_100
     rep50.textContent=valoresDeConsulta.reporte.repetibilidad_50

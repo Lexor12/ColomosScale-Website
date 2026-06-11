@@ -91,14 +91,9 @@ async function inicializarEventos(){
 }
 
 function descargarApp(){
-    const contenedor_toaster = document.querySelector('.toaster__contenedor');
-    
     if(!urlDescarga){
-        crearToaster("Por el momento esta funcionalidad no esta activa o el archivo no existe.", contenedor_toaster, 'info', 2)
         return;
     }
-
-    crearToaster("Iniciando descarga del APK...", contenedor_toaster, 'success', 1.5)
     const a = document.createElement('a')
     a.href = urlDescarga
     a.setAttribute('download', 'ColomosScale.apk');
