@@ -1,7 +1,7 @@
 import { generarHash, verificarToken } from './login.js';
 import jwt from 'jsonwebtoken';
 
-// Agrupamos las pruebas de este módulo usando 'describe'
+
 describe('Pruebas unitarias para el módulo de Login', () => {
     
     // --- Grupo de pruebas para generarHash ---
@@ -13,7 +13,7 @@ describe('Pruebas unitarias para el módulo de Login', () => {
             
             const resultado = await generarHash(texto);
             
-            // Evaluamos si el resultado es igual al esperado
+            // Evaluae si el resultado es igual al esperado
             expect(resultado).toBe(hashEsperado);
         });
 
@@ -27,7 +27,7 @@ describe('Pruebas unitarias para el módulo de Login', () => {
 
     // --- Grupo de pruebas para verificarToken ---
     describe('Función verificarToken', () => {
-        // Configuramos temporalmente una variable de entorno para la firma
+        // Configurar temporalmente una variable de entorno para la firma
         beforeAll(() => {
             process.env.TOKEN_FIRMA_PASS = 'clave_secreta_prueba';
         });
@@ -39,14 +39,13 @@ describe('Pruebas unitarias para el módulo de Login', () => {
 
         test('Debería retornar status: 1 y los datos del usuario si el token es válido', () => {
             const payloadFalso = { id: 5, rol: 2 };
-            // Creamos un token real firmado con nuestra clave de prueba
+            // Crear un token real firmado con nuestra clave de prueba
             const tokenValido = jwt.sign(payloadFalso, process.env.TOKEN_FIRMA_PASS);
 
             const resultado = verificarToken(tokenValido);
 
             expect(resultado.status).toBe(1);
-            // Comprobamos que contenga los mismos datos que guardamos (puede traer propiedades de tiempo de expiración de JWT)
-            // Antes: expect(resultado.usuario).transparent.toMatchObject(payloadFalso);
+            // Comprobar que contenga los mismos datos que guardamos (puede traer propiedades de tiempo de expiración de JWT)
             expect(resultado.usuario).toMatchObject(payloadFalso);
         });
 
